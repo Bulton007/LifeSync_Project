@@ -1,26 +1,32 @@
 package com.lifesync_project.LifeSyncBackend.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "wins")
+@Table(name = "flashcards")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Win {
+public class Flashcard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deck_id", nullable = false)
+    private FlashcardDeck deck;
 
-    private String description;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String frontText;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String backText;
 
     private LocalDateTime createdAt;
 

@@ -49,17 +49,42 @@ public class SubTaskService {
                 .toList();
     }
 
+    public SubTaskResponse getSubTaskById(Long id) {
+
+        return mapToResponse(findSubTask(id));
+    }
+
+    public SubTaskResponse updateSubTask(Long id, SubTaskRequest request) {
+
+        SubTasks subTask = findSubTask(id);
+
+        subTask.setTitle(request.getTitle());
+
+        return mapToResponse(
+                subTaskRepository.save(subTask));
+    }
+
     public SubTaskResponse completeSubTask(Long id) {
 
-        SubTasks subTask = subTaskRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "SubTask not found"));
+        SubTasks subTask = findSubTask(id);
 
         subTask.setCompleted(true);
 
         return mapToResponse(
                 subTaskRepository.save(subTask));
+    }
+
+    public void deleteSubTask(Long id) {
+
+        subTaskRepository.delete(findSubTask(id));
+    }
+
+    private SubTasks findSubTask(Long id) {
+
+        return subTaskRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "SubTask not found"));
     }
 
     private SubTaskResponse mapToResponse(SubTasks subTask) {

@@ -19,7 +19,9 @@ public class GoalMilestone {
 
     private String title;
 
-    private boolean completed;
+    private Boolean completed;
 
-    private LocalDate dueDate;
+    private LocalDate targetDate;
+
+    private Long goalId;
 }

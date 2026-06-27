@@ -17,22 +17,17 @@ import java.util.List;
 public class GoalMilestoneService {
 
     private final GoalMilestoneRepository repository;
-    private final GoalRepository goalRepository;
 
     public GoalMilestoneResponse createMilestone(
             Long goalId,
             GoalMilestoneRequest request) {
 
-        Goal goal = goalRepository.findById(goalId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Goal not found"));
-
         GoalMilestone milestone =
                 GoalMilestone.builder()
                         .title(request.getTitle())
                         .completed(false)
-                        .goal(goal)
+                        .targetDate(request.getTargetDate())
+                        .goalId(goalId)
                         .build();
 
         return mapToResponse(
@@ -80,7 +75,7 @@ public class GoalMilestoneService {
                 .title(milestone.getTitle())
                 .completed(milestone.getCompleted())
                 .targetDate(milestone.getTargetDate())
-                .goalId(milestone.getGoal().getId())
+                .goalId(milestone.getGoalId())
                 .build();
     }
 }

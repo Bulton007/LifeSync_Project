@@ -6,10 +6,10 @@ import com.lifesync_project.LifeSyncBackend.entity.Tasks;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -18,23 +18,16 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
 
     public TaskResponse createTask(TaskRequest request) {
-
-        User user = userRepository.findById(
-                        request.getUserId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "User not found"));
 
         Tasks task = Tasks.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .priority(request.getPriority())
-                .status(TaskStatus.PENDING)
+                .status("PENDING")
                 .dueDate(request.getDueDate())
-                .user(user)
+                .createdAt(LocalDateTime.now())
                 .build();
 
         return mapToResponse(
@@ -94,7 +87,7 @@ public class TaskService {
                         new ResourceNotFoundException(
                                 "Task not found"));
 
-        task.setStatus(TaskStatus.COMPLETED);
+        task.setStatus("COMPLETED");
 
         return mapToResponse(
                 taskRepository.save(task));

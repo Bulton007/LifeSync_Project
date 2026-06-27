@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore H2 database files
+data/
+*.db
+*.trace.db
+
+# Ignore build/temp folders
+target/
+tomcat-temp/

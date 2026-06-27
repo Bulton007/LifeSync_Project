@@ -1,26 +1,34 @@
 package com.lifesync_project.LifeSyncBackend.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "wins")
+@Table(name = "weekly_reviews")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Win {
+public class WeeklyReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    @Column(nullable = false)
+    private Long userId;
 
-    private String description;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String reviewSummary;
+
+    @Column(nullable = false)
+    private LocalDateTime startDate;
+
+    @Column(nullable = false)
+    private LocalDateTime endDate;
 
     private LocalDateTime createdAt;
 
