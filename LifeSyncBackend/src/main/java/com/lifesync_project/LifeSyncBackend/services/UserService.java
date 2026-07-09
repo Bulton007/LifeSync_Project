@@ -1,7 +1,6 @@
 package com.lifesync_project.LifeSyncBackend.services;
 
 import com.lifesync_project.LifeSyncBackend.dto.User.UserRequest;
-import com.lifesync_project.LifeSyncBackend.dto.User.UserResponse;
 import com.lifesync_project.LifeSyncBackend.entity.User;
 import com.lifesync_project.LifeSyncBackend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
