@@ -1,47 +1,53 @@
 package com.lifesync_project.LifeSyncBackend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "goal_schedules")
+@Table(name = "habits")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GoalSchedules {
+public class Habits {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "goal_schedule_id")
-    private Long goalScheduleId;
+    @Column(name = "habit_id")
+    private Long habitId;
 
     @Column(nullable = false)
-    private Long goalId;
+    private Long userId;
+
+    @NotBlank(message = "Habit name is required")
+    @Column(nullable = false)
+    private String name;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @Column(nullable = false)
-    private LocalDate scheduleDate;
-
-    @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
-    @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal amount;
+    private String frequency;
 
     @Builder.Default
-    @Column(nullable = false)
-    private Boolean completed = false;
+    private Boolean active = true;
 
     @Builder.Default
-    @Column(nullable = false)
+    private Integer streak = 0;
+
+    private LocalDate startDate;
+
+    private LocalDate endDate;
+
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder.Default
-    @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @PrePersist

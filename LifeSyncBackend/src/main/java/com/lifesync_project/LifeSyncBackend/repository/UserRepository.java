@@ -1,12 +1,20 @@
 package com.lifesync_project.LifeSyncBackend.repository;
 
-import com.lifesync_project.LifeSyncBackend.entity.User;
+import com.lifesync_project.LifeSyncBackend.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-    boolean existsByName(String name);
+@Repository
+public interface UserRepository extends JpaRepository<Users,Long>{
+
+    Optional<Users> findByEmail(String email);
+
+    Optional<Users> findByPhoneNumber(String phoneNumber);
+
     boolean existsByEmail(String email);
-    Optional<User> findByNameOrEmail(String name, String email);
+
+    boolean existsByPhoneNumber(String phoneNumber);
+
 }

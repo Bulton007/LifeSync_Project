@@ -2,6 +2,7 @@ package com.lifesync_project.LifeSyncBackend.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -9,50 +10,46 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "goal_schedules")
+@Table(name = "expense")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GoalSchedules {
+public class Expense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "goal_schedule_id")
-    private Long goalScheduleId;
+    private Long id;
 
     @Column(nullable = false)
-    private Long goalId;
+    private Long userId;
 
     @Column(nullable = false)
-    private LocalDate scheduleDate;
+    private Long categoryId;
+
+    @NotBlank(message = "Income title is required")
+    @Column(nullable = false)
+    private String title;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
-    @Column(nullable = false, precision = 12, scale = 2)
+    @Column(nullable = false)
     private BigDecimal amount;
 
-    @Builder.Default
     @Column(nullable = false)
-    private Boolean completed = false;
+    private LocalDate expenseDate;
 
     @Builder.Default
-    @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder.Default
-    @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
-
-    @PrePersist
-    public void prePersist() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
 
     @PreUpdate
     public void preUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
 }

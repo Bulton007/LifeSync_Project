@@ -1,49 +1,105 @@
 package com.lifesync_project.LifeSyncBackend.services;
 
 import com.lifesync_project.LifeSyncBackend.dto.User.UserRequest;
-import com.lifesync_project.LifeSyncBackend.entity.User;
+import com.lifesync_project.LifeSyncBackend.dto.User.UserResponse;
+import com.lifesync_project.LifeSyncBackend.entity.Users;
+import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-
 public class UserService {
 
     private final UserRepository userRepository;
 
-    public User createUser(UserRequest request) {
-        // 1. Business Logic: Check for duplicates
-        if (userRepository.existsByName(request.getName())) {
-            throw new IllegalArgumentException("Username is already taken.");
-        }
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email is already registered.");
-        }
-        String image_urls = request.getProfile_image_url();
-        if(image_urls == null || image_urls.isBlank()){
-            image_urls = null;
-        }
-        // 2. Build the User entity using Lombok's Builder
-        User newUser = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .phonenumber(request.getPhonenumber())
-                .profile_image_url(image_urls)
-                .build();
+    /*
+     * Get Profile
+     */
+    public UserResponse getProfile(Long id) {
 
-        // 3. Save to database (Safe from SQL Injection automatically)
-        return userRepository.save(newUser);
+        Users user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        return mapToResponse(user);
     }
 
-    public boolean loginUser(UserRequest request){
+    /*
+     * Update Profile
+     */
+    public UserResponse updateProfile(
+            Long id,
+            UserRequest request) {
 
+        Users user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
 
-        return true;
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
+        user.setPhoneNumber(request.getPhoneNumber());
+
+        return mapToResponse(
+                userRepository.save(user));
+    }
+
+    /*
+     * Upload Profile Image
+     */
+    public String uploadProfileImage(
+            Long id,
+            MultipartFile file) {
+
+        Users user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        // TODO
+        // Save image to storage
+
+        user.setProfileImage(file.getOriginalFilename());
+
+        userRepository.save(user);
+
+        return "Profile image uploaded successfully.";
+    }
+
+    /*
+     * Delete Profile Image
+     */
+    public String deleteProfileImage(Long id){
+
+        Users user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        user.setProfileImage(null);
+
+        userRepository.save(user);
+
+        return "Profile image deleted successfully.";
+    }
+
+    /*
+     * Mapper
+     */
+    private UserResponse mapToResponse(
+            Users user){
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .verified(user.getVerified())
+                .profileImage(user.getProfileImage())
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 
 }
