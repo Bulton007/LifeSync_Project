@@ -1,4 +1,4 @@
-package com.lifesync_project.LifeSyncBackend.dto.User;
+package com.lifesync_project.LifeSyncBackend.dto.Users;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

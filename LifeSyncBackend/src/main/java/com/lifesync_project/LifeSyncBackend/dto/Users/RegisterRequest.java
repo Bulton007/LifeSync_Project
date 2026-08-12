@@ -25,6 +25,12 @@ public class RegisterRequest {
     )
     private String phoneNumber;
 
+    @Pattern(
+            regexp = "^[0-9]{10,12}$",
+            message = "Telegram ID must contain 10-12 digits"
+    )
+    private String telegramId;
+
     @NotBlank(message = "Password is required")
     @Size(min = 8, max = 100)
     private String password;

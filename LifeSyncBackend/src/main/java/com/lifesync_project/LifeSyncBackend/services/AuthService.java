@@ -21,6 +21,7 @@ import java.util.Random;
 public class AuthService {
 
     private final EmailService emailService;
+    private final TelegramService telegramService;
 
     private final OtpGenerator otpGenerator;
     private final UserRepository userRepository;
@@ -51,10 +52,14 @@ public class AuthService {
 
 
         // Send OTP Email
-//        emailService.sendOtpEmail(
-//                user.getEmail(),
-//                user.getOtpCode());
+        // emailService.sendOtpEmail(
+        //       user.getEmail(),
+        //       user.getOtpCode());
 
+        // Send OTP via Telegram (if applicable)
+        telegramService.sendOtpMessage(
+                user.getPhoneNumber(),
+                user.getOtpCode());
         return "Register successfully. Please verify your OTP.";
     }
 

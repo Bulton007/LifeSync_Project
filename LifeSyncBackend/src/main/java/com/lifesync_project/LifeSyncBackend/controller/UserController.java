@@ -1,7 +1,7 @@
 package com.lifesync_project.LifeSyncBackend.controller;
 
-import com.lifesync_project.LifeSyncBackend.dto.User.UserRequest;
-import com.lifesync_project.LifeSyncBackend.dto.User.UserResponse;
+import com.lifesync_project.LifeSyncBackend.dto.Users.UserRequest;
+import com.lifesync_project.LifeSyncBackend.dto.Users.UserResponse;
 import com.lifesync_project.LifeSyncBackend.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

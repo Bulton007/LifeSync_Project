@@ -1,7 +1,7 @@
 package com.lifesync_project.LifeSyncBackend.services;
 
-import com.lifesync_project.LifeSyncBackend.dto.Goal.GoalRequest;
-import com.lifesync_project.LifeSyncBackend.dto.Goal.GoalResponse;
+import com.lifesync_project.LifeSyncBackend.dto.Goall.GoalRequest;
+import com.lifesync_project.LifeSyncBackend.dto.Goall.GoalResponse;
 import com.lifesync_project.LifeSyncBackend.entity.Goals;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.GoalRepository;

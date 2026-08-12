@@ -1,7 +1,7 @@
 package com.lifesync_project.LifeSyncBackend.services;
 
-import com.lifesync_project.LifeSyncBackend.dto.User.UserRequest;
-import com.lifesync_project.LifeSyncBackend.dto.User.UserResponse;
+import com.lifesync_project.LifeSyncBackend.dto.Users.UserRequest;
+import com.lifesync_project.LifeSyncBackend.dto.Users.UserResponse;
 import com.lifesync_project.LifeSyncBackend.entity.Users;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.UserRepository;
