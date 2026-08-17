@@ -1,0 +1,59 @@
+name: life_sync_app
+description: "LifeSync - Your personal life management companion."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.1
+
+# ============================================================
+# DEPENDENCIES
+# ============================================================
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  google_fonts: ^8.2.1
+
+
+# ============================================================
+# DEVELOPMENT DEPENDENCIES
+# ============================================================
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+
+# ============================================================
+# FLUTTER
+# ============================================================
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+
+# ============================================================
+# APP ICON
+# ============================================================
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+
+  image_path: "assets/images/app_logo.png"
+
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/app_icon_foreground.png"
+
+  remove_alpha_ios: true
