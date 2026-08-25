@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:life_sync_app/features/goals/presentation/widgets/saving_goal_preview_card.dart';
 
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/app_spacing.dart';
@@ -6,8 +7,6 @@ import '../../../../../core/theme/app_text_styles.dart';
 import '../../../../../core/widgets/app_fab.dart';
 import '../../widgets/finance/finance_balance_card.dart';
 import '../../widgets/transaction/recent_transaction_item.dart';
-import '../../widgets/goal/saving_goal_preview_card.dart';
-
 class FinancePage extends StatelessWidget {
   const FinancePage({
     super.key,
