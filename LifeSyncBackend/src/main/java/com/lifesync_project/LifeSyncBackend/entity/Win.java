@@ -2,7 +2,6 @@ package com.lifesync_project.LifeSyncBackend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,6 +16,9 @@ public class Win {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // Nullable so the additive schema update preserves pre-integration rows.
+    private Long userId;
 
     private String title;
 

@@ -3,9 +3,12 @@ package com.lifesync_project.LifeSyncBackend.controller;
 import com.lifesync_project.LifeSyncBackend.dto.Users.UserRequest;
 import com.lifesync_project.LifeSyncBackend.dto.Users.UserResponse;
 import com.lifesync_project.LifeSyncBackend.services.UserService;
+import com.lifesync_project.LifeSyncBackend.services.ProfileImageStorageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
     private final UserService userService;
+    private final ProfileImageStorageService profileImageStorageService;
 
     /*
      * Get Profile
@@ -45,7 +49,7 @@ public class UserController {
     @PostMapping("/{id}/profile-image")
     public ResponseEntity<String> uploadProfileImage(
             @PathVariable Long id,
-            @RequestParam MultipartFile file){
+            @RequestParam("file") MultipartFile file){
 
         return ResponseEntity.ok(
                 userService.uploadProfileImage(id, file));
@@ -60,6 +64,19 @@ public class UserController {
 
         return ResponseEntity.ok(
                 userService.deleteProfileImage(id));
+    }
+
+    @GetMapping("/{id}/profile-image")
+    public ResponseEntity<Resource> getProfileImage(
+            @PathVariable Long id) {
+
+        UserResponse profile = userService.getProfile(id);
+        Resource image = profileImageStorageService.load(profile.getProfileImage());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(
+                        profileImageStorageService.contentType(profile.getProfileImage())))
+                .body(image);
     }
 
 }

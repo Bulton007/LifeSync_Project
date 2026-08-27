@@ -1,5 +1,6 @@
 package com.lifesync_project.LifeSyncBackend.dto.GoalSchedule;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ public class GoalScheduleResponse {
 
     private LocalDate scheduleDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal amount;
 
     private Boolean completed;

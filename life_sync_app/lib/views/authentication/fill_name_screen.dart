@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
+import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
 
 class FillNameScreen extends StatefulWidget {
   const FillNameScreen({super.key});
@@ -9,6 +13,32 @@ class FillNameScreen extends StatefulWidget {
 
 class _FillNameScreenState extends State<FillNameScreen> {
   final TextEditingController _nameController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final AuthFlowArguments _arguments;
+  late final AuthController _authController;
+
+  @override
+  void initState() {
+    super.initState();
+    _arguments = Get.arguments as AuthFlowArguments;
+    _authController = Get.find<AuthController>();
+    _authController.clearError();
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    final registered = await _authController.register(
+      fullName: _nameController.text,
+      email: _arguments.email,
+      password: _arguments.password!,
+    );
+    if (registered) {
+      await Get.toNamed<void>(
+        AppRoutes.verifyEmail,
+        arguments: _arguments,
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -23,9 +53,11 @@ class _FillNameScreenState extends State<FillNameScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
               const SizedBox(height: 40),
 
               // Illustration / Graphic Placeholder Container
@@ -103,9 +135,18 @@ class _FillNameScreenState extends State<FillNameScreen> {
               const SizedBox(height: 24),
 
               // Name Input Field
-              TextField(
+              TextFormField(
                 controller: _nameController,
                 style: const TextStyle(fontSize: 14, color: Colors.black87),
+                onFieldSubmitted: (_) => _submit(),
+                validator: (value) {
+                  final name = value?.trim() ?? '';
+                  if (name.isEmpty) return 'Full name is required.';
+                  if (name.length > 100) {
+                    return 'Full name must not exceed 100 characters.';
+                  }
+                  return null;
+                },
                 decoration: InputDecoration(
                   hintText: 'Your Name',
                   hintStyle: TextStyle(
@@ -135,15 +176,23 @@ class _FillNameScreenState extends State<FillNameScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
+              Obx(() {
+                final message = _authController.errorMessage.value;
+                if (message == null) return const SizedBox(height: 32);
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(
+                    message,
+                    style: const TextStyle(fontSize: 12, color: Colors.red),
+                  ),
+                );
+              }),
 
               // Next Action Button
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Handle next action here
-                  },
+                child: Obx(() => ElevatedButton(
+                  onPressed: _authController.isSubmitting.value ? null : _submit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2979FF),
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -152,17 +201,26 @@ class _FillNameScreenState extends State<FillNameScreen> {
                     ),
                     elevation: 2,
                   ),
-                  child: const Text(
-                    'Next',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                  child: _authController.isSubmitting.value
+                      ? const SizedBox.square(
+                          dimension: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Next',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                )),
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

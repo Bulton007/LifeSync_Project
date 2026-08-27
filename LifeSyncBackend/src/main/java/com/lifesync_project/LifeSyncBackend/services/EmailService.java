@@ -1,12 +1,15 @@
 package com.lifesync_project.LifeSyncBackend.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EmailService {
 
     private final JavaMailSender mailSender;
@@ -35,7 +38,15 @@ public class EmailService {
                 Please do not share this code with anyone.
                 """.formatted(otpCode));
 
-        mailSender.send(message);
+        try {
+            mailSender.send(message);
+        } catch (MailException exception) {
+            log.warn(
+                    "Failed to send OTP email to {}. OTP for local testing: {}",
+                    email,
+                    otpCode,
+                    exception);
+        }
     }
 
 }

@@ -26,11 +26,10 @@ public class WeeklyReviewController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WeeklyReviewResponse>> getAll(
-            @RequestParam(required = false) Long userId) {
+    public ResponseEntity<List<WeeklyReviewResponse>> getAll() {
 
         return ResponseEntity.ok(
-                reviewService.getReviews(userId));
+                reviewService.getReviews());
     }
 
     @GetMapping("/{id}")

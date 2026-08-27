@@ -12,5 +12,7 @@ public interface UserRewardRepository
 
     Optional<UserReward> findByUserId(Long userId);
 
+    Optional<UserReward> findByIdAndUserId(Long id, Long userId);
+
     boolean existsByUserId(Long userId);
 }

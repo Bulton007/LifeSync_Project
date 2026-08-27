@@ -17,11 +17,13 @@ import java.util.List;
 public class GoalMilestoneService {
 
     private final GoalMilestoneRepository repository;
+    private final GoalService goalService;
 
     public GoalMilestoneResponse createMilestone(
             Long goalId,
             GoalMilestoneRequest request) {
 
+        goalService.requireOwnedGoal(goalId);
         GoalMilestone milestone =
                 GoalMilestone.builder()
                         .title(request.getTitle())
@@ -37,11 +39,7 @@ public class GoalMilestoneService {
     public GoalMilestoneResponse completeMilestone(
             Long id) {
 
-        GoalMilestone milestone =
-                repository.findById(id)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Milestone not found"));
+        GoalMilestone milestone = requireOwnedMilestone(id);
 
         milestone.setCompleted(true);
 
@@ -51,21 +49,32 @@ public class GoalMilestoneService {
     public List<GoalMilestoneResponse> getMilestonesByGoal(
             Long goalId) {
 
+        goalService.requireOwnedGoal(goalId);
         return repository
-                .findByGoalId(goalId)
+                .findAllByGoalIdOrderByTargetDateAsc(goalId)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
     }
     public void deleteMilestone(Long id) {
 
-        GoalMilestone milestone =
-                repository.findById(id)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Milestone not found"));
+        GoalMilestone milestone = requireOwnedMilestone(id);
 
         repository.delete(milestone);
+    }
+
+    public GoalMilestoneResponse updateMilestone(Long id, GoalMilestoneRequest request) {
+        GoalMilestone milestone = requireOwnedMilestone(id);
+        milestone.setTitle(request.getTitle());
+        milestone.setTargetDate(request.getTargetDate());
+        return mapToResponse(repository.save(milestone));
+    }
+
+    private GoalMilestone requireOwnedMilestone(Long id) {
+        GoalMilestone milestone = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Milestone not found"));
+        goalService.requireOwnedGoal(milestone.getGoalId());
+        return milestone;
     }
     private GoalMilestoneResponse mapToResponse(
             GoalMilestone milestone) {

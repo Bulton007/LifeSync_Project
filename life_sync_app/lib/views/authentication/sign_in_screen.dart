@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -10,7 +13,31 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final AuthController _authController;
   bool _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _authController = Get.find<AuthController>();
+    _authController.clearError();
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    final signedIn = await _authController.login(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+    if (signedIn) await Get.offAllNamed<void>(AppRoutes.shell);
+  }
+
+  void _showUnavailable() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Social sign-in is not available yet.')),
+    );
+  }
 
   @override
   void dispose() {
@@ -26,9 +53,11 @@ class _SignInScreenState extends State<SignInScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
               const SizedBox(height: 20),
               // Header Title & Logo Row
               Row(
@@ -92,9 +121,18 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              TextField(
+              TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                validator: (value) {
+                  final email = value?.trim() ?? '';
+                  if (email.isEmpty) return 'Email is required.';
+                  if (!GetUtils.isEmail(email)) {
+                    return 'Enter a valid email address.';
+                  }
+                  return null;
+                },
                 decoration: InputDecoration(
                   hintText: 'Email',
                   hintStyle: TextStyle(
@@ -138,9 +176,13 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              TextField(
+              TextFormField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
+                onFieldSubmitted: (_) => _submit(),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Password is required.'
+                    : null,
                 decoration: InputDecoration(
                   hintText: 'Password',
                   hintStyle: TextStyle(
@@ -192,7 +234,7 @@ class _SignInScreenState extends State<SignInScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () => Get.toNamed<void>(AppRoutes.forgotPassword),
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                     minimumSize: const Size(50, 30),
@@ -210,10 +252,21 @@ class _SignInScreenState extends State<SignInScreen> {
               const SizedBox(height: 20),
 
               // Sign In Button
+              Obx(() {
+                final message = _authController.errorMessage.value;
+                if (message == null) return const SizedBox.shrink();
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(
+                    message,
+                    style: const TextStyle(fontSize: 12, color: Colors.red),
+                  ),
+                );
+              }),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
+                child: Obx(() => ElevatedButton(
+                  onPressed: _authController.isSubmitting.value ? null : _submit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2979FF),
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -222,15 +275,23 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     elevation: 2,
                   ),
-                  child: const Text(
-                    'Sign In',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                  child: _authController.isSubmitting.value
+                      ? const SizedBox.square(
+                          dimension: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Sign In',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                )),
               ),
               const SizedBox(height: 24),
 
@@ -262,21 +323,21 @@ class _SignInScreenState extends State<SignInScreen> {
                 icon: Icons.facebook,
                 iconColor: const Color(0xFF1877F2),
                 text: 'Continue with Facebook',
-                onPressed: () {},
+                onPressed: _showUnavailable,
               ),
               const SizedBox(height: 12),
               _buildSocialButton(
                 icon: Icons.g_mobiledata,
                 iconColor: Colors.red,
                 text: 'Continue with Google',
-                onPressed: () {},
+                onPressed: _showUnavailable,
               ),
               const SizedBox(height: 12),
               _buildSocialButton(
                 icon: Icons.apple,
                 iconColor: Colors.black,
                 text: 'Continue with Apple',
-                onPressed: () {},
+                onPressed: _showUnavailable,
               ),
               const SizedBox(height: 40),
 
@@ -289,7 +350,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () => Get.toNamed<void>(AppRoutes.signUp),
                     child: const Text(
                       'Sign up',
                       style: TextStyle(
@@ -301,7 +362,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ],
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

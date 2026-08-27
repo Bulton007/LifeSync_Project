@@ -26,11 +26,10 @@ public class MorningCheckingController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MorningCheckingResponse>> getAll(
-            @RequestParam(required = false) Long userId) {
+    public ResponseEntity<List<MorningCheckingResponse>> getAll() {
 
         return ResponseEntity.ok(
-                checkingService.getCheckings(userId));
+                checkingService.getCheckings());
     }
 
     @GetMapping("/{id}")

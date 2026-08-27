@@ -45,6 +45,13 @@ public class GoalMilestoneController {
                 goalMilestoneService.completeMilestone(id));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<GoalMilestoneResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody GoalMilestoneRequest request) {
+        return ResponseEntity.ok(goalMilestoneService.updateMilestone(id, request));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable Long id) {

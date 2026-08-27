@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
+import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -9,6 +13,30 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final AuthController _authController;
+
+  @override
+  void initState() {
+    super.initState();
+    _authController = Get.find<AuthController>();
+    _authController.clearError();
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    final email = _emailController.text.trim();
+    final sent = await _authController.forgotPassword(email);
+    if (sent) {
+      await Get.toNamed<void>(
+        AppRoutes.verifyEmail,
+        arguments: AuthFlowArguments(
+          email: email,
+          purpose: AuthFlowPurpose.passwordReset,
+        ),
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -23,9 +51,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
               // Top Back Button
               Container(
                 decoration: BoxDecoration(
@@ -73,9 +103,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              TextField(
+              TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
+                onFieldSubmitted: (_) => _submit(),
+                validator: (value) {
+                  final email = value?.trim() ?? '';
+                  if (email.isEmpty) return 'Email is required.';
+                  if (!GetUtils.isEmail(email)) {
+                    return 'Enter a valid email address.';
+                  }
+                  return null;
+                },
                 decoration: InputDecoration(
                   hintText: 'Email',
                   hintStyle: TextStyle(
@@ -110,15 +149,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
+              Obx(() {
+                final message = _authController.errorMessage.value;
+                if (message == null) return const SizedBox(height: 40);
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Text(
+                    message,
+                    style: const TextStyle(fontSize: 12, color: Colors.red),
+                  ),
+                );
+              }),
 
               // Continue Action Button
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Handle continue action here
-                  },
+                child: Obx(() => ElevatedButton(
+                  onPressed: _authController.isSubmitting.value ? null : _submit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2979FF),
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -127,17 +174,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                     elevation: 2,
                   ),
-                  child: const Text(
-                    'Continue',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                  child: _authController.isSubmitting.value
+                      ? const SizedBox.square(
+                          dimension: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Continue',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                )),
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

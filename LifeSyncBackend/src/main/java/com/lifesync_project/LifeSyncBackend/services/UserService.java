@@ -3,7 +3,8 @@ package com.lifesync_project.LifeSyncBackend.services;
 import com.lifesync_project.LifeSyncBackend.dto.Users.UserRequest;
 import com.lifesync_project.LifeSyncBackend.dto.Users.UserResponse;
 import com.lifesync_project.LifeSyncBackend.entity.Users;
-import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
+import com.lifesync_project.LifeSyncBackend.exception.BadRequestException;
+import com.lifesync_project.LifeSyncBackend.exception.DuplicateResourceException;
 import com.lifesync_project.LifeSyncBackend.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,15 +17,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AuthenticatedUserService authenticatedUserService;
+    private final ProfileImageStorageService profileImageStorageService;
 
     /*
      * Get Profile
      */
     public UserResponse getProfile(Long id) {
 
-        Users user = userRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+        Users user = authenticatedUserService.requireOwner(id);
 
         return mapToResponse(user);
     }
@@ -36,9 +37,18 @@ public class UserService {
             Long id,
             UserRequest request) {
 
-        Users user = userRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+        Users user = authenticatedUserService.requireOwner(id);
+
+        if (!user.getEmail().equalsIgnoreCase(request.getEmail())
+                && userRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateResourceException("Email already exists.");
+        }
+
+        if (request.getPhoneNumber() != null
+                && !request.getPhoneNumber().equals(user.getPhoneNumber())
+                && userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+            throw new DuplicateResourceException("Phone number already exists.");
+        }
 
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
@@ -55,16 +65,29 @@ public class UserService {
             Long id,
             MultipartFile file) {
 
-        Users user = userRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+        Users user = authenticatedUserService.requireOwner(id);
 
-        // TODO
-        // Save image to storage
+        if (file == null || file.isEmpty()) {
+            throw new BadRequestException("Profile image file is required.");
+        }
 
-        user.setProfileImage(file.getOriginalFilename());
+        if (file.getSize() > 5L * 1024L * 1024L) {
+            throw new BadRequestException("Profile image must not exceed 5 MB.");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new BadRequestException("Profile image must be an image file.");
+        }
+
+        String previousImage = user.getProfileImage();
+        String storedFileName = profileImageStorageService.store(file);
+
+        user.setProfileImage(storedFileName);
 
         userRepository.save(user);
+
+        profileImageStorageService.delete(previousImage);
 
         return "Profile image uploaded successfully.";
     }
@@ -74,13 +97,14 @@ public class UserService {
      */
     public String deleteProfileImage(Long id){
 
-        Users user = userRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+        Users user = authenticatedUserService.requireOwner(id);
 
+        String previousImage = user.getProfileImage();
         user.setProfileImage(null);
 
         userRepository.save(user);
+
+        profileImageStorageService.delete(previousImage);
 
         return "Profile image deleted successfully.";
     }

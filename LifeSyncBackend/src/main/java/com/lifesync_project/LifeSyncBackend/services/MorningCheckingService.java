@@ -3,6 +3,7 @@ package com.lifesync_project.LifeSyncBackend.services;
 import com.lifesync_project.LifeSyncBackend.dto.MorningChecking.MorningCheckingRequest;
 import com.lifesync_project.LifeSyncBackend.dto.MorningChecking.MorningCheckingResponse;
 import com.lifesync_project.LifeSyncBackend.entity.MorningChecking;
+import com.lifesync_project.LifeSyncBackend.entity.Users;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.MorningCheckingRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +19,14 @@ import java.util.List;
 public class MorningCheckingService {
 
     private final MorningCheckingRepository checkingRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
     public MorningCheckingResponse createChecking(MorningCheckingRequest request) {
 
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
         MorningChecking checking = MorningChecking.builder()
-                .userId(request.getUserId())
+                .userId(currentUser.getId())
                 .moodRating(request.getMoodRating())
                 .notes(request.getNotes())
                 .checkedInAt(LocalDateTime.now())
@@ -32,13 +36,11 @@ public class MorningCheckingService {
                 checkingRepository.save(checking));
     }
 
-    public List<MorningCheckingResponse> getCheckings(Long userId) {
+    public List<MorningCheckingResponse> getCheckings() {
 
-        List<MorningChecking> checkings = userId == null
-                ? checkingRepository.findAll()
-                : checkingRepository.findByUserId(userId);
+        Users currentUser = authenticatedUserService.requireCurrentUser();
 
-        return checkings.stream()
+        return checkingRepository.findAllByUserIdOrderByCheckedInAtDesc(currentUser.getId()).stream()
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -52,7 +54,6 @@ public class MorningCheckingService {
 
         MorningChecking checking = findChecking(id);
 
-        checking.setUserId(request.getUserId());
         checking.setMoodRating(request.getMoodRating());
         checking.setNotes(request.getNotes());
 
@@ -67,7 +68,9 @@ public class MorningCheckingService {
 
     private MorningChecking findChecking(Long id) {
 
-        return checkingRepository.findById(id)
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
+        return checkingRepository.findByIdAndUserId(id, currentUser.getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Morning checking not found"));

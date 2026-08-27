@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
+import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
 
 class SignUpCreatePasswordScreen extends StatefulWidget {
   const SignUpCreatePasswordScreen({super.key});
@@ -11,9 +15,44 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final AuthFlowArguments _arguments;
+  late final AuthController _authController;
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+
+  bool get _isReset => _arguments.purpose == AuthFlowPurpose.passwordReset;
+
+  @override
+  void initState() {
+    super.initState();
+    _arguments = Get.arguments as AuthFlowArguments;
+    _authController = Get.find<AuthController>();
+    _authController.clearError();
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (_isReset) {
+      final reset = await _authController.resetPassword(
+        email: _arguments.email,
+        otpCode: _arguments.otpCode!,
+        newPassword: _passwordController.text,
+      );
+      if (reset) {
+        await Get.offAllNamed<void>(AppRoutes.signIn);
+        Get.snackbar('Password reset', 'Sign in with your new password.');
+      }
+      return;
+    }
+
+    await Get.toNamed<void>(
+      AppRoutes.fillName,
+      arguments: _arguments.copyWith(password: _passwordController.text),
+    );
+  }
 
   @override
   void dispose() {
@@ -29,9 +68,11 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
               // Top Back Button
               Container(
                 decoration: BoxDecoration(
@@ -79,9 +120,20 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              TextField(
+              TextFormField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
+                textInputAction: TextInputAction.next,
+                validator: (value) {
+                  final password = value ?? '';
+                  if (password.length < 8) {
+                    return 'Password must contain at least 8 characters.';
+                  }
+                  if (password.length > 100) {
+                    return 'Password must not exceed 100 characters.';
+                  }
+                  return null;
+                },
                 decoration: InputDecoration(
                   hintText: 'Password',
                   hintStyle: TextStyle(
@@ -139,9 +191,13 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              TextField(
+              TextFormField(
                 controller: _confirmPasswordController,
                 obscureText: _obscureConfirmPassword,
+                onFieldSubmitted: (_) => _submit(),
+                validator: (value) => value != _passwordController.text
+                    ? 'Passwords do not match.'
+                    : null,
                 decoration: InputDecoration(
                   hintText: 'Password',
                   hintStyle: TextStyle(
@@ -187,15 +243,23 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
+              Obx(() {
+                final message = _authController.errorMessage.value;
+                if (message == null) return const SizedBox(height: 40);
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Text(
+                    message,
+                    style: const TextStyle(fontSize: 12, color: Colors.red),
+                  ),
+                );
+              }),
 
               // Create Account Button
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Handle account creation action here
-                  },
+                child: Obx(() => ElevatedButton(
+                  onPressed: _authController.isSubmitting.value ? null : _submit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2979FF),
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -204,17 +268,26 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                     ),
                     elevation: 2,
                   ),
-                  child: const Text(
-                    'Create Account',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                  child: _authController.isSubmitting.value
+                      ? const SizedBox.square(
+                          dimension: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          _isReset ? 'Reset Password' : 'Create Account',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                )),
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

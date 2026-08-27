@@ -2,6 +2,7 @@ package com.lifesync_project.LifeSyncBackend.dto.Task;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,5 +24,15 @@ public class TaskRequest {
     private LocalDate dueDate;
 
     @NotNull
+    @Pattern(
+            regexp = "^(LOW|NORMAL|HIGH|URGENT)$",
+            message = "Priority must be LOW, NORMAL, HIGH, or URGENT"
+    )
     private String priority;
+
+    @Pattern(
+            regexp = "^(PENDING|IN_PROGRESS|COMPLETED)$",
+            message = "Status must be PENDING, IN_PROGRESS, or COMPLETED"
+    )
+    private String status;
 }

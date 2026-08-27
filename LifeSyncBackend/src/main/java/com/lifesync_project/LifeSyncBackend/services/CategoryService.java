@@ -4,7 +4,12 @@ import com.lifesync_project.LifeSyncBackend.dto.Category.CategoryRequest;
 import com.lifesync_project.LifeSyncBackend.dto.Category.CategoryResponse;
 import com.lifesync_project.LifeSyncBackend.entity.Categories;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
+import com.lifesync_project.LifeSyncBackend.exception.DuplicateResourceException;
+import com.lifesync_project.LifeSyncBackend.exception.BadRequestException;
 import com.lifesync_project.LifeSyncBackend.repository.CategoryRepository;
+import com.lifesync_project.LifeSyncBackend.repository.BudgetRepository;
+import com.lifesync_project.LifeSyncBackend.repository.ExpenseRepository;
+import com.lifesync_project.LifeSyncBackend.repository.IncomeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +22,9 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final BudgetRepository budgetRepository;
+    private final ExpenseRepository expenseRepository;
+    private final IncomeRepository incomeRepository;
 
     /**
      * Create Category
@@ -24,7 +32,7 @@ public class CategoryService {
     public CategoryResponse createCategory(CategoryRequest request) {
 
         if (categoryRepository.existsByName(request.getName())) {
-            throw new RuntimeException("Category already exists.");
+            throw new DuplicateResourceException("Category already exists.");
         }
 
         Categories category = Categories.builder()
@@ -47,6 +55,12 @@ public class CategoryService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Category not found."));
 
+        categoryRepository.findByName(request.getName())
+                .filter(existing -> !existing.getId().equals(id))
+                .ifPresent(existing -> {
+                    throw new DuplicateResourceException("Category already exists.");
+                });
+
         category.setName(request.getName());
         category.setDescription(request.getDescription());
         category.setIcon(request.getIcon());
@@ -63,6 +77,12 @@ public class CategoryService {
         Categories category = categoryRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Category not found."));
+
+        if (budgetRepository.existsByCategoryId(id)
+                || expenseRepository.existsByCategoryId(id)
+                || incomeRepository.existsByCategoryId(id)) {
+            throw new BadRequestException("Category is in use and cannot be deleted.");
+        }
 
         categoryRepository.delete(category);
     }

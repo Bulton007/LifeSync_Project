@@ -17,9 +17,17 @@ public class Budgets {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "category_id")
+    private Long categoryId;
+
     private String category;
 
+    @Column(precision = 12, scale = 2)
     private BigDecimal limitAmount;
 
+    @Column(precision = 12, scale = 2)
     private BigDecimal spentAmount;
 }

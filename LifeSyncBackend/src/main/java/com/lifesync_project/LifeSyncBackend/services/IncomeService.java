@@ -5,6 +5,8 @@ import com.lifesync_project.LifeSyncBackend.dto.Income.IncomeResponse;
 import com.lifesync_project.LifeSyncBackend.entity.Income;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.IncomeRepository;
+import com.lifesync_project.LifeSyncBackend.repository.CategoryRepository;
+import com.lifesync_project.LifeSyncBackend.exception.BadRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,14 +20,18 @@ import java.util.List;
 public class IncomeService {
 
     private final IncomeRepository incomeRepository;
+    private final CategoryRepository categoryRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
     /**
      * Create Income
      */
     public IncomeResponse createIncome(IncomeRequest request) {
 
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
+        requireCategory(request.getCategoryId());
         Income income = Income.builder()
-                .userId(request.getUserId())
+                .userId(userId)
                 .categoryId(request.getCategoryId())
                 .title(request.getTitle())
                 .description(request.getDescription())
@@ -42,9 +48,8 @@ public class IncomeService {
     public IncomeResponse updateIncome(Long id,
                                        IncomeRequest request) {
 
-        Income income = incomeRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Income not found"));
+        Income income = requireOwned(id);
+        requireCategory(request.getCategoryId());
 
         income.setCategoryId(request.getCategoryId());
         income.setTitle(request.getTitle());
@@ -60,9 +65,7 @@ public class IncomeService {
      */
     public void deleteIncome(Long id) {
 
-        Income income = incomeRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Income not found"));
+        Income income = requireOwned(id);
 
         incomeRepository.delete(income);
     }
@@ -72,11 +75,7 @@ public class IncomeService {
      */
     public IncomeResponse getIncomeById(Long id) {
 
-        Income income = incomeRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Income not found"));
-
-        return mapToResponse(income);
+        return mapToResponse(requireOwned(id));
     }
 
     /**
@@ -84,7 +83,8 @@ public class IncomeService {
      */
     public List<IncomeResponse> getIncomes() {
 
-        return incomeRepository.findAll()
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
+        return incomeRepository.findAllByUserIdOrderByIncomeDateDesc(userId)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -97,8 +97,12 @@ public class IncomeService {
             LocalDate startDate,
             LocalDate endDate) {
 
+        if (endDate.isBefore(startDate)) {
+            throw new BadRequestException("End date cannot be before start date.");
+        }
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
         return incomeRepository
-                .findByIncomeDateBetween(startDate, endDate)
+                .findByUserIdAndIncomeDateBetweenOrderByIncomeDateDesc(userId, startDate, endDate)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -120,6 +124,18 @@ public class IncomeService {
                 .createdAt(income.getCreatedAt())
                 .updatedAt(income.getUpdatedAt())
                 .build();
+    }
+
+    private Income requireOwned(Long id) {
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
+        return incomeRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Income not found"));
+    }
+
+    private void requireCategory(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Category not found.");
+        }
     }
 
 }

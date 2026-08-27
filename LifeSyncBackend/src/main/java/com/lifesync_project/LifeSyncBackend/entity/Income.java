@@ -36,7 +36,7 @@ public class Income {
     private String description;
 
     @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amount;
 
     @Column(nullable = false)

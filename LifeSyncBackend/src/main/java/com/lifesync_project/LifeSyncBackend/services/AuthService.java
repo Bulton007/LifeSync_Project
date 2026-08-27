@@ -3,7 +3,10 @@ package com.lifesync_project.LifeSyncBackend.services;
 import com.lifesync_project.LifeSyncBackend.dto.Auth.*;
 import com.lifesync_project.LifeSyncBackend.dto.Auth.RegisterRequest;
 import com.lifesync_project.LifeSyncBackend.entity.Users;
+import com.lifesync_project.LifeSyncBackend.exception.BadRequestException;
+import com.lifesync_project.LifeSyncBackend.exception.DuplicateResourceException;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
+import com.lifesync_project.LifeSyncBackend.exception.UnauthorizedException;
 import com.lifesync_project.LifeSyncBackend.repository.UserRepository;
 import com.lifesync_project.LifeSyncBackend.security.JwtService;
 import com.lifesync_project.LifeSyncBackend.utils.OtpGenerator;
@@ -13,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -21,10 +23,10 @@ import java.util.Random;
 public class AuthService {
 
     private final EmailService emailService;
-    private final TelegramService telegramService;
-
     private final OtpGenerator otpGenerator;
     private final UserRepository userRepository;
+
+    private final AuthenticatedUserService authenticatedUserService;
 
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -35,7 +37,12 @@ public class AuthService {
     public String register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists.");
+            throw new DuplicateResourceException("Email already exists.");
+        }
+
+        if (request.getPhoneNumber() != null
+                && userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+            throw new DuplicateResourceException("Phone number already exists.");
         }
 
         Users user = Users.builder()
@@ -51,14 +58,8 @@ public class AuthService {
         userRepository.save(user);
 
 
-        // Send OTP Email
-        // emailService.sendOtpEmail(
-        //       user.getEmail(),
-        //       user.getOtpCode());
-
-        // Send OTP via Telegram (if applicable)
-        telegramService.sendOtpMessage(
-                user.getPhoneNumber(),
+        emailService.sendOtpEmail(
+                user.getEmail(),
                 user.getOtpCode());
         return "Register successfully. Please verify your OTP.";
     }
@@ -76,11 +77,11 @@ public class AuthService {
                 request.getPassword(),
                 user.getPassword())) {
 
-            throw new RuntimeException("Incorrect password.");
+            throw new UnauthorizedException("Incorrect email or password.");
         }
 
         if (!user.getVerified()) {
-            throw new RuntimeException("Account is not verified.");
+            throw new UnauthorizedException("Account is not verified.");
         }
 
         return LoginResponse.builder()
@@ -101,12 +102,12 @@ public class AuthService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
 
-        if (!user.getOtpCode().equals(request.getOtpCode())) {
-            throw new RuntimeException("Invalid OTP.");
+        if (user.getOtpCode() == null || !user.getOtpCode().equals(request.getOtpCode())) {
+            throw new BadRequestException("Invalid OTP.");
         }
 
-        if (user.getOtpExpiredAt().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("OTP expired.");
+        if (user.getOtpExpiredAt() == null || user.getOtpExpiredAt().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("OTP expired.");
         }
 
         user.setVerified(true);
@@ -127,7 +128,11 @@ public class AuthService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
 
-        user.setOtpCode(generateOtp());
+        if (Boolean.TRUE.equals(user.getVerified())) {
+            throw new BadRequestException("Account is already verified.");
+        }
+
+        user.setOtpCode(otpGenerator.generateOtp());
         user.setOtpExpiredAt(
                 LocalDateTime.now().plusMinutes(5));
 
@@ -150,7 +155,7 @@ public class AuthService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
 
-        user.setOtpCode(generateOtp());
+        user.setOtpCode(otpGenerator.generateOtp());
 
         user.setOtpExpiredAt(
                 LocalDateTime.now().plusMinutes(5));
@@ -176,8 +181,12 @@ public class AuthService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
 
-        if (!user.getOtpCode().equals(request.getOtpCode())) {
-            throw new RuntimeException("OTP invalid.");
+        if (user.getOtpCode() == null || !user.getOtpCode().equals(request.getOtpCode())) {
+            throw new BadRequestException("OTP invalid.");
+        }
+
+        if (user.getOtpExpiredAt() == null || user.getOtpExpiredAt().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("OTP expired.");
         }
 
         user.setPassword(
@@ -199,15 +208,13 @@ public class AuthService {
             Long id,
             ChangePasswordRequest request) {
 
-        Users user = userRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+        Users user = authenticatedUserService.requireOwner(id);
 
         if (!passwordEncoder.matches(
                 request.getCurrentPassword(),
                 user.getPassword())) {
 
-            throw new RuntimeException("Current password incorrect.");
+            throw new BadRequestException("Current password incorrect.");
         }
 
         user.setPassword(
@@ -225,15 +232,6 @@ public class AuthService {
     public String logout() {
 
         return "Logout successful.";
-    }
-
-    /*
-     * Generate 6-digit OTP
-     */
-    private String generateOtp() {
-
-        return String.valueOf(
-                new Random().nextInt(900000) + 100000);
     }
 
 }

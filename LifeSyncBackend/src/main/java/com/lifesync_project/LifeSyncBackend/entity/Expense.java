@@ -28,7 +28,7 @@ public class Expense {
     @Column(nullable = false)
     private Long categoryId;
 
-    @NotBlank(message = "Income title is required")
+    @NotBlank(message = "Expense title is required")
     @Column(nullable = false)
     private String title;
 
@@ -36,7 +36,7 @@ public class Expense {
     private String description;
 
     @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amount;
 
     @Column(nullable = false)

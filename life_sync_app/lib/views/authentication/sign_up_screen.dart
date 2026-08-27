@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -9,6 +12,24 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void _continue() {
+    if (!_formKey.currentState!.validate()) return;
+    Get.toNamed<void>(
+      AppRoutes.createPassword,
+      arguments: AuthFlowArguments(
+        email: _emailController.text.trim(),
+        purpose: AuthFlowPurpose.registration,
+      ),
+    );
+  }
+
+  void _showUnavailable() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Social sign-up is not available yet.')),
+    );
+  }
 
   @override
   void dispose() {
@@ -38,10 +59,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ],
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                 // Top Close Button
                 Align(
                   alignment: Alignment.topRight,
@@ -95,9 +118,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                TextField(
+                TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  onFieldSubmitted: (_) => _continue(),
+                  validator: (value) {
+                    final email = value?.trim() ?? '';
+                    if (email.isEmpty) return 'Email is required.';
+                    if (!GetUtils.isEmail(email)) {
+                      return 'Enter a valid email address.';
+                    }
+                    return null;
+                  },
                   decoration: InputDecoration(
                     hintText: 'example@gmail.com',
                     hintStyle: TextStyle(
@@ -135,7 +167,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _continue,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2979FF),
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -184,21 +216,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   icon: Icons.facebook,
                   iconColor: const Color(0xFF1877F2),
                   text: 'Continue with Facebook',
-                  onPressed: () {},
+                  onPressed: _showUnavailable,
                 ),
                 const SizedBox(height: 12),
                 _buildSocialButton(
                   icon: Icons.g_mobiledata,
                   iconColor: Colors.red,
                   text: 'Continue with Google',
-                  onPressed: () {},
+                  onPressed: _showUnavailable,
                 ),
                 const SizedBox(height: 12),
                 _buildSocialButton(
                   icon: Icons.apple,
                   iconColor: Colors.black,
                   text: 'Continue with Apple',
-                  onPressed: () {},
+                  onPressed: _showUnavailable,
                 ),
                 const SizedBox(height: 28),
 
@@ -214,7 +246,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () => Get.offNamed<void>(AppRoutes.signIn),
                       child: const Text(
                         'Sign in',
                         style: TextStyle(
@@ -226,7 +258,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ],
                 ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

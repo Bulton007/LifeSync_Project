@@ -3,6 +3,7 @@ package com.lifesync_project.LifeSyncBackend.services;
 import com.lifesync_project.LifeSyncBackend.dto.Win.WinRequest;
 import com.lifesync_project.LifeSyncBackend.dto.Win.WinResponse;
 import com.lifesync_project.LifeSyncBackend.entity.Win;
+import com.lifesync_project.LifeSyncBackend.entity.Users;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.WinRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,16 +16,17 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-
 public class WinService {
 
     private final WinRepository repository;
+    private final AuthenticatedUserService authenticatedUserService;
 
-    public WinResponse createWin(
-            WinRequest
-                    request) {
+    public WinResponse createWin(WinRequest request) {
+
+        Users currentUser = authenticatedUserService.requireCurrentUser();
 
         Win win = Win.builder()
+                .userId(currentUser.getId())
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .createdAt(LocalDateTime.now())
@@ -36,7 +38,9 @@ public class WinService {
 
     public List<WinResponse> getWins() {
 
-        return repository.findAll()
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
+        return repository.findAllByUserIdOrderByCreatedAtDesc(currentUser.getId())
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -68,7 +72,9 @@ public class WinService {
 
     private Win findWin(Long id) {
 
-        return repository.findById(id)
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
+        return repository.findByIdAndUserId(id, currentUser.getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Win not found"));
@@ -78,6 +84,7 @@ public class WinService {
 
         return WinResponse.builder()
                 .id(win.getId())
+                .userId(win.getUserId())
                 .title(win.getTitle())
                 .description(win.getDescription())
                 .createdAt(win.getCreatedAt())

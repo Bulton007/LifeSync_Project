@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:life_sync_app/core/routes/app_routes.dart';
 
 class CreatedSuccessScreen extends StatelessWidget {
   const CreatedSuccessScreen({super.key});
@@ -96,9 +98,7 @@ class CreatedSuccessScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Handle get started action here
-                  },
+                  onPressed: () => Get.offAllNamed<void>(AppRoutes.signIn),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2979FF),
                     padding: const EdgeInsets.symmetric(vertical: 16),

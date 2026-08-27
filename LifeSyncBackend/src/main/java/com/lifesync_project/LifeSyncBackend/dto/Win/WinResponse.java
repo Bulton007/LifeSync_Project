@@ -13,6 +13,8 @@ public class WinResponse {
 
     private Long id;
 
+    private Long userId;
+
     private String title;
 
     private String description;

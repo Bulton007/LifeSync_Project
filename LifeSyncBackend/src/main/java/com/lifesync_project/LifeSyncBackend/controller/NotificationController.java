@@ -5,6 +5,7 @@ import com.lifesync_project.LifeSyncBackend.dto.Notification.NotificationRespons
 import com.lifesync_project.LifeSyncBackend.services.NotificationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,17 +45,20 @@ public class NotificationController {
     }
 
     @PatchMapping("/read-all")
-    public void markAllAsRead(
-            @RequestParam Long userId) {
+    public ResponseEntity<Void> markAllAsRead() {
 
-        notificationService.markAllAsRead(userId);
+        notificationService.markAllAsRead();
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public void deleteNotification(
+    public ResponseEntity<Void> deleteNotification(
             @PathVariable Long id) {
 
         notificationService.deleteNotification(id);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

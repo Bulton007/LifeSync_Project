@@ -3,8 +3,10 @@ package com.lifesync_project.LifeSyncBackend.services;
 import com.lifesync_project.LifeSyncBackend.dto.Task.TaskRequest;
 import com.lifesync_project.LifeSyncBackend.dto.Task.TaskResponse;
 import com.lifesync_project.LifeSyncBackend.entity.Tasks;
+import com.lifesync_project.LifeSyncBackend.entity.Users;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.TaskRepository;
+import com.lifesync_project.LifeSyncBackend.repository.SubTaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,16 +20,21 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final SubTaskRepository subTaskRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
     public TaskResponse createTask(TaskRequest request) {
+
+        Users currentUser = authenticatedUserService.requireCurrentUser();
 
         Tasks task = Tasks.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .priority(request.getPriority())
-                .status("PENDING")
+                .status(request.getStatus() == null ? "PENDING" : request.getStatus())
                 .dueDate(request.getDueDate())
                 .createdAt(LocalDateTime.now())
+                .user(currentUser)
                 .build();
 
         return mapToResponse(
@@ -36,7 +43,9 @@ public class TaskService {
 
     public List<TaskResponse> getTasks() {
 
-        return taskRepository.findAll()
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
+        return taskRepository.findByUserIdOrderByDueDateAscCreatedAtAsc(currentUser.getId())
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -44,10 +53,7 @@ public class TaskService {
 
     public TaskResponse getTaskById(Long id) {
 
-        Tasks task = taskRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Task not found"));
+        Tasks task = findOwnedTask(id);
 
         return mapToResponse(task);
     }
@@ -56,15 +62,15 @@ public class TaskService {
             Long id,
             TaskRequest request) {
 
-        Tasks task = taskRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Task not found"));
+        Tasks task = findOwnedTask(id);
 
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setPriority(request.getPriority());
         task.setDueDate(request.getDueDate());
+        if (request.getStatus() != null) {
+            task.setStatus(request.getStatus());
+        }
 
         return mapToResponse(
                 taskRepository.save(task));
@@ -72,20 +78,15 @@ public class TaskService {
 
     public void deleteTask(Long id) {
 
-        Tasks task = taskRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Task not found"));
+        Tasks task = findOwnedTask(id);
 
+        subTaskRepository.deleteByTaskId(task.getId());
         taskRepository.delete(task);
     }
 
     public TaskResponse completeTask(Long id) {
 
-        Tasks task = taskRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Task not found"));
+        Tasks task = findOwnedTask(id);
 
         task.setStatus("COMPLETED");
 
@@ -103,6 +104,14 @@ public class TaskService {
                 .priority(task.getPriority())
                 .status(task.getStatus())
                 .dueDate(task.getDueDate())
+                .createdAt(task.getCreatedAt())
                 .build();
+    }
+
+    private Tasks findOwnedTask(Long id) {
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
+        return taskRepository.findByIdAndUserId(id, currentUser.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
     }
 }

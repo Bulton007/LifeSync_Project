@@ -17,6 +17,7 @@ public class GoalScheduleRequest {
     private LocalDate scheduleDate;
 
     @DecimalMin(value = "0.01")
+    @NotNull
     private BigDecimal amount;
 
 }

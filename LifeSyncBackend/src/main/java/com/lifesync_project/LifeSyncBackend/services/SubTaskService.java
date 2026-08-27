@@ -4,6 +4,7 @@ import com.lifesync_project.LifeSyncBackend.dto.SubTask.SubTaskRequest;
 import com.lifesync_project.LifeSyncBackend.dto.SubTask.SubTaskResponse;
 import com.lifesync_project.LifeSyncBackend.entity.SubTasks;
 import com.lifesync_project.LifeSyncBackend.entity.Tasks;
+import com.lifesync_project.LifeSyncBackend.entity.Users;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.SubTaskRepository;
 import com.lifesync_project.LifeSyncBackend.repository.TaskRepository;
@@ -20,12 +21,15 @@ public class SubTaskService {
 
     private final SubTaskRepository subTaskRepository;
     private final TaskRepository taskRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
     public SubTaskResponse createSubTask(
             Long taskId,
             SubTaskRequest request) {
 
-        Tasks task = taskRepository.findById(taskId)
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
+        Tasks task = taskRepository.findByIdAndUserId(taskId, currentUser.getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Task not found"));
@@ -42,8 +46,14 @@ public class SubTaskService {
 
     public List<SubTaskResponse> getByTask(Long taskId) {
 
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
+        if (taskRepository.findByIdAndUserId(taskId, currentUser.getId()).isEmpty()) {
+            throw new ResourceNotFoundException("Task not found");
+        }
+
         return subTaskRepository
-                .findByTaskId(taskId)
+                .findByTaskIdAndTaskUserId(taskId, currentUser.getId())
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -81,7 +91,9 @@ public class SubTaskService {
 
     private SubTasks findSubTask(Long id) {
 
-        return subTaskRepository.findById(id)
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
+        return subTaskRepository.findByIdAndTaskUserId(id, currentUser.getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "SubTask not found"));

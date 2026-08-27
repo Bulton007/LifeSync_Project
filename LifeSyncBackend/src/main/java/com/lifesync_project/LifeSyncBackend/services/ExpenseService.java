@@ -5,6 +5,8 @@ import com.lifesync_project.LifeSyncBackend.dto.Expense.ExpenseResponse;
 import com.lifesync_project.LifeSyncBackend.entity.Expense;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.ExpenseRepository;
+import com.lifesync_project.LifeSyncBackend.repository.CategoryRepository;
+import com.lifesync_project.LifeSyncBackend.exception.BadRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,15 @@ import java.util.List;
 public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
+    private final CategoryRepository categoryRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
     public ExpenseResponse createExpense(ExpenseRequest request) {
 
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
+        requireCategory(request.getCategoryId());
         Expense expense = Expense.builder()
-                .userId(request.getUserId())
+                .userId(userId)
                 .categoryId(request.getCategoryId())
                 .title(request.getTitle())
                 .description(request.getDescription())
@@ -37,9 +43,8 @@ public class ExpenseService {
             Long id,
             ExpenseRequest request) {
 
-        Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Expense not found"));
+        Expense expense = requireOwned(id);
+        requireCategory(request.getCategoryId());
 
         expense.setCategoryId(request.getCategoryId());
         expense.setTitle(request.getTitle());
@@ -52,25 +57,20 @@ public class ExpenseService {
 
     public void deleteExpense(Long id) {
 
-        Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Expense not found"));
+        Expense expense = requireOwned(id);
 
         expenseRepository.delete(expense);
     }
 
     public ExpenseResponse getExpenseById(Long id) {
 
-        Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Expense not found"));
-
-        return mapToResponse(expense);
+        return mapToResponse(requireOwned(id));
     }
 
     public List<ExpenseResponse> getExpenses() {
 
-        return expenseRepository.findAll()
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
+        return expenseRepository.findAllByUserIdOrderByExpenseDateDesc(userId)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -80,8 +80,12 @@ public class ExpenseService {
             LocalDate startDate,
             LocalDate endDate) {
 
+        if (endDate.isBefore(startDate)) {
+            throw new BadRequestException("End date cannot be before start date.");
+        }
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
         return expenseRepository
-                .findByExpenseDateBetween(startDate, endDate)
+                .findByUserIdAndExpenseDateBetweenOrderByExpenseDateDesc(userId, startDate, endDate)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -100,6 +104,18 @@ public class ExpenseService {
                 .createdAt(expense.getCreatedAt())
                 .updatedAt(expense.getUpdatedAt())
                 .build();
+    }
+
+    private Expense requireOwned(Long id) {
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
+        return expenseRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found"));
+    }
+
+    private void requireCategory(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Category not found.");
+        }
     }
 
 }

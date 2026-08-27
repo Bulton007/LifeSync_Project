@@ -5,6 +5,7 @@ import com.lifesync_project.LifeSyncBackend.dto.Habit.HabitResponse;
 import com.lifesync_project.LifeSyncBackend.entity.Habits;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.HabitRepository;
+import com.lifesync_project.LifeSyncBackend.repository.HabitLogRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,14 +18,19 @@ import java.util.List;
 public class HabitService {
 
     private final HabitRepository habitRepository;
+    private final HabitLogRepository habitLogRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
     /**
      * Create Habit
      */
     public HabitResponse createHabit(HabitRequest request) {
 
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
+        validateDates(request);
+
         Habits habit = Habits.builder()
-                .userId(request.getUserId())
+                .userId(userId)
                 .name(request.getName())
                 .description(request.getDescription())
                 .frequency(request.getFrequency())
@@ -42,9 +48,8 @@ public class HabitService {
      */
     public HabitResponse updateHabit(Long id, HabitRequest request) {
 
-        Habits habit = habitRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Habit not found"));
+        Habits habit = requireOwnedHabit(id);
+        validateDates(request);
 
         habit.setName(request.getName());
         habit.setDescription(request.getDescription());
@@ -60,10 +65,9 @@ public class HabitService {
      */
     public void deleteHabit(Long id) {
 
-        Habits habit = habitRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Habit not found"));
+        Habits habit = requireOwnedHabit(id);
 
+        habitLogRepository.deleteByHabitIdAndUserId(id, habit.getUserId());
         habitRepository.delete(habit);
     }
 
@@ -72,11 +76,7 @@ public class HabitService {
      */
     public HabitResponse getHabitById(Long id) {
 
-        Habits habit = habitRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Habit not found"));
-
-        return mapToResponse(habit);
+        return mapToResponse(requireOwnedHabit(id));
     }
 
     /**
@@ -84,7 +84,8 @@ public class HabitService {
      */
     public List<HabitResponse> getHabits() {
 
-        return habitRepository.findAll()
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
+        return habitRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -95,9 +96,7 @@ public class HabitService {
      */
     public HabitResponse pauseHabit(Long id) {
 
-        Habits habit = habitRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Habit not found"));
+        Habits habit = requireOwnedHabit(id);
 
         habit.setActive(false);
 
@@ -109,9 +108,7 @@ public class HabitService {
      */
     public HabitResponse resumeHabit(Long id) {
 
-        Habits habit = habitRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Habit not found"));
+        Habits habit = requireOwnedHabit(id);
 
         habit.setActive(true);
 
@@ -136,5 +133,19 @@ public class HabitService {
                 .createdAt(habit.getCreatedAt())
                 .updatedAt(habit.getUpdatedAt())
                 .build();
+    }
+
+    private Habits requireOwnedHabit(Long id) {
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
+        return habitRepository.findByHabitIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Habit not found"));
+    }
+
+    private void validateDates(HabitRequest request) {
+        if (request.getStartDate() != null && request.getEndDate() != null
+                && request.getEndDate().isBefore(request.getStartDate())) {
+            throw new com.lifesync_project.LifeSyncBackend.exception.BadRequestException(
+                    "Habit end date cannot be before its start date.");
+        }
     }
 }

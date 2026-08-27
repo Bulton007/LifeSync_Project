@@ -1,15 +1,18 @@
 package com.lifesync_project.LifeSyncBackend.services;
 
-import com.lifesync_project.LifeSyncBackend.dto.Goall.GoalRequest;
-import com.lifesync_project.LifeSyncBackend.dto.Goall.GoalResponse;
+import com.lifesync_project.LifeSyncBackend.dto.Goal.GoalRequest;
+import com.lifesync_project.LifeSyncBackend.dto.Goal.GoalResponse;
 import com.lifesync_project.LifeSyncBackend.entity.Goals;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.GoalRepository;
+import com.lifesync_project.LifeSyncBackend.repository.GoalMilestoneRepository;
+import com.lifesync_project.LifeSyncBackend.repository.GoalScheduleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -17,15 +20,19 @@ import java.util.List;
 public class GoalService {
 
     private final GoalRepository goalRepository;
+    private final GoalMilestoneRepository goalMilestoneRepository;
+    private final GoalScheduleRepository goalScheduleRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
     public GoalResponse createGoal(GoalRequest request) {
 
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
         Goals goal = Goals.builder()
-                .userId(request.getUserId())
+                .userId(userId)
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .targetAmount(request.getTargetAmount())
-                .currentAmount(request.getCurrentAmount())
+                .currentAmount(request.getCurrentAmount() == null ? BigDecimal.ZERO : request.getCurrentAmount())
                 .deadline(request.getDeadline())
                 .completed(false)
                 .archived(false)
@@ -36,14 +43,12 @@ public class GoalService {
 
     public GoalResponse updateGoal(Long id, GoalRequest request) {
 
-        Goals goal = goalRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Goal not found"));
+        Goals goal = requireOwnedGoal(id);
 
         goal.setTitle(request.getTitle());
         goal.setDescription(request.getDescription());
         goal.setTargetAmount(request.getTargetAmount());
-        goal.setCurrentAmount(request.getCurrentAmount());
+        goal.setCurrentAmount(request.getCurrentAmount() == null ? goal.getCurrentAmount() : request.getCurrentAmount());
         goal.setDeadline(request.getDeadline());
 
         return mapToResponse(goalRepository.save(goal));
@@ -51,25 +56,22 @@ public class GoalService {
 
     public void deleteGoal(Long id) {
 
-        Goals goal = goalRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Goal not found"));
+        Goals goal = requireOwnedGoal(id);
 
+        goalMilestoneRepository.deleteByGoalId(id);
+        goalScheduleRepository.deleteByGoalId(id);
         goalRepository.delete(goal);
     }
 
     public GoalResponse getGoalById(Long id) {
 
-        Goals goal = goalRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Goal not found"));
-
-        return mapToResponse(goal);
+        return mapToResponse(requireOwnedGoal(id));
     }
 
     public List<GoalResponse> getGoals() {
 
-        return goalRepository.findAll()
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
+        return goalRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -77,9 +79,7 @@ public class GoalService {
 
     public GoalResponse completeGoal(Long id) {
 
-        Goals goal = goalRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Goal not found"));
+        Goals goal = requireOwnedGoal(id);
 
         goal.setCompleted(true);
 
@@ -88,9 +88,7 @@ public class GoalService {
 
     public GoalResponse archiveGoal(Long id) {
 
-        Goals goal = goalRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Goal not found"));
+        Goals goal = requireOwnedGoal(id);
 
         goal.setArchived(true);
 
@@ -112,6 +110,12 @@ public class GoalService {
                 .createdAt(goal.getCreatedAt())
                 .updatedAt(goal.getUpdatedAt())
                 .build();
+    }
+
+    public Goals requireOwnedGoal(Long id) {
+        Long userId = authenticatedUserService.requireCurrentUser().getId();
+        return goalRepository.findByGoalIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Goal not found"));
     }
 
 }

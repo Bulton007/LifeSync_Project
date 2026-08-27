@@ -4,4 +4,8 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Spring Boot uses HTTP during local development. Release builds do not
+         inherit this override and must use a configured HTTPS API URL. -->
+    <application android:usesCleartextTraffic="true" />
 </manifest>

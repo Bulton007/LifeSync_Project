@@ -4,6 +4,7 @@ import com.lifesync_project.LifeSyncBackend.dto.HabitLog.HabitLogRequest;
 import com.lifesync_project.LifeSyncBackend.dto.HabitLog.HabitLogResponse;
 import com.lifesync_project.LifeSyncBackend.services.HabitLogService;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class HabitLogController {
 
     @PostMapping
     public HabitLogResponse createHabitLog(
-            @RequestBody HabitLogRequest request) {
+            @Valid @RequestBody HabitLogRequest request) {
 
         return habitLogService.createHabitLog(request);
     }
@@ -25,9 +26,9 @@ public class HabitLogController {
     @PostMapping("/complete")
     public HabitLogResponse completeHabitToday(
             @RequestParam Long habitId,
-            @RequestParam Long userId) {
+            @RequestParam(required = false) Long userId) {
 
-        return habitLogService.completeHabitToday(habitId, userId);
+        return habitLogService.completeHabitToday(habitId);
     }
 
     @GetMapping("/{id}")

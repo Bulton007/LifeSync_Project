@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
+import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
 
 class SignUpVerifyEmailScreen extends StatefulWidget {
   const SignUpVerifyEmailScreen({super.key});
@@ -10,13 +14,23 @@ class SignUpVerifyEmailScreen extends StatefulWidget {
 
 class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
   final List<TextEditingController> _controllers = List.generate(
-    4,
+    6,
     (_) => TextEditingController(),
   );
-  final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  late final AuthFlowArguments _arguments;
+  late final AuthController _authController;
 
   bool _isComplete = false;
   bool _hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _arguments = Get.arguments as AuthFlowArguments;
+    _authController = Get.find<AuthController>();
+    _authController.clearError();
+  }
 
   @override
   void dispose() {
@@ -37,19 +51,43 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
     });
   }
 
-  void _verifyOtp() {
-    String otp = _controllers.map((c) => c.text).join();
-    // Example validation: Let's assume '8270' is correct, anything else triggers the error state shown in your design
-    if (otp != '8270') {
-      setState(() {
-        _hasError = true;
-      });
-    } else {
-      setState(() {
-        _hasError = false;
-      });
-      // Handle successful verification here
+  Future<void> _verifyOtp() async {
+    final otp = _controllers.map((c) => c.text).join();
+
+    if (_arguments.purpose == AuthFlowPurpose.passwordReset) {
+      await Get.toNamed<void>(
+        AppRoutes.createPassword,
+        arguments: _arguments.copyWith(otpCode: otp),
+      );
+      return;
     }
+
+    final verified = await _authController.verifyOtp(
+      email: _arguments.email,
+      otpCode: otp,
+    );
+    if (!mounted) return;
+    setState(() => _hasError = !verified);
+    if (verified) {
+      await Get.offAllNamed<void>(AppRoutes.createdSuccess);
+    }
+  }
+
+  Future<void> _resendOtp() async {
+    final sent = await _authController.resendOtp(_arguments.email);
+    if (sent && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('A new verification code was sent.')),
+      );
+    }
+  }
+
+  String get _maskedEmail {
+    final parts = _arguments.email.split('@');
+    if (parts.length != 2) return _arguments.email;
+    final local = parts.first;
+    final visible = local.length <= 2 ? local.substring(0, 1) : local.substring(0, 2);
+    return '$visible***@${parts.last}';
   }
 
   @override
@@ -96,7 +134,7 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
 
               // Instructions Subtitle
               Text(
-                'We have sent 4-digits OTP code to re***@gmail.com,\nCheck it up and fill it below to verify your Email.',
+                'We have sent a 6-digit OTP code to $_maskedEmail,\nCheck it and fill it below to verify your Email.',
                 style: TextStyle(
                   fontSize: 13,
                   height: 1.4,
@@ -106,25 +144,26 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
               const SizedBox(height: 24),
 
               // Error Message (shown only when wrong OTP is entered)
-              if (_hasError) ...[
-                const Text(
-                  'Incorrect OTP! Check up and fill in again',
-                  style: TextStyle(
+              if (_hasError || _authController.errorMessage.value != null) ...[
+                Obx(() => Text(
+                  _authController.errorMessage.value ??
+                      'Incorrect OTP! Check it and fill it in again.',
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: Colors.red,
                   ),
-                ),
+                )),
                 const SizedBox(height: 12),
               ],
 
-              // 4-Digit OTP Input Boxes
+              // 6-Digit OTP Input Boxes
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(4, (index) {
+                children: List.generate(6, (index) {
                   return SizedBox(
-                    width: 60,
-                    height: 60,
+                    width: 44,
+                    height: 56,
                     child: TextField(
                       controller: _controllers[index],
                       focusNode: _focusNodes[index],
@@ -169,7 +208,7 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
                       ),
                       onChanged: (value) {
                         _checkCompletion();
-                        if (value.isNotEmpty && index < 3) {
+                        if (value.isNotEmpty && index < 5) {
                           FocusScope.of(
                             context,
                           ).requestFocus(_focusNodes[index + 1]);
@@ -198,7 +237,7 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: _resendOtp,
                       child: const Text(
                         'Send Again',
                         style: TextStyle(
@@ -216,8 +255,10 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
               // Verify Action Button (Blue when active, Grey when incomplete)
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isComplete ? _verifyOtp : null,
+                child: Obx(() => ElevatedButton(
+                  onPressed: _isComplete && !_authController.isSubmitting.value
+                      ? _verifyOtp
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2979FF),
                     disabledBackgroundColor: const Color(0xFFE0E0E0),
@@ -227,15 +268,23 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
                     ),
                     elevation: _isComplete ? 2 : 0,
                   ),
-                  child: const Text(
-                    'Verify',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                  child: _authController.isSubmitting.value
+                      ? const SizedBox.square(
+                          dimension: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Verify',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                )),
               ),
             ],
           ),

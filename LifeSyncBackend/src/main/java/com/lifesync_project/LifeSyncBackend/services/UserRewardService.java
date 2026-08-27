@@ -3,6 +3,8 @@ package com.lifesync_project.LifeSyncBackend.services;
 import com.lifesync_project.LifeSyncBackend.dto.UserReward.UserRewardRequest;
 import com.lifesync_project.LifeSyncBackend.dto.UserReward.UserRewardResponse;
 import com.lifesync_project.LifeSyncBackend.entity.UserReward;
+import com.lifesync_project.LifeSyncBackend.entity.Users;
+import com.lifesync_project.LifeSyncBackend.exception.DuplicateResourceException;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.UserRewardRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,17 +20,22 @@ import java.util.List;
 public class UserRewardService {
 
     private final UserRewardRepository rewardRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
     public UserRewardResponse createReward(UserRewardRequest request) {
 
-        if (rewardRepository.existsByUserId(request.getUserId())) {
-            throw new IllegalArgumentException("Reward already exists for this user");
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
+        if (rewardRepository.existsByUserId(currentUser.getId())) {
+            throw new DuplicateResourceException("Reward already exists for this user");
         }
 
+        int points = request.getPoints() == null ? 0 : request.getPoints();
+
         UserReward reward = UserReward.builder()
-                .userId(request.getUserId())
-                .points(request.getPoints() == null ? 0 : request.getPoints())
-                .level(request.getLevel() == null ? 1 : request.getLevel())
+                .userId(currentUser.getId())
+                .points(points)
+                .level(calculateLevel(points))
                 .updatedAt(LocalDateTime.now())
                 .build();
 
@@ -38,8 +45,9 @@ public class UserRewardService {
 
     public List<UserRewardResponse> getRewards() {
 
-        return rewardRepository.findAll()
-                .stream()
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
+        return rewardRepository.findByUserId(currentUser.getId()).stream()
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -50,6 +58,8 @@ public class UserRewardService {
     }
 
     public UserRewardResponse getRewardByUserId(Long userId) {
+
+        authenticatedUserService.requireOwner(userId);
 
         UserReward reward = rewardRepository.findByUserId(userId)
                 .orElseThrow(() ->
@@ -63,9 +73,8 @@ public class UserRewardService {
 
         UserReward reward = findReward(id);
 
-        reward.setUserId(request.getUserId());
         reward.setPoints(request.getPoints() == null ? reward.getPoints() : request.getPoints());
-        reward.setLevel(request.getLevel() == null ? reward.getLevel() : request.getLevel());
+        reward.setLevel(calculateLevel(reward.getPoints()));
         reward.setUpdatedAt(LocalDateTime.now());
 
         return mapToResponse(
@@ -73,6 +82,8 @@ public class UserRewardService {
     }
 
     public UserRewardResponse addPoints(Long userId, Integer points) {
+
+        authenticatedUserService.requireOwner(userId);
 
         UserReward reward = rewardRepository.findByUserId(userId)
                 .orElseGet(() -> UserReward.builder()
@@ -90,6 +101,8 @@ public class UserRewardService {
     }
 
     public UserRewardResponse subtractPoints(Long userId, Integer points) {
+
+        authenticatedUserService.requireOwner(userId);
 
         UserReward reward = rewardRepository.findByUserId(userId)
                 .orElseThrow(() ->
@@ -111,7 +124,9 @@ public class UserRewardService {
 
     private UserReward findReward(Long id) {
 
-        return rewardRepository.findById(id)
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
+        return rewardRepository.findByIdAndUserId(id, currentUser.getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "User reward not found"));

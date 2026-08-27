@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 public class WinRequest {
 
+    private Long userId;
+
     @NotBlank(message = "Title is required")
     @Size(max = 200)
     private String title;

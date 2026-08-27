@@ -19,7 +19,8 @@ public class GoalMilestone {
 
     private String title;
 
-    private Boolean completed;
+    @Builder.Default
+    private Boolean completed = false;
 
     private LocalDate targetDate;
 

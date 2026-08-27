@@ -30,4 +30,8 @@ public class Tasks {
     private LocalDate dueDate;
 
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Users user;
 }

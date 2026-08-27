@@ -3,6 +3,8 @@ package com.lifesync_project.LifeSyncBackend.services;
 import com.lifesync_project.LifeSyncBackend.dto.WeeklyReview.WeeklyReviewRequest;
 import com.lifesync_project.LifeSyncBackend.dto.WeeklyReview.WeeklyReviewResponse;
 import com.lifesync_project.LifeSyncBackend.entity.WeeklyReview;
+import com.lifesync_project.LifeSyncBackend.entity.Users;
+import com.lifesync_project.LifeSyncBackend.exception.BadRequestException;
 import com.lifesync_project.LifeSyncBackend.exception.ResourceNotFoundException;
 import com.lifesync_project.LifeSyncBackend.repository.WeeklyReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +20,15 @@ import java.util.List;
 public class WeeklyReviewService {
 
     private final WeeklyReviewRepository reviewRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
     public WeeklyReviewResponse createReview(WeeklyReviewRequest request) {
 
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+        validateDates(request);
+
         WeeklyReview review = WeeklyReview.builder()
-                .userId(request.getUserId())
+                .userId(currentUser.getId())
                 .reviewSummary(request.getReviewSummary())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
@@ -33,13 +39,11 @@ public class WeeklyReviewService {
                 reviewRepository.save(review));
     }
 
-    public List<WeeklyReviewResponse> getReviews(Long userId) {
+    public List<WeeklyReviewResponse> getReviews() {
 
-        List<WeeklyReview> reviews = userId == null
-                ? reviewRepository.findAll()
-                : reviewRepository.findByUserId(userId);
+        Users currentUser = authenticatedUserService.requireCurrentUser();
 
-        return reviews.stream()
+        return reviewRepository.findAllByUserIdOrderByStartDateDesc(currentUser.getId()).stream()
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -52,8 +56,8 @@ public class WeeklyReviewService {
     public WeeklyReviewResponse updateReview(Long id, WeeklyReviewRequest request) {
 
         WeeklyReview review = findReview(id);
+        validateDates(request);
 
-        review.setUserId(request.getUserId());
         review.setReviewSummary(request.getReviewSummary());
         review.setStartDate(request.getStartDate());
         review.setEndDate(request.getEndDate());
@@ -69,7 +73,9 @@ public class WeeklyReviewService {
 
     private WeeklyReview findReview(Long id) {
 
-        return reviewRepository.findById(id)
+        Users currentUser = authenticatedUserService.requireCurrentUser();
+
+        return reviewRepository.findByIdAndUserId(id, currentUser.getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Weekly review not found"));
@@ -85,5 +91,11 @@ public class WeeklyReviewService {
                 .endDate(review.getEndDate())
                 .createdAt(review.getCreatedAt())
                 .build();
+    }
+
+    private void validateDates(WeeklyReviewRequest request) {
+        if (request.getEndDate().isBefore(request.getStartDate())) {
+            throw new BadRequestException("Review end date must not be before start date");
+        }
     }
 }

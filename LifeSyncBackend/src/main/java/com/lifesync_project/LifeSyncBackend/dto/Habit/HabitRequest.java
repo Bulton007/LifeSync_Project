@@ -15,6 +15,7 @@ public class HabitRequest {
 
     private String description;
 
+    @NotBlank(message = "Habit frequency is required")
     private String frequency;
 
     private LocalDate startDate;

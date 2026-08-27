@@ -1,5 +1,6 @@
 package com.lifesync_project.LifeSyncBackend.dto.Goal;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,8 +20,10 @@ public class GoalResponse {
 
     private String description;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal targetAmount;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal currentAmount;
 
     private Boolean completed;
