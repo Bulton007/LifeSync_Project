@@ -9,10 +9,7 @@ class CreateGoalPlanPage extends StatelessWidget {
   /// Use true to preview the empty milestone design.
   final bool showEmptyState;
 
-  const CreateGoalPlanPage({
-    super.key,
-    this.showEmptyState = false,
-  });
+  const CreateGoalPlanPage({super.key, this.showEmptyState = false});
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +17,7 @@ class CreateGoalPlanPage extends StatelessWidget {
       backgroundColor: AppColors.scaffold,
       appBar: AppBar(
         // Static UI only.
-        leading: const Icon(
-          Icons.arrow_back_ios_new,
-          size: 20,
-        ),
+        leading: const Icon(Icons.arrow_back_ios_new, size: 20),
         title: const Text('Create Goal'),
       ),
       body: SafeArea(
@@ -35,9 +29,7 @@ class CreateGoalPlanPage extends StatelessWidget {
                   ? const _EmptyPlanContent()
                   : const _FilledPlanContent(),
             ),
-            _BottomActions(
-              nextButtonEnabled: !showEmptyState,
-            ),
+            _BottomActions(nextButtonEnabled: !showEmptyState),
           ],
         ),
       ),
@@ -63,22 +55,11 @@ class _GoalCreationSteps extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _StepItem(
-            number: '1',
-            label: 'Define',
-            completed: true,
-          ),
+          _StepItem(number: '1', label: 'Define', completed: true),
           _StepLine(active: true),
-          _StepItem(
-            number: '2',
-            label: 'Plan',
-            active: true,
-          ),
+          _StepItem(number: '2', label: 'Plan', active: true),
           _StepLine(active: false),
-          _StepItem(
-            number: '3',
-            label: 'Review',
-          ),
+          _StepItem(number: '3', label: 'Review'),
         ],
       ),
     );
@@ -109,14 +90,10 @@ class _StepItem extends StatelessWidget {
           height: 28,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: highlighted
-                ? AppColors.primary
-                : AppColors.surface,
+            color: highlighted ? AppColors.primary : AppColors.surface,
             shape: BoxShape.circle,
             border: Border.all(
-              color: highlighted
-                  ? AppColors.primary
-                  : AppColors.border,
+              color: highlighted ? AppColors.primary : AppColors.border,
             ),
           ),
           child: completed
@@ -139,12 +116,8 @@ class _StepItem extends StatelessWidget {
         Text(
           label,
           style: AppTextStyles.micro.copyWith(
-            color: highlighted
-                ? AppColors.primary
-                : AppColors.textSecondary,
-            fontWeight: highlighted
-                ? FontWeight.w600
-                : FontWeight.w400,
+            color: highlighted ? AppColors.primary : AppColors.textSecondary,
+            fontWeight: highlighted ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
       ],
@@ -167,9 +140,7 @@ class _StepLine extends StatelessWidget {
           right: AppSpacing.sm,
           bottom: 18,
         ),
-        color: active
-            ? AppColors.primary
-            : AppColors.disabled,
+        color: active ? AppColors.primary : AppColors.disabled,
       ),
     );
   }
@@ -191,10 +162,7 @@ class _PlanHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Milestones',
-                style: AppTextStyles.titleM,
-              ),
+              Text('Milestones', style: AppTextStyles.titleM),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 'Set milestones for goal progression',
@@ -226,11 +194,7 @@ class _AiAssistantBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.auto_awesome,
-            size: 15,
-            color: AppColors.primary,
-          ),
+          const Icon(Icons.auto_awesome, size: 15, color: AppColors.primary),
           const SizedBox(width: AppSpacing.xs),
           Text(
             'AI Assistant',
@@ -259,9 +223,7 @@ class _EmptyPlanContent extends StatelessWidget {
       child: Column(
         children: [
           const _PlanHeader(),
-          const Expanded(
-            child: _EmptyMilestoneIllustration(),
-          ),
+          const Expanded(child: _EmptyMilestoneIllustration()),
         ],
       ),
     );
@@ -312,10 +274,7 @@ class _EmptyMilestoneIllustration extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.xl),
-        Text(
-          'No milestones yet',
-          style: AppTextStyles.titleM,
-        ),
+        Text('No milestones yet', style: AppTextStyles.titleM),
         const SizedBox(height: AppSpacing.sm),
         Text(
           'Break your goal into smaller and achievable steps.',
@@ -325,9 +284,7 @@ class _EmptyMilestoneIllustration extends StatelessWidget {
         const SizedBox(height: AppSpacing.md),
         Text(
           'Create your first milestone',
-          style: AppTextStyles.button.copyWith(
-            color: AppColors.primary,
-          ),
+          style: AppTextStyles.button.copyWith(color: AppColors.primary),
         ),
       ],
     );
@@ -427,9 +384,7 @@ class _MilestoneCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.primary50,
                   borderRadius: BorderRadius.circular(AppRadius.sm),
-                  border: Border.all(
-                    color: AppColors.primary200,
-                  ),
+                  border: Border.all(color: AppColors.primary200),
                 ),
                 child: Text(
                   number.toString().padLeft(2, '0'),
@@ -467,8 +422,7 @@ class _MilestoneCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             const Divider(),
             const SizedBox(height: AppSpacing.sm),
-            for (final task in tasks)
-              _TaskRow(title: task),
+            for (final task in tasks) _TaskRow(title: task),
           ],
         ],
       ),
@@ -484,10 +438,7 @@ class _TaskRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 64,
-        bottom: AppSpacing.sm,
-      ),
+      padding: const EdgeInsets.only(left: 64, bottom: AppSpacing.sm),
       child: Row(
         children: [
           const Icon(
@@ -496,12 +447,7 @@ class _TaskRow extends StatelessWidget {
             color: AppColors.primary,
           ),
           const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              title,
-              style: AppTextStyles.caption,
-            ),
-          ),
+          Expanded(child: Text(title, style: AppTextStyles.caption)),
         ],
       ),
     );
@@ -518,10 +464,7 @@ class _AddMilestoneButton extends StatelessWidget {
       child: TextButton.icon(
         // Static UI only.
         onPressed: () {},
-        icon: const Icon(
-          Icons.add_circle_outline,
-          size: 19,
-        ),
+        icon: const Icon(Icons.add_circle_outline, size: 19),
         label: const Text('Add Milestone'),
       ),
     );
@@ -535,9 +478,7 @@ class _AddMilestoneButton extends StatelessWidget {
 class _BottomActions extends StatelessWidget {
   final bool nextButtonEnabled;
 
-  const _BottomActions({
-    required this.nextButtonEnabled,
-  });
+  const _BottomActions({required this.nextButtonEnabled});
 
   @override
   Widget build(BuildContext context) {
@@ -545,9 +486,7 @@ class _BottomActions extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: const BoxDecoration(
         color: AppColors.surface,
-        border: Border(
-          top: BorderSide(color: AppColors.border),
-        ),
+        border: Border(top: BorderSide(color: AppColors.border)),
       ),
       child: Row(
         children: [

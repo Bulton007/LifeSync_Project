@@ -132,14 +132,8 @@ class _GoalOverview extends StatelessWidget {
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            '63%',
-                            style: AppTextStyles.titleM,
-                          ),
-                          Text(
-                            'Overall',
-                            style: AppTextStyles.micro,
-                          ),
+                          Text('63%', style: AppTextStyles.titleM),
+                          Text('Overall', style: AppTextStyles.micro),
                         ],
                       ),
                     ],
@@ -216,19 +210,12 @@ class _OverviewRow extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppRadius.sm),
-        border: Border(
-          left: BorderSide(color: color, width: 3),
-        ),
+        border: Border(left: BorderSide(color: color, width: 3)),
       ),
       child: Row(
         children: [
-          Expanded(
-            child: Text(label, style: AppTextStyles.caption),
-          ),
-          Text(
-            value,
-            style: AppTextStyles.button.copyWith(color: color),
-          ),
+          Expanded(child: Text(label, style: AppTextStyles.caption)),
+          Text(value, style: AppTextStyles.button.copyWith(color: color)),
         ],
       ),
     );
@@ -281,25 +268,17 @@ class _GoalCard extends StatelessWidget {
                     child: Icon(icon, color: color),
                   ),
                   const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: Text(title, style: AppTextStyles.button),
-                  ),
+                  Expanded(child: Text(title, style: AppTextStyles.button)),
                   const Icon(Icons.more_horiz),
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
-              Text(
-                'Outcome: $outcome',
-                style: AppTextStyles.caption,
-              ),
+              Text('Outcome: $outcome', style: AppTextStyles.caption),
               const SizedBox(height: AppSpacing.md),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Current Progress',
-                    style: AppTextStyles.micro,
-                  ),
+                  Text('Current Progress', style: AppTextStyles.micro),
                   _StatusBadge(text: status, color: color),
                 ],
               ),
@@ -316,9 +295,7 @@ class _GoalCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
-                  Expanded(
-                    child: Text(daysLeft, style: AppTextStyles.micro),
-                  ),
+                  Expanded(child: Text(daysLeft, style: AppTextStyles.micro)),
                   Text(milestoneText, style: AppTextStyles.micro),
                   const SizedBox(width: AppSpacing.md),
                   Text(
@@ -372,8 +349,7 @@ class GoalDetailsPage extends StatelessWidget {
                         padding: const EdgeInsets.all(AppSpacing.sm),
                         decoration: BoxDecoration(
                           color: AppColors.primary100,
-                          borderRadius:
-                              BorderRadius.circular(AppRadius.sm),
+                          borderRadius: BorderRadius.circular(AppRadius.sm),
                         ),
                         child: const Icon(
                           Icons.school_outlined,
@@ -444,9 +420,7 @@ class GoalDetailsPage extends StatelessWidget {
           const SizedBox(height: AppSpacing.xl),
           Row(
             children: [
-              Expanded(
-                child: Text('Milestones', style: AppTextStyles.titleM),
-              ),
+              Expanded(child: Text('Milestones', style: AppTextStyles.titleM)),
               TextButton.icon(
                 onPressed: () => showMilestoneEditor(context),
                 icon: const Icon(Icons.edit_outlined, size: 18),
@@ -636,9 +610,7 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
         ),
         const SizedBox(height: AppSpacing.xl),
         if (milestones.isEmpty)
-          _EmptyMilestones(
-            onCreate: () => _addMilestone(),
-          )
+          _EmptyMilestones(onCreate: () => _addMilestone())
         else
           Card(
             child: Padding(
@@ -768,8 +740,8 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
                 currentStep == 0
                     ? 'Next: Build Your Plan'
                     : currentStep == 1
-                        ? 'Next: Review Goal'
-                        : 'Create Goal',
+                    ? 'Next: Review Goal'
+                    : 'Create Goal',
               ),
             ),
           ),
@@ -825,8 +797,9 @@ class _GoalStepIndicator extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 13,
-                      backgroundColor:
-                          active ? AppColors.primary : AppColors.disabled,
+                      backgroundColor: active
+                          ? AppColors.primary
+                          : AppColors.disabled,
                       child: Text(
                         '${index + 1}',
                         style: AppTextStyles.micro.copyWith(
@@ -893,8 +866,7 @@ class MilestoneEditorPage extends StatefulWidget {
   const MilestoneEditorPage({super.key, this.initialName});
 
   @override
-  State<MilestoneEditorPage> createState() =>
-      _MilestoneEditorPageState();
+  State<MilestoneEditorPage> createState() => _MilestoneEditorPageState();
 }
 
 class _MilestoneEditorPageState extends State<MilestoneEditorPage> {
@@ -1062,9 +1034,7 @@ class GoalSuccessPage extends StatelessWidget {
               Text(
                 'The journey starts now!',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.titleXL.copyWith(
-                  color: AppColors.primary,
-                ),
+                style: AppTextStyles.titleXL.copyWith(color: AppColors.primary),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
@@ -1124,9 +1094,7 @@ class GoalSuccessPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => const GoalsPage(),
-                          ),
+                          MaterialPageRoute(builder: (_) => const GoalsPage()),
                           (route) => route.isFirst,
                         );
                       },
@@ -1177,9 +1145,7 @@ class _MilestoneRow extends StatelessWidget {
             ? const Icon(Icons.check, color: Colors.white, size: 18)
             : Text(
                 number.toString().padLeft(2, '0'),
-                style: AppTextStyles.micro.copyWith(
-                  color: AppColors.primary,
-                ),
+                style: AppTextStyles.micro.copyWith(color: AppColors.primary),
               ),
       ),
       title: Text(title, style: AppTextStyles.button),
@@ -1216,9 +1182,7 @@ class _EditableMilestoneRow extends StatelessWidget {
         ),
         child: Text(
           number.toString().padLeft(2, '0'),
-          style: AppTextStyles.micro.copyWith(
-            color: AppColors.primary,
-          ),
+          style: AppTextStyles.micro.copyWith(color: AppColors.primary),
         ),
       ),
       title: Text(title, style: AppTextStyles.button),
@@ -1270,10 +1234,7 @@ class _EmptyMilestones extends StatelessWidget {
             'You do not have any milestones yet.',
             style: AppTextStyles.bodyPrimary,
           ),
-          TextButton(
-            onPressed: onCreate,
-            child: const Text('Create one'),
-          ),
+          TextButton(onPressed: onCreate, child: const Text('Create one')),
         ],
       ),
     );
@@ -1316,10 +1277,7 @@ class _StatusBadge extends StatelessWidget {
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
-      child: Text(
-        text,
-        style: AppTextStyles.micro.copyWith(color: color),
-      ),
+      child: Text(text, style: AppTextStyles.micro.copyWith(color: color)),
     );
   }
 }

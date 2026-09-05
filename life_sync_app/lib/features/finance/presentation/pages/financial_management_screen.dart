@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -55,7 +56,7 @@ class FinancialManagementScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF1E88E5),
+                                color: AppColors.primary,
                               ),
                             ),
                             SizedBox(height: 4),
@@ -72,7 +73,7 @@ class FinancialManagementScreen extends StatelessWidget {
                       PopupMenuButton<String>(
                         icon: const Icon(
                           Icons.settings_outlined,
-                          color: Color(0xFF1E88E5),
+                          color: AppColors.primary,
                         ),
                         onSelected: (value) {
                           if (value == 'categories') {
@@ -95,8 +96,8 @@ class FinancialManagementScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  _BalanceCard(finance: finance),
-                  const SizedBox(height: 20),
+                  RepaintBoundary(child: _BalanceCard(finance: finance)),
+                  const SizedBox(height: 24),
                   Row(
                     children: [
                       Expanded(
@@ -106,11 +107,21 @@ class FinancialManagementScreen extends StatelessWidget {
                             finance,
                             FinanceEntryType.income,
                           ),
-                          icon: const Icon(Icons.trending_up),
-                          label: const Text('Add Income'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF2E7D32),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          icon: const Icon(Icons.trending_up, size: 20),
+                          label: const Text(
+                            'Add Income',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: FilledButton.icon(
                           onPressed: () => _entryDialog(
@@ -119,41 +130,51 @@ class FinancialManagementScreen extends StatelessWidget {
                             FinanceEntryType.expense,
                           ),
                           style: FilledButton.styleFrom(
-                            backgroundColor: Colors.redAccent,
+                            backgroundColor: const Color(0xFFD32F2F),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
                           ),
-                          icon: const Icon(Icons.trending_down),
-                          label: const Text('Add Expense'),
+                          icon: const Icon(Icons.trending_down, size: 20),
+                          label: const Text(
+                            'Add Expense',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 28),
                   _SectionTitle(
                     title: 'Saving Goals',
                     action: 'View goals',
                     onTap: () => Get.toNamed<void>(AppRoutes.goalEditor),
                   ),
                   const SizedBox(height: 12),
-                  SizedBox(
-                    height: 135,
-                    child: goals.goals.where((goal) => !goal.archived).isEmpty
-                        ? const _InlineEmpty(message: 'No saving goals yet.')
-                        : ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: goals.goals
-                                .where((goal) => !goal.archived)
-                                .take(6)
-                                .length,
-                            separatorBuilder: (_, _) =>
-                                const SizedBox(width: 12),
-                            itemBuilder: (_, index) {
-                              final goal = goals.goals
-                                  .where((item) => !item.archived)
+                  RepaintBoundary(
+                    child: SizedBox(
+                      height: 135,
+                      child: goals.goals.where((goal) => !goal.archived).isEmpty
+                          ? const _InlineEmpty(message: 'No saving goals yet.')
+                          : ListView.separated(
+                              physics: const ClampingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: goals.goals
+                                  .where((goal) => !goal.archived)
                                   .take(6)
-                                  .elementAt(index);
-                              return _SavingGoalCard(goal: goal);
-                            },
-                          ),
+                                  .length,
+                              separatorBuilder: (_, _) =>
+                                  const SizedBox(width: 12),
+                              itemBuilder: (_, index) {
+                                final goal = goals.goals
+                                    .where((item) => !item.archived)
+                                    .take(6)
+                                    .elementAt(index);
+                                return _SavingGoalCard(goal: goal);
+                              },
+                            ),
+                    ),
                   ),
                   const SizedBox(height: 24),
                   _SectionTitle(
@@ -228,7 +249,7 @@ class _BalanceCard extends StatelessWidget {
               backgroundColor: Color(0xFFF0F5FF),
               child: Icon(
                 Icons.account_balance_wallet_outlined,
-                color: Color(0xFF1E88E5),
+                color: AppColors.primary,
                 size: 20,
               ),
             ),
@@ -267,7 +288,7 @@ class _BalanceCard extends StatelessWidget {
             Container(height: 30, width: 1, color: Colors.grey.shade200),
             _Summary(
               icon: Icons.receipt_long_outlined,
-              color: const Color(0xFF1E88E5),
+              color: AppColors.primary,
               title: 'Entries',
               amount: '${finance.history.length}',
             ),
@@ -335,7 +356,7 @@ class _SectionTitle extends StatelessWidget {
       ),
       TextButton(
         onPressed: onTap,
-        child: Text(action, style: const TextStyle(color: Color(0xFF1E88E5))),
+        child: Text(action, style: const TextStyle(color: AppColors.primary)),
       ),
     ],
   );
@@ -482,7 +503,7 @@ class _BudgetRow extends StatelessWidget {
           value: budget.progress,
           minHeight: 6,
           backgroundColor: Colors.grey.shade200,
-          color: budget.progress >= 1 ? Colors.red : const Color(0xFF1E88E5),
+          color: budget.progress >= 1 ? Colors.red : AppColors.primary,
         ),
       ],
     ),
@@ -573,31 +594,51 @@ Future<void> _entryDialog(
     context: context,
     builder: (dialogContext) => StatefulBuilder(
       builder: (context, setState) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         title: Text(
-          '${existing == null ? 'Add' : 'Edit'} ${type == FinanceEntryType.income ? 'income' : 'expense'}',
+          '${existing == null ? 'Add' : 'Edit'} ${type == FinanceEntryType.income ? 'Income' : 'Expense'}',
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextField(
                 controller: title,
-                decoration: const InputDecoration(labelText: 'Title'),
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
+              const SizedBox(height: 16),
               TextField(
                 controller: amount,
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
                 inputFormatters: [_moneyInput],
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Amount',
                   prefixText: r'$ ',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
+              const SizedBox(height: 16),
               DropdownButtonFormField<FinanceCategoryModel>(
                 initialValue: category,
-                decoration: const InputDecoration(labelText: 'Category'),
+                decoration: InputDecoration(
+                  labelText: 'Category',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
                 items: finance.data.categories
                     .map(
                       (item) =>
@@ -608,16 +649,18 @@ Future<void> _entryDialog(
                   if (value != null) setState(() => category = value);
                 },
               ),
+              const SizedBox(height: 16),
               TextField(
                 controller: description,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Description (optional)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.calendar_today_outlined),
-                title: Text(_date(date)),
+              const SizedBox(height: 16),
+              InkWell(
                 onTap: () async {
                   final picked = await showDatePicker(
                     context: context,
@@ -627,6 +670,27 @@ Future<void> _entryDialog(
                   );
                   if (picked != null) setState(() => date = picked);
                 },
+                borderRadius: BorderRadius.circular(12),
+                child: InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: 'Date',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    suffixIcon: const Icon(
+                      Icons.calendar_today_outlined,
+                      size: 20,
+                    ),
+                  ),
+                  child: Text(
+                    _date(date),
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                ),
               ),
             ],
           ),
@@ -693,20 +757,33 @@ Future<void> _categoryDialog(
   final saved = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       title: Text(existing == null ? 'Add category' : 'Edit category'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextField(
             controller: name,
             maxLength: 60,
-            decoration: const InputDecoration(labelText: 'Category name'),
+            decoration: InputDecoration(
+              labelText: 'Category name',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           ),
+          const SizedBox(height: 16),
           TextField(
             controller: description,
             maxLength: 160,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Description (optional)',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
         ],

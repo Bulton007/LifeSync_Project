@@ -8,10 +8,7 @@ import '../../../../core/theme/app_text_styles.dart';
 class GoalCreationSteps extends StatelessWidget {
   final int currentStep;
 
-  const GoalCreationSteps({
-    super.key,
-    required this.currentStep,
-  });
+  const GoalCreationSteps({super.key, required this.currentStep});
 
   @override
   Widget build(BuildContext context) {
@@ -94,9 +91,7 @@ class GoalCreationSteps extends StatelessWidget {
                         color: index < currentStep
                             ? AppColors.primary
                             : AppColors.disabled,
-                        borderRadius: BorderRadius.circular(
-                          AppRadius.pill,
-                        ),
+                        borderRadius: BorderRadius.circular(AppRadius.pill),
                       ),
                     ),
                   ),

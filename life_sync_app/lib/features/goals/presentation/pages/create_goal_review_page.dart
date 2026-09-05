@@ -14,19 +14,14 @@ class CreateGoalReviewPage extends StatelessWidget {
       backgroundColor: AppColors.scaffold,
       appBar: AppBar(
         // Static UI only.
-        leading: const Icon(
-          Icons.arrow_back_ios_new,
-          size: 20,
-        ),
+        leading: const Icon(Icons.arrow_back_ios_new, size: 20),
         title: const Text('Create Goal'),
       ),
       body: const SafeArea(
         child: Column(
           children: [
             _GoalCreationSteps(),
-            Expanded(
-              child: _ReviewContent(),
-            ),
+            Expanded(child: _ReviewContent()),
             _BottomActions(),
           ],
         ),
@@ -53,23 +48,11 @@ class _GoalCreationSteps extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _StepItem(
-            number: '1',
-            label: 'Define',
-            completed: true,
-          ),
+          _StepItem(number: '1', label: 'Define', completed: true),
           _StepLine(active: true),
-          _StepItem(
-            number: '2',
-            label: 'Plan',
-            completed: true,
-          ),
+          _StepItem(number: '2', label: 'Plan', completed: true),
           _StepLine(active: true),
-          _StepItem(
-            number: '3',
-            label: 'Review',
-            active: true,
-          ),
+          _StepItem(number: '3', label: 'Review', active: true),
         ],
       ),
     );
@@ -100,14 +83,10 @@ class _StepItem extends StatelessWidget {
           height: 28,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: highlighted
-                ? AppColors.primary
-                : AppColors.surface,
+            color: highlighted ? AppColors.primary : AppColors.surface,
             shape: BoxShape.circle,
             border: Border.all(
-              color: highlighted
-                  ? AppColors.primary
-                  : AppColors.border,
+              color: highlighted ? AppColors.primary : AppColors.border,
             ),
           ),
           child: completed
@@ -130,12 +109,8 @@ class _StepItem extends StatelessWidget {
         Text(
           label,
           style: AppTextStyles.micro.copyWith(
-            color: highlighted
-                ? AppColors.primary
-                : AppColors.textSecondary,
-            fontWeight: highlighted
-                ? FontWeight.w600
-                : FontWeight.w400,
+            color: highlighted ? AppColors.primary : AppColors.textSecondary,
+            fontWeight: highlighted ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
       ],
@@ -158,9 +133,7 @@ class _StepLine extends StatelessWidget {
           right: AppSpacing.sm,
           bottom: 18,
         ),
-        color: active
-            ? AppColors.primary
-            : AppColors.disabled,
+        color: active ? AppColors.primary : AppColors.disabled,
       ),
     );
   }
@@ -202,9 +175,7 @@ class _GoalSummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.primary50,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(
-          color: AppColors.primary100,
-        ),
+        border: Border.all(color: AppColors.primary100),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,9 +187,7 @@ class _GoalSummaryCard extends StatelessWidget {
                 height: 42,
                 decoration: BoxDecoration(
                   color: AppColors.primary100,
-                  borderRadius: BorderRadius.circular(
-                    AppRadius.sm,
-                  ),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
                 child: const Icon(
                   Icons.school_outlined,
@@ -277,20 +246,13 @@ class _DateItem extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const _DateItem({
-    required this.icon,
-    required this.text,
-  });
+  const _DateItem({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(
-          icon,
-          size: 15,
-          color: AppColors.textSecondary,
-        ),
+        Icon(icon, size: 15, color: AppColors.textSecondary),
         const SizedBox(width: AppSpacing.xs),
         Expanded(
           child: Text(
@@ -315,12 +277,7 @@ class _MilestoneSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: Text(
-            'Milestones',
-            style: AppTextStyles.titleM,
-          ),
-        ),
+        Expanded(child: Text('Milestones', style: AppTextStyles.titleM)),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.sm,
@@ -424,9 +381,7 @@ class _ReviewMilestone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.sm,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Column(
         children: [
           Row(
@@ -437,12 +392,8 @@ class _ReviewMilestone extends StatelessWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: AppColors.primary50,
-                  borderRadius: BorderRadius.circular(
-                    AppRadius.sm,
-                  ),
-                  border: Border.all(
-                    color: AppColors.primary200,
-                  ),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                  border: Border.all(color: AppColors.primary200),
                 ),
                 child: Text(
                   number.toString().padLeft(2, '0'),
@@ -457,22 +408,14 @@ class _ReviewMilestone extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: AppTextStyles.button,
-                    ),
+                    Text(title, style: AppTextStyles.button),
                     const SizedBox(height: AppSpacing.xxs),
-                    Text(
-                      taskCount,
-                      style: AppTextStyles.micro,
-                    ),
+                    Text(taskCount, style: AppTextStyles.micro),
                   ],
                 ),
               ),
               Icon(
-                expanded
-                    ? Icons.keyboard_arrow_up
-                    : Icons.keyboard_arrow_down,
+                expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                 color: AppColors.textSecondary,
               ),
             ],
@@ -483,13 +426,8 @@ class _ReviewMilestone extends StatelessWidget {
               padding: const EdgeInsets.only(left: 44),
               child: Column(
                 children: [
-                  for (int index = 0;
-                      index < tasks.length;
-                      index++)
-                    _ReviewTask(
-                      number: index + 1,
-                      title: tasks[index],
-                    ),
+                  for (int index = 0; index < tasks.length; index++)
+                    _ReviewTask(number: index + 1, title: tasks[index]),
                 ],
               ),
             ),
@@ -504,32 +442,20 @@ class _ReviewTask extends StatelessWidget {
   final int number;
   final String title;
 
-  const _ReviewTask({
-    required this.number,
-    required this.title,
-  });
+  const _ReviewTask({required this.number, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: AppSpacing.sm,
-      ),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         children: [
           Text(
             '$number.',
-            style: AppTextStyles.micro.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppTextStyles.micro.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              title,
-              style: AppTextStyles.caption,
-            ),
-          ),
+          Expanded(child: Text(title, style: AppTextStyles.caption)),
         ],
       ),
     );
@@ -549,9 +475,7 @@ class _BottomActions extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: const BoxDecoration(
         color: AppColors.surface,
-        border: Border(
-          top: BorderSide(color: AppColors.border),
-        ),
+        border: Border(top: BorderSide(color: AppColors.border)),
       ),
       child: Row(
         children: [

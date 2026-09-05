@@ -10,10 +10,7 @@ class MilestoneEditorPage extends StatelessWidget {
   /// true = Edit Milestone
   final bool editMode;
 
-  const MilestoneEditorPage({
-    super.key,
-    this.editMode = false,
-  });
+  const MilestoneEditorPage({super.key, this.editMode = false});
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +25,10 @@ class MilestoneEditorPage extends StatelessWidget {
               color: AppColors.accent,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.close,
-              size: 19,
-            ),
+            child: const Icon(Icons.close, size: 19),
           ),
         ),
-        title: Text(
-          editMode ? 'Edit Milestone' : 'Add Milestone',
-        ),
+        title: Text(editMode ? 'Edit Milestone' : 'Add Milestone'),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: AppSpacing.md),
@@ -54,10 +46,7 @@ class MilestoneEditorPage extends StatelessWidget {
             const SizedBox(height: AppSpacing.xl),
             const _TasksHeader(),
             const SizedBox(height: AppSpacing.md),
-            if (editMode)
-              const _FilledTaskList()
-            else
-              const _AddTaskButton(),
+            if (editMode) const _FilledTaskList() else const _AddTaskButton(),
           ],
         ),
       ),
@@ -88,11 +77,7 @@ class _SaveButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.check,
-              size: 15,
-              color: AppColors.textSecondary,
-            ),
+            const Icon(Icons.check, size: 15, color: AppColors.textSecondary),
             const SizedBox(width: AppSpacing.xs),
             Text(
               'Save',
@@ -115,9 +100,7 @@ class _SaveButton extends StatelessWidget {
 class _MilestoneNameField extends StatelessWidget {
   final bool editMode;
 
-  const _MilestoneNameField({
-    required this.editMode,
-  });
+  const _MilestoneNameField({required this.editMode});
 
   @override
   Widget build(BuildContext context) {
@@ -129,14 +112,15 @@ class _MilestoneNameField extends StatelessWidget {
           text: editMode ? 'Build Strong Study Routine' : '',
         ),
         maxLength: 60,
-        buildCounter: (
-          context, {
-          required currentLength,
-          required isFocused,
-          required maxLength,
-        }) {
-          return null;
-        },
+        buildCounter:
+            (
+              context, {
+              required currentLength,
+              required isFocused,
+              required maxLength,
+            }) {
+              return null;
+            },
         decoration: const InputDecoration(
           hintText: 'Set a Major Step for Your Goal',
         ),
@@ -148,9 +132,7 @@ class _MilestoneNameField extends StatelessWidget {
 class _DescriptionField extends StatelessWidget {
   final bool editMode;
 
-  const _DescriptionField({
-    required this.editMode,
-  });
+  const _DescriptionField({required this.editMode});
 
   @override
   Widget build(BuildContext context) {
@@ -165,14 +147,15 @@ class _DescriptionField extends StatelessWidget {
         ),
         maxLength: 250,
         maxLines: 3,
-        buildCounter: (
-          context, {
-          required currentLength,
-          required isFocused,
-          required maxLength,
-        }) {
-          return null;
-        },
+        buildCounter:
+            (
+              context, {
+              required currentLength,
+              required isFocused,
+              required maxLength,
+            }) {
+              return null;
+            },
         decoration: const InputDecoration(
           hintText: 'Add Context',
           alignLabelWithHint: true,
@@ -207,10 +190,7 @@ class _FieldSection extends StatelessWidget {
                 ),
               ),
             ),
-            Text(
-              counter,
-              style: AppTextStyles.micro,
-            ),
+            Text(counter, style: AppTextStyles.micro),
           ],
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -236,10 +216,7 @@ class _TasksHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Tasks',
-                style: AppTextStyles.titleM,
-              ),
+              Text('Tasks', style: AppTextStyles.titleM),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 'Assign at least one task to this milestone',
@@ -271,11 +248,7 @@ class _AiAssistantBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.auto_awesome,
-            size: 15,
-            color: AppColors.primary,
-          ),
+          const Icon(Icons.auto_awesome, size: 15, color: AppColors.primary),
           const SizedBox(width: AppSpacing.xs),
           Text(
             'AI Assistant',
@@ -304,10 +277,7 @@ class _AddTaskButton extends StatelessWidget {
       child: TextButton.icon(
         // Static UI only.
         onPressed: () {},
-        icon: const Icon(
-          Icons.add_circle_outline,
-          size: 19,
-        ),
+        icon: const Icon(Icons.add_circle_outline, size: 19),
         label: const Text('Add Task'),
       ),
     );
@@ -325,30 +295,15 @@ class _FilledTaskList extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Column(
       children: [
-        _TaskField(
-          number: 1,
-          title: 'Create a weekly study schedule',
-        ),
+        _TaskField(number: 1, title: 'Create a weekly study schedule'),
         SizedBox(height: AppSpacing.sm),
-        _TaskField(
-          number: 2,
-          title: 'Review lesson notes every evening',
-        ),
+        _TaskField(number: 2, title: 'Review lesson notes every evening'),
         SizedBox(height: AppSpacing.sm),
-        _TaskField(
-          number: 3,
-          title: 'Study for one focused hour',
-        ),
+        _TaskField(number: 3, title: 'Study for one focused hour'),
         SizedBox(height: AppSpacing.sm),
-        _TaskField(
-          number: 4,
-          title: 'Prepare tomorrow’s materials',
-        ),
+        _TaskField(number: 4, title: 'Prepare tomorrow’s materials'),
         SizedBox(height: AppSpacing.sm),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: _AddTaskButton(),
-        ),
+        Align(alignment: Alignment.centerLeft, child: _AddTaskButton()),
       ],
     );
   }
@@ -358,18 +313,13 @@ class _TaskField extends StatelessWidget {
   final int number;
   final String title;
 
-  const _TaskField({
-    required this.number,
-    required this.title,
-  });
+  const _TaskField({required this.number, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 52,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -379,9 +329,7 @@ class _TaskField extends StatelessWidget {
         children: [
           Text(
             '$number.',
-            style: AppTextStyles.caption.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
@@ -392,11 +340,7 @@ class _TaskField extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
-          const Icon(
-            Icons.delete_outline,
-            size: 19,
-            color: AppColors.error,
-          ),
+          const Icon(Icons.delete_outline, size: 19, color: AppColors.error),
         ],
       ),
     );

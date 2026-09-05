@@ -3,7 +3,7 @@ description: "LifeSync - Your personal life management companion."
 
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.0+20260905
 
 environment:
   sdk: ^3.12.1
@@ -45,6 +45,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/icons/
 
 
 # ============================================================

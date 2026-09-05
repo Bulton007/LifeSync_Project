@@ -12,7 +12,10 @@ final class TaskRemoteDataSource {
     return _apiClient.get<List<TaskModel>>(
       '/api/tasks',
       decoder: (data) => (data! as List)
-          .map((item) => TaskModel.fromJson(Map<String, dynamic>.from(item as Map)))
+          .map(
+            (item) =>
+                TaskModel.fromJson(Map<String, dynamic>.from(item as Map)),
+          )
           .toList(growable: false),
     );
   }
@@ -66,10 +69,7 @@ final class TaskRemoteDataSource {
   }
 
   Future<ApiResult<void>> deleteTask(int taskId) {
-    return _apiClient.delete<void>(
-      '/api/tasks/$taskId',
-      decoder: (_) {},
-    );
+    return _apiClient.delete<void>('/api/tasks/$taskId', decoder: (_) {});
   }
 
   Future<ApiResult<List<SubTaskModel>>> getSubTasks(int taskId) {
@@ -77,9 +77,8 @@ final class TaskRemoteDataSource {
       '/api/subtasks/task/$taskId',
       decoder: (data) => (data! as List)
           .map(
-            (item) => SubTaskModel.fromJson(
-              Map<String, dynamic>.from(item as Map),
-            ),
+            (item) =>
+                SubTaskModel.fromJson(Map<String, dynamic>.from(item as Map)),
           )
           .toList(growable: false),
     );
@@ -115,10 +114,7 @@ final class TaskRemoteDataSource {
   }
 
   Future<ApiResult<void>> deleteSubTask(int subTaskId) {
-    return _apiClient.delete<void>(
-      '/api/subtasks/$subTaskId',
-      decoder: (_) {},
-    );
+    return _apiClient.delete<void>('/api/subtasks/$subTaskId', decoder: (_) {});
   }
 
   static Map<String, dynamic> _taskRequest({

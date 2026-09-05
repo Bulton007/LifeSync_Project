@@ -1,4 +1,4 @@
-package com.lifesync_project.LifeSyncBackend.dto.Auth;
+package com.lifesync_project.LifeSyncBackend.dto.Users;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

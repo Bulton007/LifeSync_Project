@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SavingScreen extends StatefulWidget {
@@ -48,7 +49,7 @@ class _SavingScreenState extends State<SavingScreen> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.08),
+                          color: Colors.grey.withValues(alpha: 0.08),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
@@ -69,7 +70,7 @@ class _SavingScreenState extends State<SavingScreen> {
                       // Handle save action here
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF1E88E5),
+                      foregroundColor: AppColors.primary,
                       side: BorderSide(color: Colors.grey.shade300),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -82,7 +83,7 @@ class _SavingScreenState extends State<SavingScreen> {
                     icon: const Icon(
                       Icons.check,
                       size: 18,
-                      color: Color(0xFF1E88E5),
+                      color: AppColors.primary,
                     ),
                     label: const Text(
                       'Save',
@@ -104,7 +105,7 @@ class _SavingScreenState extends State<SavingScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.05),
+                      color: Colors.grey.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -155,7 +156,7 @@ class _SavingScreenState extends State<SavingScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                    borderSide: const BorderSide(color: AppColors.primary),
                   ),
                 ),
               ),
@@ -196,7 +197,7 @@ class _SavingScreenState extends State<SavingScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                    borderSide: const BorderSide(color: AppColors.primary),
                   ),
                 ),
               ),
@@ -289,7 +290,7 @@ class _SavingScreenState extends State<SavingScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                    borderSide: const BorderSide(color: AppColors.primary),
                   ),
                 ),
               ),

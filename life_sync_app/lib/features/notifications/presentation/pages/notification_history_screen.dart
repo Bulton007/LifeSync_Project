@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/state/async_view_state.dart';
@@ -124,9 +125,7 @@ final class _NotificationCard extends StatelessWidget {
                   : Colors.white,
               child: Icon(
                 _typeIcon(notification.type),
-                color: notification.isRead
-                    ? Colors.grey
-                    : const Color(0xFF1E88E5),
+                color: notification.isRead ? Colors.grey : AppColors.primary,
               ),
             ),
             const SizedBox(width: 12),
@@ -152,7 +151,7 @@ final class _NotificationCard extends StatelessWidget {
                           padding: EdgeInsets.only(left: 8),
                           child: CircleAvatar(
                             radius: 4,
-                            backgroundColor: Color(0xFF1E88E5),
+                            backgroundColor: AppColors.primary,
                           ),
                         ),
                     ],

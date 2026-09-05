@@ -113,7 +113,7 @@ final class TaskController extends GetxController {
     errorMessage.value = null;
     try {
       final result = await _repository.deleteTask(taskId);
-      return result.when(
+      final bool success = result.when<bool>(
         success: (_) {
           subTasks.remove(taskId);
           _setTasks(tasks.where((task) => task.id != taskId).toList());
@@ -121,6 +121,7 @@ final class TaskController extends GetxController {
         },
         failure: _recordFailure,
       );
+      return success;
     } finally {
       isSubmitting.value = false;
     }
@@ -143,13 +144,14 @@ final class TaskController extends GetxController {
         taskId: taskId,
         title: title.trim(),
       );
-      return result.when(
+      final bool success = result.when<bool>(
         success: (created) {
           subTasks[taskId] = [...?subTasks[taskId], created];
           return true;
         },
         failure: _recordFailure,
       );
+      return success;
     } finally {
       isSubmitting.value = false;
     }
@@ -164,13 +166,14 @@ final class TaskController extends GetxController {
         subTaskId: subTask.id,
         title: title.trim(),
       );
-      return result.when(
+      final bool success = result.when<bool>(
         success: (updated) {
           _replaceSubTask(updated);
           return true;
         },
         failure: _recordFailure,
       );
+      return success;
     } finally {
       isSubmitting.value = false;
     }
@@ -183,13 +186,14 @@ final class TaskController extends GetxController {
     errorMessage.value = null;
     try {
       final result = await _repository.completeSubTask(subTask.id);
-      return result.when(
+      final bool success = result.when<bool>(
         success: (updated) {
           _replaceSubTask(updated);
           return true;
         },
         failure: _recordFailure,
       );
+      return success;
     } finally {
       isSubmitting.value = false;
     }
@@ -201,16 +205,18 @@ final class TaskController extends GetxController {
     errorMessage.value = null;
     try {
       final result = await _repository.deleteSubTask(subTask.id);
-      return result.when(
+      final bool success = result.when<bool>(
         success: (_) {
           subTasks[subTask.taskId] = [
-            for (final item in subTasks[subTask.taskId] ?? const <SubTaskModel>[])
+            for (final item
+                in subTasks[subTask.taskId] ?? const <SubTaskModel>[])
               if (item.id != subTask.id) item,
           ];
           return true;
         },
         failure: _recordFailure,
       );
+      return success;
     } finally {
       isSubmitting.value = false;
     }
@@ -225,13 +231,14 @@ final class TaskController extends GetxController {
     errorMessage.value = null;
     try {
       final result = await operation();
-      return result.when(
+      final bool success = result.when<bool>(
         success: (task) {
           _setTasks(update(task));
           return true;
         },
         failure: _recordFailure,
       );
+      return success;
     } finally {
       isSubmitting.value = false;
     }

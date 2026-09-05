@@ -45,18 +45,14 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
 
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a milestone name'),
-        ),
+        const SnackBar(content: Text('Please enter a milestone name')),
       );
       return;
     }
 
     if (_tasks.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please add at least one task'),
-        ),
+        const SnackBar(content: Text('Please add at least one task')),
       );
       return;
     }
@@ -83,9 +79,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
             controller: controller,
             autofocus: true,
             maxLength: 100,
-            decoration: const InputDecoration(
-              hintText: 'Enter task name',
-            ),
+            decoration: const InputDecoration(hintText: 'Enter task name'),
           ),
           actions: [
             TextButton(
@@ -120,9 +114,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
 
   // Edit an existing task
   void _editTask(int index) {
-    final controller = TextEditingController(
-      text: _tasks[index],
-    );
+    final controller = TextEditingController(text: _tasks[index]);
 
     showDialog(
       context: context,
@@ -133,9 +125,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
             controller: controller,
             autofocus: true,
             maxLength: 100,
-            decoration: const InputDecoration(
-              hintText: 'Enter task name',
-            ),
+            decoration: const InputDecoration(hintText: 'Enter task name'),
           ),
           actions: [
             TextButton(
@@ -174,10 +164,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24.0,
-            vertical: 16.0,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -198,9 +185,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                           offset: const Offset(0, 3),
                         ),
                       ],
-                      border: Border.all(
-                        color: Colors.grey.shade100,
-                      ),
+                      border: Border.all(color: Colors.grey.shade100),
                     ),
                     child: IconButton(
                       icon: const Icon(
@@ -225,9 +210,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                     onPressed: _saveMilestone,
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFF2979FF),
-                      side: BorderSide(
-                        color: Colors.grey.shade300,
-                      ),
+                      side: BorderSide(color: Colors.grey.shade300),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -271,10 +254,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                   ),
                   Text(
                     '${_nameController.text.length}/60',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey.shade400,
-                    ),
+                    style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
                   ),
                 ],
               ),
@@ -302,15 +282,11 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade200,
-                    ),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade200,
-                    ),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -340,10 +316,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                   ),
                   Text(
                     '${_descController.text.length}/250',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey.shade400,
-                    ),
+                    style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
                   ),
                 ],
               ),
@@ -372,15 +345,11 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade200,
-                    ),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade200,
-                    ),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -469,9 +438,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                   decoration: BoxDecoration(
                     color: Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: Colors.grey.shade200,
-                    ),
+                    border: Border.all(color: Colors.grey.shade200),
                   ),
                   child: Column(
                     children: [
@@ -513,9 +480,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: Colors.grey.shade200,
-                    ),
+                    border: Border.all(color: Colors.grey.shade200),
                   ),
                   child: Row(
                     children: [
@@ -569,11 +534,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
               // ==========================================
               TextButton.icon(
                 onPressed: _addTask,
-                icon: const Icon(
-                  Icons.add,
-                  size: 16,
-                  color: Color(0xFF2979FF),
-                ),
+                icon: const Icon(Icons.add, size: 16, color: Color(0xFF2979FF)),
                 label: const Text(
                   'Add Task',
                   style: TextStyle(
@@ -582,9 +543,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                     color: Color(0xFF2979FF),
                   ),
                 ),
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                ),
+                style: TextButton.styleFrom(padding: EdgeInsets.zero),
               ),
 
               const SizedBox(height: 40),

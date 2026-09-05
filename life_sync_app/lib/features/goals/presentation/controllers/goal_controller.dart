@@ -116,7 +116,7 @@ final class GoalController extends GetxController {
   Future<bool> deleteGoal(int id) async {
     if (!_begin()) return false;
     try {
-      return (await _repository.deleteGoal(id)).when(
+      final result = (await _repository.deleteGoal(id)).when<bool>(
         success: (_) {
           milestones.remove(id);
           schedules.remove(id);
@@ -125,6 +125,7 @@ final class GoalController extends GetxController {
         },
         failure: _failure,
       );
+      return result;
     } finally {
       isSubmitting.value = false;
     }
@@ -168,14 +169,16 @@ final class GoalController extends GetxController {
   Future<bool> deleteMilestone(GoalMilestoneModel milestone) async {
     if (!_begin()) return false;
     try {
-      return (await _repository.deleteMilestone(milestone.id)).when(
-        success: (_) {
-          milestones[milestone.goalId] = [...?milestones[milestone.goalId]]
-            ..removeWhere((item) => item.id == milestone.id);
-          return true;
-        },
-        failure: _failure,
-      );
+      final result = (await _repository.deleteMilestone(milestone.id))
+          .when<bool>(
+            success: (_) {
+              milestones[milestone.goalId] = [...?milestones[milestone.goalId]]
+                ..removeWhere((item) => item.id == milestone.id);
+              return true;
+            },
+            failure: _failure,
+          );
+      return result;
     } finally {
       isSubmitting.value = false;
     }
@@ -203,16 +206,18 @@ final class GoalController extends GetxController {
   Future<bool> deleteSchedule(GoalScheduleModel schedule) async {
     if (!_begin()) return false;
     try {
-      return (await _repository.deleteSchedule(schedule.goalScheduleId)).when(
-        success: (_) {
-          schedules[schedule.goalId] = [...?schedules[schedule.goalId]]
-            ..removeWhere(
-              (item) => item.goalScheduleId == schedule.goalScheduleId,
-            );
-          return true;
-        },
-        failure: _failure,
-      );
+      final result = (await _repository.deleteSchedule(schedule.goalScheduleId))
+          .when<bool>(
+            success: (_) {
+              schedules[schedule.goalId] = [...?schedules[schedule.goalId]]
+                ..removeWhere(
+                  (item) => item.goalScheduleId == schedule.goalScheduleId,
+                );
+              return true;
+            },
+            failure: _failure,
+          );
+      return result;
     } finally {
       isSubmitting.value = false;
     }
@@ -224,13 +229,14 @@ final class GoalController extends GetxController {
   ) async {
     if (!_begin()) return false;
     try {
-      return (await operation()).when(
+      final result = (await operation()).when<bool>(
         success: (goal) {
           _setGoals(update(goal));
           return true;
         },
         failure: _failure,
       );
+      return result;
     } finally {
       isSubmitting.value = false;
     }
@@ -247,13 +253,14 @@ final class GoalController extends GetxController {
   ) async {
     if (!_begin()) return false;
     try {
-      return (await operation()).when(
+      final result = (await operation()).when<bool>(
         success: (item) {
           milestones[goalId] = update(item, milestones[goalId] ?? const []);
           return true;
         },
         failure: _failure,
       );
+      return result;
     } finally {
       isSubmitting.value = false;
     }
@@ -268,7 +275,7 @@ final class GoalController extends GetxController {
   }) async {
     if (!_begin()) return false;
     try {
-      return (await operation()).when(
+      final result = (await operation()).when<bool>(
         success: (item) {
           schedules[goalId] = update(item, schedules[goalId] ?? const []);
           if (refreshGoals) loadGoals(refresh: true);
@@ -276,6 +283,7 @@ final class GoalController extends GetxController {
         },
         failure: _failure,
       );
+      return result;
     } finally {
       isSubmitting.value = false;
     }

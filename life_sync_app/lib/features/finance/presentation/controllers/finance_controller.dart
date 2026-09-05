@@ -275,30 +275,31 @@ final class FinanceController extends GetxController {
       load(refresh: true);
     },
   );
-  Future<bool> deleteEntry(FinanceEntryModel entry) =>
-      _delete(() => _repository.deleteEntry(entry), () {
-        _setData(
-          FinanceData(
-            categories: data.categories,
-            budgets: data.budgets,
-            incomes: data.incomes
-                .where(
-                  (item) =>
-                      !(entry.type == FinanceEntryType.income &&
-                          item.id == entry.id),
-                )
-                .toList(),
-            expenses: data.expenses
-                .where(
-                  (item) =>
-                      !(entry.type == FinanceEntryType.expense &&
-                          item.id == entry.id),
-                )
-                .toList(),
-          ),
-        );
-        load(refresh: true);
-      });
+  Future<bool> deleteEntry(
+    FinanceEntryModel entry,
+  ) => _delete(() => _repository.deleteEntry(entry), () {
+    _setData(
+      FinanceData(
+        categories: data.categories,
+        budgets: data.budgets,
+        incomes: data.incomes
+            .where(
+              (item) =>
+                  !(entry.type == FinanceEntryType.income &&
+                      item.id == entry.id),
+            )
+            .toList(),
+        expenses: data.expenses
+            .where(
+              (item) =>
+                  !(entry.type == FinanceEntryType.expense &&
+                      item.id == entry.id),
+            )
+            .toList(),
+      ),
+    );
+    load(refresh: true);
+  });
 
   Future<bool> _mutate<T>(
     Future<ApiResult<T>> Function() operation,
@@ -306,13 +307,14 @@ final class FinanceController extends GetxController {
   ) async {
     if (!_begin()) return false;
     try {
-      return (await operation()).when(
+      final result = (await operation()).when<bool>(
         success: (item) {
           update(item);
           return true;
         },
         failure: _failure,
       );
+      return result;
     } finally {
       isSubmitting.value = false;
     }
@@ -324,13 +326,14 @@ final class FinanceController extends GetxController {
   ) async {
     if (!_begin()) return false;
     try {
-      return (await operation()).when(
+      final result = (await operation()).when<bool>(
         success: (_) {
           update();
           return true;
         },
         failure: _failure,
       );
+      return result;
     } finally {
       isSubmitting.value = false;
     }

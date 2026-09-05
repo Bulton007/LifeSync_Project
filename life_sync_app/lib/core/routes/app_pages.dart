@@ -16,6 +16,7 @@ import 'package:life_sync_app/features/personal_progress/presentation/pages/pers
 import 'package:life_sync_app/features/goals/presentation/bindings/goal_binding.dart';
 import 'package:life_sync_app/features/goals/presentation/pages/create_goal_first_step_screen.dart';
 import 'package:life_sync_app/features/goals/presentation/pages/goal_details_screen.dart';
+import 'package:life_sync_app/features/home/presentation/pages/assistant_screen.dart';
 import 'package:life_sync_app/features/tasks/presentation/bindings/task_binding.dart';
 import 'package:life_sync_app/features/tasks/presentation/pages/add_to_do_list_full_screen.dart';
 import 'package:life_sync_app/features/tasks/presentation/pages/to_do_list_screen.dart';
@@ -144,6 +145,11 @@ abstract final class AppPages {
       name: AppRoutes.notifications,
       page: () => const NotificationHistoryScreen(),
       binding: NotificationBinding(),
+      middlewares: [AuthGuard()],
+    ),
+    GetPage<dynamic>(
+      name: AppRoutes.assistant,
+      page: () => const AssistantScreen(),
       middlewares: [AuthGuard()],
     ),
   ];

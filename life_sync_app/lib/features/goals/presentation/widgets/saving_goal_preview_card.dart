@@ -41,9 +41,7 @@ class SavingGoalPreviewCard extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppRadius.lg),
-            border: Border.all(
-              color: AppColors.border,
-            ),
+            border: Border.all(color: AppColors.border),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,15 +57,9 @@ class SavingGoalPreviewCard extends StatelessWidget {
                     height: 36,
                     decoration: BoxDecoration(
                       color: backgroundColor,
-                      borderRadius: BorderRadius.circular(
-                        AppRadius.sm,
-                      ),
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
                     ),
-                    child: Icon(
-                      icon,
-                      size: 20,
-                      color: color,
-                    ),
+                    child: Icon(icon, size: 20, color: color),
                   ),
                   const Spacer(),
                   Container(
@@ -77,9 +69,7 @@ class SavingGoalPreviewCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: backgroundColor,
-                      borderRadius: BorderRadius.circular(
-                        AppRadius.pill,
-                      ),
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
                     ),
                     child: Text(
                       '$percentage%',
@@ -97,7 +87,6 @@ class SavingGoalPreviewCard extends StatelessWidget {
               // ==================================================
               // GOAL INFORMATION
               // ==================================================
-
               Text(
                 title,
                 maxLines: 1,
@@ -121,18 +110,13 @@ class SavingGoalPreviewCard extends StatelessWidget {
               // ==================================================
               // PROGRESS
               // ==================================================
-
               ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  AppRadius.pill,
-                ),
+                borderRadius: BorderRadius.circular(AppRadius.pill),
                 child: LinearProgressIndicator(
                   value: safeProgress,
                   minHeight: 6,
                   backgroundColor: backgroundColor,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    color,
-                  ),
+                  valueColor: AlwaysStoppedAnimation<Color>(color),
                 ),
               ),
             ],

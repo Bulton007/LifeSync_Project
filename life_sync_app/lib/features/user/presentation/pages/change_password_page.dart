@@ -61,9 +61,8 @@ final class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   labelText: 'Current password',
                   prefixIcon: const Icon(Icons.lock_outline_rounded),
                   suffixIcon: IconButton(
-                    onPressed: () => setState(
-                      () => _obscureCurrent = !_obscureCurrent,
-                    ),
+                    onPressed: () =>
+                        setState(() => _obscureCurrent = !_obscureCurrent),
                     icon: Icon(
                       _obscureCurrent
                           ? Icons.visibility_off_outlined
@@ -122,7 +121,9 @@ final class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   padding: const EdgeInsets.only(top: AppSpacing.md),
                   child: Text(
                     message,
-                    style: AppTextStyles.caption.copyWith(color: AppColors.error),
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.error,
+                    ),
                   ),
                 );
               }),

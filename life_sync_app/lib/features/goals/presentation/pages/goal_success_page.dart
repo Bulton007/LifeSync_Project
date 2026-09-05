@@ -27,9 +27,7 @@ class GoalSuccessPage extends StatelessWidget {
               Text(
                 'The journey starts now!',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.titleXL.copyWith(
-                  color: AppColors.primary,
-                ),
+                style: AppTextStyles.titleXL.copyWith(color: AppColors.primary),
               ),
 
               const SizedBox(height: AppSpacing.sm),
@@ -107,9 +105,7 @@ class _SuccessIllustration extends StatelessWidget {
               height: 90,
               decoration: BoxDecoration(
                 color: AppColors.primary50,
-                borderRadius: BorderRadius.circular(
-                  AppRadius.pill,
-                ),
+                borderRadius: BorderRadius.circular(AppRadius.pill),
               ),
             ),
           ),
@@ -120,9 +116,7 @@ class _SuccessIllustration extends StatelessWidget {
             child: Icon(
               Icons.landscape_outlined,
               size: 145,
-              color: AppColors.primary200.withValues(
-                alpha: 0.75,
-              ),
+              color: AppColors.primary200.withValues(alpha: 0.75),
             ),
           ),
 
@@ -139,21 +133,13 @@ class _SuccessIllustration extends StatelessWidget {
           Positioned(
             bottom: 58,
             right: 44,
-            child: Container(
-              width: 3,
-              height: 70,
-              color: AppColors.primary,
-            ),
+            child: Container(width: 3, height: 70, color: AppColors.primary),
           ),
 
           const Positioned(
             bottom: 112,
             right: 22,
-            child: Icon(
-              Icons.flag,
-              size: 38,
-              color: AppColors.primary,
-            ),
+            child: Icon(Icons.flag, size: 38, color: AppColors.primary),
           ),
 
           Positioned(
@@ -166,10 +152,7 @@ class _SuccessIllustration extends StatelessWidget {
                 color: AppColors.surface,
                 shape: BoxShape.circle,
                 boxShadow: [
-                  BoxShadow(
-                    color: Color(0x18000000),
-                    blurRadius: 10,
-                  ),
+                  BoxShadow(color: Color(0x18000000), blurRadius: 10),
                 ],
               ),
               child: const Icon(
@@ -213,25 +196,17 @@ class _SuccessSummaryItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.primary50,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(
-          color: AppColors.primary100,
-        ),
+        border: Border.all(color: AppColors.primary100),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon,
-            size: 19,
-            color: AppColors.primary,
-          ),
+          Icon(icon, size: 19, color: AppColors.primary),
           const SizedBox(height: AppSpacing.xs),
           Text(
             label,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.micro.copyWith(
-              color: AppColors.primary,
-            ),
+            style: AppTextStyles.micro.copyWith(color: AppColors.primary),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
@@ -240,10 +215,7 @@ class _SuccessSummaryItem extends StatelessWidget {
             style: AppTextStyles.button,
           ),
           if (secondaryValue != null)
-            Text(
-              secondaryValue!,
-              style: AppTextStyles.micro,
-            ),
+            Text(secondaryValue!, style: AppTextStyles.micro),
         ],
       ),
     );

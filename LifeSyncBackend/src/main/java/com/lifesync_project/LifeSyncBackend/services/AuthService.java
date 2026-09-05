@@ -1,7 +1,7 @@
 package com.lifesync_project.LifeSyncBackend.services;
 
 import com.lifesync_project.LifeSyncBackend.dto.Auth.*;
-import com.lifesync_project.LifeSyncBackend.dto.Auth.RegisterRequest;
+import com.lifesync_project.LifeSyncBackend.dto.Users.RegisterRequest;
 import com.lifesync_project.LifeSyncBackend.entity.Users;
 import com.lifesync_project.LifeSyncBackend.exception.BadRequestException;
 import com.lifesync_project.LifeSyncBackend.exception.DuplicateResourceException;
@@ -35,20 +35,21 @@ public class AuthService {
      * Register
      */
     public String register(RegisterRequest request) {
+        String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
 
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new DuplicateResourceException("Email already exists.");
+        if (userRepository.existsByEmailIgnoreCase(email)) {
+            throw new DuplicateResourceException("email already exists");
         }
 
         if (request.getPhoneNumber() != null
-                && userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
-            throw new DuplicateResourceException("Phone number already exists.");
+                && userRepository.existsByPhoneNumber(request.getPhoneNumber().trim())) {
+            throw new DuplicateResourceException("phone number already exists");
         }
 
         Users user = Users.builder()
-                .fullName(request.getFullName())
-                .email(request.getEmail())
-                .phoneNumber(request.getPhoneNumber())
+                .fullName(request.getFullName().trim())
+                .email(email)
+                .phoneNumber(request.getPhoneNumber() == null ? null : request.getPhoneNumber().trim())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .verified(false)
                 .otpCode(otpGenerator.generateOtp())
@@ -68,20 +69,21 @@ public class AuthService {
      * Login
      */
     public LoginResponse login(LoginRequest request) {
+        String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
 
-        Users user = userRepository.findByEmail(request.getEmail())
+        Users user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                        new ResourceNotFoundException("email not found"));
 
         if (!passwordEncoder.matches(
                 request.getPassword(),
                 user.getPassword())) {
 
-            throw new UnauthorizedException("Incorrect email or password.");
+            throw new UnauthorizedException("password wrong");
         }
 
         if (!user.getVerified()) {
-            throw new UnauthorizedException("Account is not verified.");
+            throw new UnauthorizedException("account not verified");
         }
 
         return LoginResponse.builder()
@@ -97,10 +99,11 @@ public class AuthService {
      * Verify OTP
      */
     public String verifyOtp(VerifyOtpRequest request) {
+        String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
 
-        Users user = userRepository.findByEmail(request.getEmail())
+        Users user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                        new ResourceNotFoundException("email not found"));
 
         if (user.getOtpCode() == null || !user.getOtpCode().equals(request.getOtpCode())) {
             throw new BadRequestException("Invalid OTP.");
@@ -123,10 +126,11 @@ public class AuthService {
      * Resend OTP
      */
     public String resendOtp(String email) {
+        String normalizedEmail = email == null ? "" : email.trim().toLowerCase();
 
-        Users user = userRepository.findByEmail(email)
+        Users user = userRepository.findByEmailIgnoreCase(normalizedEmail)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                        new ResourceNotFoundException("email not found"));
 
         if (Boolean.TRUE.equals(user.getVerified())) {
             throw new BadRequestException("Account is already verified.");
@@ -150,10 +154,11 @@ public class AuthService {
      * Forgot Password
      */
     public String forgotPassword(ForgotPasswordRequest request) {
+        String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
 
-        Users user = userRepository.findByEmail(request.getEmail())
+        Users user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                        new ResourceNotFoundException("email not found"));
 
         user.setOtpCode(otpGenerator.generateOtp());
 
@@ -176,17 +181,18 @@ public class AuthService {
      */
     public String resetPassword(
             ResetPasswordRequest request) {
+        String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
 
-        Users user = userRepository.findByEmail(request.getEmail())
+        Users user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                        new ResourceNotFoundException("email not found"));
 
         if (user.getOtpCode() == null || !user.getOtpCode().equals(request.getOtpCode())) {
-            throw new BadRequestException("OTP invalid.");
+            throw new BadRequestException("invalid otp");
         }
 
         if (user.getOtpExpiredAt() == null || user.getOtpExpiredAt().isBefore(LocalDateTime.now())) {
-            throw new BadRequestException("OTP expired.");
+            throw new BadRequestException("otp expired");
         }
 
         user.setPassword(
@@ -214,7 +220,7 @@ public class AuthService {
                 request.getCurrentPassword(),
                 user.getPassword())) {
 
-            throw new BadRequestException("Current password incorrect.");
+            throw new BadRequestException("password wrong");
         }
 
         user.setPassword(

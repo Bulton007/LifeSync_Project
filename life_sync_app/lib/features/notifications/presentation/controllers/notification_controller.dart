@@ -78,13 +78,14 @@ final class NotificationController extends GetxController {
   ) async {
     if (!_begin()) return false;
     try {
-      return (await operation()).when(
+      final result = (await operation()).when<bool>(
         success: (item) {
           update(item);
           return true;
         },
         failure: _failure,
       );
+      return result;
     } finally {
       isSubmitting.value = false;
     }
@@ -96,13 +97,14 @@ final class NotificationController extends GetxController {
   ) async {
     if (!_begin()) return false;
     try {
-      return (await operation()).when(
+      final result = (await operation()).when<bool>(
         success: (_) {
           update();
           return true;
         },
         failure: _failure,
       );
+      return result;
     } finally {
       isSubmitting.value = false;
     }

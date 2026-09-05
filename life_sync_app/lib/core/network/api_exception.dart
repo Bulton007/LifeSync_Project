@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 
 enum ApiFailureType {
@@ -85,6 +86,27 @@ final class ApiException implements Exception {
   }
 
   static String? _extractMessage(Object? data) {
+    if (data is String) {
+      final trimmed = data.trim();
+      if (trimmed.isEmpty) return null;
+      try {
+        final decoded = jsonDecode(trimmed);
+        if (decoded is Map<Object?, Object?>) {
+          final message = decoded['message'];
+          if (message is String && message.trim().isNotEmpty) {
+            return message.trim();
+          }
+          final error = decoded['error'];
+          if (error is String && error.trim().isNotEmpty) {
+            return error.trim();
+          }
+        }
+      } catch (_) {
+        // Not a JSON string; return trimmed string
+      }
+      return trimmed;
+    }
+
     if (data is Map<Object?, Object?>) {
       final message = data['message'];
       if (message is String && message.trim().isNotEmpty) {
@@ -95,10 +117,6 @@ final class ApiException implements Exception {
       if (error is String && error.trim().isNotEmpty) {
         return error.trim();
       }
-    }
-
-    if (data is String && data.trim().isNotEmpty) {
-      return data.trim();
     }
 
     return null;

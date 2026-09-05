@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class FinancialDashboardScreen extends StatefulWidget {
@@ -55,7 +56,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.08),
+                              color: Colors.grey.withValues(alpha: 0.08),
                               blurRadius: 8,
                               offset: const Offset(0, 3),
                             ),
@@ -130,7 +131,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.04),
+                      color: Colors.grey.withValues(alpha: 0.04),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -178,7 +179,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.06),
+                      color: Colors.grey.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -216,7 +217,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                     _buildSummaryItem(
                       icon: Icons.savings_outlined,
                       iconBg: Colors.blue.shade50,
-                      iconColor: const Color(0xFF1E88E5),
+                      iconColor: AppColors.primary,
                       title: 'Savings',
                       amount: '\$70.00',
                       change: '8.2% vs Last Quoter',
@@ -234,7 +235,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.06),
+                      color: Colors.grey.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -299,7 +300,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                         const SizedBox(width: 16),
                         _buildLegendItem(Colors.red, 'Expense'),
                         const SizedBox(width: 16),
-                        _buildLegendItem(const Color(0xFF1E88E5), 'Saving'),
+                        _buildLegendItem(AppColors.primary, 'Saving'),
                       ],
                     ),
                   ],
@@ -315,7 +316,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.06),
+                      color: Colors.grey.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -355,7 +356,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                                 'View All',
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: Color(0xFF1E88E5),
+                                  color: AppColors.primary,
                                 ),
                               ),
                             ),
@@ -655,7 +656,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
               Container(
                 width: 8,
                 height: 80 * savingFactor,
-                color: const Color(0xFF1E88E5),
+                color: AppColors.primary,
               ),
           ],
         ),
@@ -691,7 +692,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
         Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(6),
           ),
           child: Icon(icon, size: 12, color: color),

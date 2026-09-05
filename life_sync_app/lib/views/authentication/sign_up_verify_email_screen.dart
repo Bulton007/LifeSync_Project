@@ -27,9 +27,16 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
   @override
   void initState() {
     super.initState();
-    _arguments = Get.arguments as AuthFlowArguments;
+    _arguments = Get.arguments is AuthFlowArguments
+        ? Get.arguments as AuthFlowArguments
+        : const AuthFlowArguments(
+            email: '',
+            purpose: AuthFlowPurpose.registration,
+          );
     _authController = Get.find<AuthController>();
-    _authController.clearError();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _authController.clearError();
+    });
   }
 
   @override
@@ -86,7 +93,9 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
     final parts = _arguments.email.split('@');
     if (parts.length != 2) return _arguments.email;
     final local = parts.first;
-    final visible = local.length <= 2 ? local.substring(0, 1) : local.substring(0, 2);
+    final visible = local.length <= 2
+        ? local.substring(0, 1)
+        : local.substring(0, 2);
     return '$visible***@${parts.last}';
   }
 
@@ -107,7 +116,7 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.08),
+                      color: Colors.grey.withValues(alpha: 0.08),
                       blurRadius: 8,
                       offset: const Offset(0, 3),
                     ),
@@ -145,15 +154,17 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
 
               // Error Message (shown only when wrong OTP is entered)
               if (_hasError || _authController.errorMessage.value != null) ...[
-                Obx(() => Text(
-                  _authController.errorMessage.value ??
-                      'Incorrect OTP! Check it and fill it in again.',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.red,
+                Obx(
+                  () => Text(
+                    _authController.errorMessage.value ??
+                        'Incorrect OTP! Check it and fill it in again.',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.red,
+                    ),
                   ),
-                )),
+                ),
                 const SizedBox(height: 12),
               ],
 
@@ -255,36 +266,39 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
               // Verify Action Button (Blue when active, Grey when incomplete)
               SizedBox(
                 width: double.infinity,
-                child: Obx(() => ElevatedButton(
-                  onPressed: _isComplete && !_authController.isSubmitting.value
-                      ? _verifyOtp
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2979FF),
-                    disabledBackgroundColor: const Color(0xFFE0E0E0),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                child: Obx(
+                  () => ElevatedButton(
+                    onPressed:
+                        _isComplete && !_authController.isSubmitting.value
+                        ? _verifyOtp
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2979FF),
+                      disabledBackgroundColor: const Color(0xFFE0E0E0),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: _isComplete ? 2 : 0,
                     ),
-                    elevation: _isComplete ? 2 : 0,
+                    child: _authController.isSubmitting.value
+                        ? const SizedBox.square(
+                            dimension: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            'Verify',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
-                  child: _authController.isSubmitting.value
-                      ? const SizedBox.square(
-                          dimension: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Text(
-                          'Verify',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                )),
+                ),
               ),
             ],
           ),

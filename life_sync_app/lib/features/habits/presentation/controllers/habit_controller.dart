@@ -129,7 +129,7 @@ final class HabitController extends GetxController {
     errorMessage.value = null;
     try {
       final result = await _repository.deleteHabit(habitId);
-      return result.when(
+      final bool success = result.when<bool>(
         success: (_) {
           logs.removeWhere((log) => log.habitId == habitId);
           _setHabits(
@@ -139,6 +139,7 @@ final class HabitController extends GetxController {
         },
         failure: _recordFailure,
       );
+      return success;
     } finally {
       isSubmitting.value = false;
     }
@@ -159,7 +160,7 @@ final class HabitController extends GetxController {
         date: date,
         note: note,
       );
-      return result.when(
+      final bool success = result.when<bool>(
         success: (log) {
           logs.insert(0, log);
           if (_sameDate(date, DateTime.now())) loadHabits(refresh: true);
@@ -167,6 +168,7 @@ final class HabitController extends GetxController {
         },
         failure: _recordFailure,
       );
+      return success;
     } finally {
       isSubmitting.value = false;
     }
@@ -181,13 +183,14 @@ final class HabitController extends GetxController {
     errorMessage.value = null;
     try {
       final result = await operation();
-      return result.when(
+      final bool success = result.when<bool>(
         success: (habit) {
           _setHabits(update(habit));
           return true;
         },
         failure: _recordFailure,
       );
+      return success;
     } finally {
       isSubmitting.value = false;
     }

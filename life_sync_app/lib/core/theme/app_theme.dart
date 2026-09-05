@@ -4,6 +4,7 @@ import 'package:life_sync_app/core/theme/app_text_styles.dart';
 
 import 'app_colors.dart';
 import 'app_radius.dart';
+
 abstract final class AppTheme {
   static ThemeData get light {
     final baseTextTheme = TextTheme(
@@ -25,7 +26,6 @@ abstract final class AppTheme {
       // ============================================================
       // GLOBAL COLORS
       // ============================================================
-
       scaffoldBackgroundColor: AppColors.background,
 
       colorScheme: const ColorScheme.light(
@@ -45,14 +45,12 @@ abstract final class AppTheme {
       // ============================================================
       // TYPOGRAPHY
       // ============================================================
-
       fontFamily: GoogleFonts.poppins().fontFamily,
       textTheme: baseTextTheme,
 
       // ============================================================
       // APP BAR
       // ============================================================
-
       appBarTheme: AppBarTheme(
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -61,18 +59,13 @@ abstract final class AppTheme {
         foregroundColor: AppColors.textPrimary,
         surfaceTintColor: Colors.transparent,
         titleTextStyle: AppTextStyles.titleM,
-        iconTheme: const IconThemeData(
-          color: AppColors.textPrimary,
-        ),
-        actionsIconTheme: const IconThemeData(
-          color: AppColors.textPrimary,
-        ),
+        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        actionsIconTheme: const IconThemeData(color: AppColors.textPrimary),
       ),
 
       // ============================================================
       // CARDS
       // ============================================================
-
       cardTheme: CardThemeData(
         elevation: 0,
         color: AppColors.surface,
@@ -80,16 +73,13 @@ abstract final class AppTheme {
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          side: const BorderSide(
-            color: AppColors.border,
-          ),
+          side: const BorderSide(color: AppColors.border),
         ),
       ),
 
       // ============================================================
       // DIVIDERS
       // ============================================================
-
       dividerColor: AppColors.border,
 
       dividerTheme: const DividerThemeData(
@@ -101,7 +91,6 @@ abstract final class AppTheme {
       // ============================================================
       // INPUT FIELDS
       // ============================================================
-
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.surface,
@@ -109,57 +98,40 @@ abstract final class AppTheme {
           color: AppColors.textSecondary,
         ),
         labelStyle: AppTextStyles.bodyPrimary,
-        errorStyle: AppTextStyles.caption.copyWith(
-          color: AppColors.error,
-        ),
+        errorStyle: AppTextStyles.caption.copyWith(color: AppColors.error),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: const BorderSide(
-            color: AppColors.border,
-          ),
+          borderSide: const BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: const BorderSide(
-            color: AppColors.border,
-          ),
+          borderSide: const BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: const BorderSide(
-            color: AppColors.primary,
-            width: 1.5,
-          ),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: const BorderSide(
-            color: AppColors.disabled,
-          ),
+          borderSide: const BorderSide(color: AppColors.disabled),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: const BorderSide(
-            color: AppColors.error,
-          ),
+          borderSide: const BorderSide(color: AppColors.error),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: const BorderSide(
-            color: AppColors.error,
-            width: 1.5,
-          ),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.5),
         ),
       ),
 
       // ============================================================
       // ELEVATED BUTTON
       // ============================================================
-
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,
@@ -169,10 +141,7 @@ abstract final class AppTheme {
           disabledForegroundColor: AppColors.textSecondary,
           textStyle: AppTextStyles.button,
           minimumSize: const Size(0, 48),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 14,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
@@ -182,7 +151,6 @@ abstract final class AppTheme {
       // ============================================================
       // OUTLINED BUTTON
       // ============================================================
-
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           elevation: 0,
@@ -190,13 +158,8 @@ abstract final class AppTheme {
           disabledForegroundColor: AppColors.textDisabled,
           textStyle: AppTextStyles.button,
           minimumSize: const Size(0, 48),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 14,
-          ),
-          side: const BorderSide(
-            color: AppColors.primary,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          side: const BorderSide(color: AppColors.primary),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
@@ -206,17 +169,13 @@ abstract final class AppTheme {
       // ============================================================
       // TEXT BUTTON
       // ============================================================
-
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           elevation: 0,
           foregroundColor: AppColors.primary,
           disabledForegroundColor: AppColors.textDisabled,
           textStyle: AppTextStyles.button,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 8,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.sm),
           ),
@@ -226,7 +185,6 @@ abstract final class AppTheme {
       // ============================================================
       // ICON BUTTON
       // ============================================================
-
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
           foregroundColor: AppColors.textPrimary,
@@ -237,9 +195,7 @@ abstract final class AppTheme {
       // ============================================================
       // FLOATING ACTION BUTTON
       // ============================================================
-
-      floatingActionButtonTheme:
-          const FloatingActionButtonThemeData(
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
         elevation: 4,
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.textOnPrimary,
@@ -249,35 +205,27 @@ abstract final class AppTheme {
       // ============================================================
       // ICONS
       // ============================================================
-
-      iconTheme: const IconThemeData(
-        color: AppColors.textPrimary,
-      ),
+      iconTheme: const IconThemeData(color: AppColors.textPrimary),
 
       // ============================================================
       // CHECKBOX
       // ============================================================
-
       checkboxTheme: CheckboxThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.xs),
         ),
-        side: const BorderSide(
-          color: AppColors.border,
-        ),
-        fillColor: WidgetStateProperty.resolveWith<Color?>(
-          (states) {
-            if (states.contains(WidgetState.disabled)) {
-              return AppColors.disabled;
-            }
+        side: const BorderSide(color: AppColors.border),
+        fillColor: WidgetStateProperty.resolveWith<Color?>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return AppColors.disabled;
+          }
 
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primary;
-            }
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.primary;
+          }
 
-            return Colors.transparent;
-          },
-        ),
+          return Colors.transparent;
+        }),
         checkColor: const WidgetStatePropertyAll<Color>(
           AppColors.textOnPrimary,
         ),
@@ -286,52 +234,43 @@ abstract final class AppTheme {
       // ============================================================
       // RADIO
       // ============================================================
-
       radioTheme: RadioThemeData(
-        fillColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(WidgetState.disabled)) {
-              return AppColors.disabledBackground;
-            }
+        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return AppColors.disabledBackground;
+          }
 
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primary;
-            }
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.primary;
+          }
 
-            return AppColors.textSecondary;
-          },
-        ),
+          return AppColors.textSecondary;
+        }),
       ),
 
       // ============================================================
       // SWITCH
       // ============================================================
-
       switchTheme: SwitchThemeData(
-        thumbColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(WidgetState.disabled)) {
-              return AppColors.disabledBackground;
-            }
+        thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return AppColors.disabledBackground;
+          }
 
-            return Colors.white;
-          },
-        ),
-        trackColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(WidgetState.disabled)) {
-              return AppColors.disabled;
-            }
-
-            if (states.contains(WidgetState.selected)) {
-              return AppColors.primary;
-            }
-
+          return Colors.white;
+        }),
+        trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
             return AppColors.disabled;
-          },
-        ),
-        trackOutlineColor:
-            const WidgetStatePropertyAll<Color>(
+          }
+
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.primary;
+          }
+
+          return AppColors.disabled;
+        }),
+        trackOutlineColor: const WidgetStatePropertyAll<Color>(
           Colors.transparent,
         ),
       ),
@@ -339,7 +278,6 @@ abstract final class AppTheme {
       // ============================================================
       // PROGRESS INDICATORS
       // ============================================================
-
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: AppColors.primary,
         linearTrackColor: AppColors.disabled,
@@ -349,7 +287,6 @@ abstract final class AppTheme {
       // ============================================================
       // CHIPS
       // ============================================================
-
       chipTheme: ChipThemeData(
         elevation: 0,
         backgroundColor: AppColors.accent,
@@ -359,9 +296,7 @@ abstract final class AppTheme {
         secondaryLabelStyle: AppTextStyles.caption.copyWith(
           color: AppColors.primary700,
         ),
-        side: const BorderSide(
-          color: AppColors.border,
-        ),
+        side: const BorderSide(color: AppColors.border),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.pill),
         ),
@@ -370,7 +305,6 @@ abstract final class AppTheme {
       // ============================================================
       // LIST TILES
       // ============================================================
-
       listTileTheme: const ListTileThemeData(
         iconColor: AppColors.textSecondary,
         textColor: AppColors.textPrimary,
@@ -380,7 +314,6 @@ abstract final class AppTheme {
       // ============================================================
       // DIALOG
       // ============================================================
-
       dialogTheme: DialogThemeData(
         elevation: 0,
         backgroundColor: AppColors.surface,
@@ -395,7 +328,6 @@ abstract final class AppTheme {
       // ============================================================
       // BOTTOM SHEET
       // ============================================================
-
       bottomSheetTheme: const BottomSheetThemeData(
         elevation: 0,
         modalElevation: 0,
@@ -408,7 +340,6 @@ abstract final class AppTheme {
       // ============================================================
       // SNACKBAR
       // ============================================================
-
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: AppColors.foreground,

@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
@@ -34,7 +35,11 @@ class HabitTrackerScreen extends StatelessWidget {
             child: CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
-                SliverToBoxAdapter(child: _Header(controller: controller)),
+                SliverToBoxAdapter(
+                  child: RepaintBoundary(
+                    child: _Header(controller: controller),
+                  ),
+                ),
                 if (controller.habits.isEmpty)
                   SliverFillRemaining(
                     hasScrollBody: false,
@@ -120,7 +125,7 @@ class _Header extends StatelessWidget {
               ),
               _CircleButton(
                 icon: Icons.calendar_today_outlined,
-                color: const Color(0xFF1E88E5),
+                color: AppColors.primary,
                 onTap: () async {
                   final picked = await showDatePicker(
                     context: context,
@@ -148,9 +153,7 @@ class _Header extends StatelessWidget {
                       const ['S', 'M', 'T', 'W', 'T', 'F', 'S'][index],
                       style: TextStyle(
                         fontSize: 12,
-                        color: selectedDay
-                            ? const Color(0xFF1E88E5)
-                            : Colors.grey,
+                        color: selectedDay ? AppColors.primary : Colors.grey,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -161,7 +164,7 @@ class _Header extends StatelessWidget {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: selectedDay
-                            ? const Color(0xFF1E88E5)
+                            ? AppColors.primary
                             : Colors.transparent,
                         shape: BoxShape.circle,
                       ),
@@ -187,7 +190,7 @@ class _Header extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1E88E5),
+                color: AppColors.primary,
               ),
             ),
           ),
@@ -208,125 +211,132 @@ class _HabitCard extends StatelessWidget {
       habit.habitId,
       controller.selectedDate.value,
     );
-    return Opacity(
-      opacity: habit.active ? 1 : 0.58,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.grey.shade200),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE8F1FC),
-                borderRadius: BorderRadius.circular(12),
+    return RepaintBoundary(
+      child: Opacity(
+        opacity: habit.active ? 1 : 0.58,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.grey.shade200),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withValues(alpha: 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
               ),
-              child: const Icon(
-                Icons.autorenew,
-                color: Color(0xFF1E88E5),
-                size: 20,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: InkWell(
-                onTap: () => Get.toNamed<void>(
-                  AppRoutes.habitProgress,
-                  arguments: habit,
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE8F1FC),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      habit.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: Colors.black87,
+                child: const Icon(
+                  Icons.autorenew,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: InkWell(
+                  onTap: () => Get.toNamed<void>(
+                    AppRoutes.habitProgress,
+                    arguments: habit,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        habit.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: Colors.black87,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      habit.active ? '🔥 ${habit.streak} day streak' : 'Paused',
-                      style: const TextStyle(fontSize: 11, color: Colors.grey),
-                    ),
-                  ],
+                      const SizedBox(height: 2),
+                      Text(
+                        habit.active
+                            ? '🔥 ${habit.streak} day streak'
+                            : 'Paused',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Obx(
-              () => TextButton.icon(
-                onPressed:
-                    done || !habit.active || controller.isSubmitting.value
-                    ? null
-                    : () async {
-                        final ok = await controller.recordCompletion(
-                          habit,
-                          controller.selectedDate.value,
-                        );
-                        if (!ok && context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                controller.errorMessage.value ??
-                                    'Could not record completion.',
-                              ),
-                            ),
+              Obx(
+                () => TextButton.icon(
+                  onPressed:
+                      done || !habit.active || controller.isSubmitting.value
+                      ? null
+                      : () async {
+                          final ok = await controller.recordCompletion(
+                            habit,
+                            controller.selectedDate.value,
                           );
-                        }
-                      },
-                style: TextButton.styleFrom(
-                  backgroundColor: done
-                      ? const Color(0xFFE8F1FC)
-                      : Colors.white,
-                  side: BorderSide(
-                    color: done ? Colors.transparent : Colors.grey.shade300,
+                          if (!ok && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  controller.errorMessage.value ??
+                                      'Could not record completion.',
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                  style: TextButton.styleFrom(
+                    backgroundColor: done
+                        ? const Color(0xFFE8F1FC)
+                        : Colors.white,
+                    side: BorderSide(
+                      color: done ? Colors.transparent : Colors.grey.shade300,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                  icon: Icon(
+                    Icons.check,
+                    size: 14,
+                    color: done ? AppColors.primary : Colors.grey,
                   ),
-                ),
-                icon: Icon(
-                  Icons.check,
-                  size: 14,
-                  color: done ? const Color(0xFF1E88E5) : Colors.grey,
-                ),
-                label: Text(
-                  done ? 'Done' : 'Complete',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: done ? const Color(0xFF1E88E5) : Colors.grey,
+                  label: Text(
+                    done ? 'Done' : 'Complete',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: done ? AppColors.primary : Colors.grey,
+                    ),
                   ),
                 ),
               ),
-            ),
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.more_horiz, color: Colors.grey),
-              onSelected: (value) => _handleAction(context, value),
-              itemBuilder: (_) => [
-                const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                PopupMenuItem(
-                  value: 'active',
-                  child: Text(habit.active ? 'Pause' : 'Resume'),
-                ),
-                const PopupMenuItem(value: 'delete', child: Text('Delete')),
-              ],
-            ),
-          ],
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.more_horiz, color: Colors.grey),
+                onSelected: (value) => _handleAction(context, value),
+                itemBuilder: (_) => [
+                  const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                  PopupMenuItem(
+                    value: 'active',
+                    child: Text(habit.active ? 'Pause' : 'Resume'),
+                  ),
+                  const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

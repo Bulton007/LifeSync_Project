@@ -25,9 +25,7 @@ class GoalBottomActions extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: const BoxDecoration(
         color: AppColors.surface,
-        border: Border(
-          top: BorderSide(color: AppColors.border),
-        ),
+        border: Border(top: BorderSide(color: AppColors.border)),
       ),
       child: Row(
         children: [
@@ -43,9 +41,7 @@ class GoalBottomActions extends StatelessWidget {
           Expanded(
             flex: secondaryLabel == null ? 1 : 2,
             child: ElevatedButton(
-              onPressed: primaryEnabled
-                  ? onPrimaryPressed ?? () {}
-                  : null,
+              onPressed: primaryEnabled ? onPrimaryPressed ?? () {} : null,
               child: Text(primaryLabel),
             ),
           ),
