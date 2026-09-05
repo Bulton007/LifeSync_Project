@@ -9,6 +9,7 @@ abstract final class AppColors {
   // NEUTRALS AND BASE
   // ============================================================
   static const Color pageBackground = Color(0xFFF6F8FC);
+
   /// Main application background.
   static const Color background = Color(0xFFFFFFFF);
 
@@ -31,22 +32,29 @@ abstract final class AppColors {
   static const Color foreground = Color(0xFF0A0A0B);
 
   // ============================================================
-  // PRIMARY
+  // PRIMARY (LifeSync Figma Brand Blue)
   // ============================================================
 
-  static const Color primary50 = Color(0xFFF0FDFA);
-  static const Color primary100 = Color(0xFFCCFBF1);
-  static const Color primary200 = Color(0xFF99F6E4);
-  static const Color primary300 = Color(0xFF5EEAD4);
-  static const Color primary400 = Color(0xFF2DD4BF);
-  static const Color primary500 = Color(0xFF14B8A6);
-  static const Color primary600 = Color(0xFF0D9488);
-  static const Color primary700 = Color(0xFF0F766E);
-  static const Color primary800 = Color(0xFF115E59);
-  static const Color primary900 = Color(0xFF134E4A);
+  static const Color primary50 = Color(0xFFEFF6FF);
+  static const Color primary100 = Color(0xFFDBEAFE);
+  static const Color primary200 = Color(0xFFBFDBFE);
+  static const Color primary300 = Color(0xFF93C5FD);
+  static const Color primary400 = Color(0xFF60A5FA);
+  static const Color primary500 = Color(0xFF3B82F6);
+  static const Color primary600 = Color(0xFF2979FF);
+  static const Color primary700 = Color(0xFF1D4ED8);
+  static const Color primary800 = Color(0xFF1E40AF);
+  static const Color primary900 = Color(0xFF1E3A8A);
 
-  /// Default application primary color.
-  static const Color primary = primary600;
+  /// Default application primary color matching Figma.
+  static const Color primary = Color(0xFF2979FF);
+  static const Color primaryLight = Color(0xFFE8F1FF);
+
+  // Wellness Teal Accent
+  static const Color teal50 = Color(0xFFF0FDFA);
+  static const Color teal100 = Color(0xFFCCFBF1);
+  static const Color teal500 = Color(0xFF14B8A6);
+  static const Color teal = Color(0xFF0D9488);
 
   // ============================================================
   // SEMANTIC COLORS

@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -106,7 +107,7 @@ final class _RewardCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF1E88E5), Color(0xFF00ACC1)],
+          colors: [AppColors.primary, Color(0xFF00ACC1)],
         ),
         borderRadius: BorderRadius.circular(22),
       ),
@@ -262,7 +263,7 @@ final class _MetricCard extends StatelessWidget {
     ),
     child: Column(
       children: [
-        Icon(icon, color: const Color(0xFF1E88E5), size: 20),
+        Icon(icon, color: AppColors.primary, size: 20),
         const SizedBox(height: 5),
         Text(
           value,
@@ -311,7 +312,7 @@ final class _CheckingTile extends StatelessWidget {
       '${checking.moodRating}/10',
       style: const TextStyle(
         fontWeight: FontWeight.bold,
-        color: Color(0xFF1E88E5),
+        color: AppColors.primary,
       ),
     ),
     title: checking.notes?.isNotEmpty == true

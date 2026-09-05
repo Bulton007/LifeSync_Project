@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/features/tasks/data/models/task_models.dart';
@@ -36,7 +37,9 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
     _status = task?.status ?? TaskStatus.pending;
     _titleController.text = task?.title ?? '';
     _descriptionController.text = task?.description ?? '';
-    _taskController.errorMessage.value = null;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _taskController.errorMessage.value = null;
+    });
   }
 
   @override
@@ -114,7 +117,7 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                 leading: Icon(icon),
                 title: Text(label(value)),
                 trailing: value == selected
-                    ? const Icon(Icons.check, color: Color(0xFF1E88E5))
+                    ? const Icon(Icons.check, color: AppColors.primary)
                     : null,
                 onTap: () => Navigator.pop(context, value),
               ),
@@ -145,7 +148,7 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.08),
+                            color: Colors.grey.withValues(alpha: 0.08),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
@@ -166,7 +169,7 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                             ? null
                             : _submit,
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF1E88E5),
+                          foregroundColor: AppColors.primary,
                           side: BorderSide(color: Colors.grey.shade300),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -186,7 +189,7 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                             : const Icon(
                                 Icons.check,
                                 size: 16,
-                                color: Color(0xFF1E88E5),
+                                color: AppColors.primary,
                               ),
                         label: const Text(
                           'Save',
@@ -208,7 +211,7 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                     _metaChip(
                       Icons.calendar_today_outlined,
                       '${_dueDate.day}/${_dueDate.month}/${_dueDate.year}',
-                      const Color(0xFF1E88E5),
+                      AppColors.primary,
                       _pickDate,
                     ),
                     _metaChip(

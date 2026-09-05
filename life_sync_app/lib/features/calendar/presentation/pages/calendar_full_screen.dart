@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
@@ -83,11 +84,13 @@ final class _CalendarFullScreenState extends State<CalendarFullScreen> {
                   onNext: () => _changeMonth(1),
                 ),
                 const SizedBox(height: 20),
-                _MonthGrid(
-                  month: _displayedMonth,
-                  tasks: _taskController.tasks,
-                  selectedDate: _taskController.selectedDate.value,
-                  onSelected: _taskController.selectDate,
+                RepaintBoundary(
+                  child: _MonthGrid(
+                    month: _displayedMonth,
+                    tasks: _taskController.tasks,
+                    selectedDate: _taskController.selectedDate.value,
+                    onSelected: _taskController.selectDate,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 _TaskHeader(
@@ -151,13 +154,13 @@ final class _CalendarHeader extends StatelessWidget {
         style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: Color(0xFF1E88E5),
+          color: AppColors.primary,
         ),
       ),
       const SizedBox(width: 8),
       IconButton(
         tooltip: 'Previous month',
-        icon: const Icon(Icons.chevron_left, color: Color(0xFF1E88E5)),
+        icon: const Icon(Icons.chevron_left, color: AppColors.primary),
         onPressed: onPrevious,
         constraints: const BoxConstraints(),
         padding: EdgeInsets.zero,
@@ -165,7 +168,7 @@ final class _CalendarHeader extends StatelessWidget {
       const SizedBox(width: 4),
       IconButton(
         tooltip: 'Next month',
-        icon: const Icon(Icons.chevron_right, color: Color(0xFF1E88E5)),
+        icon: const Icon(Icons.chevron_right, color: AppColors.primary),
         onPressed: onNext,
         constraints: const BoxConstraints(),
         padding: EdgeInsets.zero,
@@ -226,7 +229,7 @@ final class _MonthGrid extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF1E88E5),
+                      color: AppColors.primary,
                     ),
                   ),
               ],
@@ -304,7 +307,7 @@ final class _DayCell extends StatelessWidget {
               height: 34,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: selected ? const Color(0xFF1E88E5) : null,
+                color: selected ? AppColors.primary : null,
                 shape: BoxShape.circle,
               ),
               child: Text(
@@ -362,7 +365,7 @@ final class _TaskHeader extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1E88E5),
+                color: AppColors.primary,
               ),
             ),
             Text(_date(date), style: const TextStyle(color: Colors.grey)),
@@ -373,7 +376,7 @@ final class _TaskHeader extends StatelessWidget {
         tooltip: 'Add task',
         onPressed: onAdd,
         icon: const Icon(Icons.add_circle_outline),
-        color: const Color(0xFF1E88E5),
+        color: AppColors.primary,
       ),
       IconButton(
         tooltip: 'Open all tasks',

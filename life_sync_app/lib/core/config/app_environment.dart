@@ -7,9 +7,9 @@ import 'package:flutter/foundation.dart';
 final class AppEnvironment {
   AppEnvironment({
     required String apiBaseUrl,
-    this.connectTimeout = const Duration(seconds: 20),
-    this.sendTimeout = const Duration(seconds: 20),
-    this.receiveTimeout = const Duration(seconds: 30),
+    this.connectTimeout = const Duration(seconds: 8),
+    this.sendTimeout = const Duration(seconds: 8),
+    this.receiveTimeout = const Duration(seconds: 10),
   }) : apiBaseUrl = _normalizeAndValidate(apiBaseUrl);
 
   factory AppEnvironment.current() {

@@ -20,8 +20,28 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
   void initState() {
     super.initState();
     _controller = Get.find<GoalController>();
-    _initial = Get.arguments as GoalModel;
-    _controller.loadDetails(_initial.id);
+    final args = Get.arguments;
+    if (args is GoalModel) {
+      _initial = args;
+      _controller.loadDetails(_initial.id);
+    } else {
+      _initial =
+          _controller.goals.firstOrNull ??
+          GoalModel(
+            id: 0,
+            userId: 0,
+            title: 'Goal',
+            description: '',
+            targetAmount: MoneyAmount.zero(),
+            currentAmount: MoneyAmount.zero(),
+            completed: false,
+            archived: false,
+            deadline: DateTime.now().add(const Duration(days: 30)),
+          );
+      if (_initial.id != 0) {
+        _controller.loadDetails(_initial.id);
+      }
+    }
   }
 
   @override

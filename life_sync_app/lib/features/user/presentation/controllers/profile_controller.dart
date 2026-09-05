@@ -78,7 +78,7 @@ final class ProfileController extends GetxController {
         email: email.trim(),
         phoneNumber: _normalizedPhone(phoneNumber),
       );
-      return result.when(
+      final bool success = result.when<bool>(
         success: (profile) {
           state.value = AsyncViewState<UserProfileModel>.success(profile);
           if (oldEmail != null && oldEmail != profile.email) {
@@ -90,6 +90,7 @@ final class ProfileController extends GetxController {
         },
         failure: _recordFailure,
       );
+      return success;
     } finally {
       isSubmitting.value = false;
     }
@@ -136,7 +137,7 @@ final class ProfileController extends GetxController {
     errorMessage.value = null;
     try {
       final result = await _repository.deleteProfileImage(userId);
-      return result.when(
+      final bool success = result.when<bool>(
         success: (_) {
           imageBytes.value = null;
           final profile = state.value.data;
@@ -145,6 +146,7 @@ final class ProfileController extends GetxController {
         },
         failure: _recordFailure,
       );
+      return success;
     } finally {
       isSubmitting.value = false;
     }

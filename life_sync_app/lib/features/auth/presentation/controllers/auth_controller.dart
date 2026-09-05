@@ -51,10 +51,7 @@ final class AuthController extends GetxController {
 
   Future<bool> verifyOtp({required String email, required String otpCode}) =>
       _request(
-        () => _repository.verifyOtp(
-          email: email.trim(),
-          otpCode: otpCode,
-        ),
+        () => _repository.verifyOtp(email: email.trim(), otpCode: otpCode),
       );
 
   Future<bool> resendOtp(String email) =>

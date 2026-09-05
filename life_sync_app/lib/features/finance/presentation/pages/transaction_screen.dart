@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class TransactionScreen extends StatefulWidget {
@@ -35,7 +36,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.08),
+                              color: Colors.grey.withValues(alpha: 0.08),
                               blurRadius: 8,
                               offset: const Offset(0, 3),
                             ),
@@ -120,19 +121,17 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         vertical: 10,
                       ),
                       decoration: BoxDecoration(
-                        color: isSelected
-                            ? const Color(0xFF1E88E5)
-                            : Colors.white,
+                        color: isSelected ? AppColors.primary : Colors.white,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: isSelected
-                              ? const Color(0xFF1E88E5)
+                              ? AppColors.primary
                               : Colors.grey.shade200,
                         ),
                         boxShadow: [
                           if (!isSelected)
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.04),
+                              color: Colors.grey.withValues(alpha: 0.04),
                               blurRadius: 4,
                               offset: const Offset(0, 2),
                             ),
@@ -193,7 +192,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     title: 'Saved to Siem Reap Trip',
                     time: 'Today, 7:34 AM',
                     amount: '\$12.5',
-                    amountColor: const Color(0xFF1E88E5),
+                    amountColor: AppColors.primary,
                   ),
                 ],
               ),
@@ -237,7 +236,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     title: 'Saved to Siem Reap Trip',
                     time: 'Today, 7:34 AM',
                     amount: '\$12.5',
-                    amountColor: const Color(0xFF1E88E5),
+                    amountColor: AppColors.primary,
                   ),
                 ],
               ),
@@ -288,7 +287,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.05),
+            color: Colors.grey.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),

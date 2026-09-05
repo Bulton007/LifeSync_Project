@@ -91,7 +91,10 @@ class _NavigationBar extends StatelessWidget {
           // No expensive BackdropFilter is used.
           color: Colors.white.withValues(alpha: 0.88),
           borderRadius: BorderRadius.circular(AppRadius.pill),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.90), width: 1),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.90),
+            width: 1,
+          ),
           boxShadow: [
             BoxShadow(
               color: AppColors.foreground.withValues(alpha: 0.07),
@@ -172,13 +175,11 @@ class _NavigationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final itemColor = selected
-        ? const Color(0xFF4F83F7)
-        : AppColors.textSecondary;
+    final itemColor = selected ? AppColors.primary : AppColors.textSecondary;
 
     return Material(
       color: selected
-          ? const Color(0xFFE9EAED).withValues(alpha: 0.80)
+          ? AppColors.primaryLight.withValues(alpha: 0.90)
           : Colors.transparent,
       borderRadius: BorderRadius.circular(AppRadius.pill),
       clipBehavior: Clip.antiAlias,

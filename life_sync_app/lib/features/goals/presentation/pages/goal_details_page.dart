@@ -47,9 +47,7 @@ class _GoalSummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.primary50,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(
-          color: AppColors.primary100,
-        ),
+        border: Border.all(color: AppColors.primary100),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,9 +58,7 @@ class _GoalSummaryCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.xl),
           Text(
             'Goal Progress',
-            style: AppTextStyles.caption.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
@@ -79,9 +75,7 @@ class _GoalSummaryCard extends StatelessWidget {
               value: 0.38,
               minHeight: 7,
               backgroundColor: AppColors.primary100,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                AppColors.primary,
-              ),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -119,9 +113,7 @@ class _GoalIdentity extends StatelessWidget {
             children: [
               Text(
                 'Be an Outstanding Student',
-                style: AppTextStyles.button.copyWith(
-                  color: AppColors.primary,
-                ),
+                style: AppTextStyles.button.copyWith(color: AppColors.primary),
               ),
               const SizedBox(height: AppSpacing.xxs),
               Text(
@@ -151,10 +143,7 @@ class _GoalDateInformation extends StatelessWidget {
         ),
         SizedBox(width: AppSpacing.sm),
         Expanded(
-          child: _DateItem(
-            icon: Icons.event_outlined,
-            text: 'Due 10 Oct 2026',
-          ),
+          child: _DateItem(icon: Icons.event_outlined, text: 'Due 10 Oct 2026'),
         ),
       ],
     );
@@ -165,20 +154,13 @@ class _DateItem extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const _DateItem({
-    required this.icon,
-    required this.text,
-  });
+  const _DateItem({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(
-          icon,
-          size: 14,
-          color: AppColors.textSecondary,
-        ),
+        Icon(icon, size: 14, color: AppColors.textSecondary),
         const SizedBox(width: AppSpacing.xs),
         Expanded(
           child: Text(
@@ -245,17 +227,9 @@ class _GoalStatistic extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Icon(
-          icon,
-          size: 18,
-          color: AppColors.textSecondary,
-        ),
+        Icon(icon, size: 18, color: AppColors.textSecondary),
         const SizedBox(height: AppSpacing.xs),
-        Text(
-          label,
-          style: AppTextStyles.micro,
-          textAlign: TextAlign.center,
-        ),
+        Text(label, style: AppTextStyles.micro, textAlign: TextAlign.center),
         const SizedBox(height: AppSpacing.xs),
         Text(
           value,
@@ -275,11 +249,7 @@ class _VerticalDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 1,
-      height: 42,
-      color: AppColors.border,
-    );
+    return Container(width: 1, height: 42, color: AppColors.border);
   }
 }
 
@@ -294,12 +264,7 @@ class _MilestonesHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: Text(
-            'Milestones',
-            style: AppTextStyles.titleM,
-          ),
-        ),
+        Expanded(child: Text('Milestones', style: AppTextStyles.titleM)),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.sm,
@@ -366,10 +331,7 @@ class _MilestonesCard extends StatelessWidget {
             statusColor: AppColors.info,
             expanded: true,
             tasks: [
-              _MilestoneTask(
-                title: 'Review lesson notes',
-                completed: true,
-              ),
+              _MilestoneTask(title: 'Review lesson notes', completed: true),
               _MilestoneTask(
                 title: 'Complete practice exercise',
                 completed: true,
@@ -430,9 +392,7 @@ class _MilestoneTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: AppSpacing.sm,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Column(
         children: [
           Row(
@@ -443,14 +403,10 @@ class _MilestoneTile extends StatelessWidget {
                 height: 34,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: completed
-                      ? AppColors.primary
-                      : AppColors.surface,
+                  color: completed ? AppColors.primary : AppColors.surface,
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                   border: Border.all(
-                    color: completed
-                        ? AppColors.primary
-                        : AppColors.primary200,
+                    color: completed ? AppColors.primary : AppColors.primary200,
                   ),
                 ),
                 child: completed
@@ -482,10 +438,7 @@ class _MilestoneTile extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  _MilestoneStatusBadge(
-                    text: status,
-                    color: statusColor,
-                  ),
+                  _MilestoneStatusBadge(text: status, color: statusColor),
                   const SizedBox(height: AppSpacing.xs),
                   Icon(
                     expanded
@@ -515,27 +468,18 @@ class _MilestoneTask extends StatelessWidget {
   final String title;
   final bool completed;
 
-  const _MilestoneTask({
-    required this.title,
-    required this.completed,
-  });
+  const _MilestoneTask({required this.title, required this.completed});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: AppSpacing.sm,
-      ),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         children: [
           Icon(
-            completed
-                ? Icons.check_circle
-                : Icons.radio_button_unchecked,
+            completed ? Icons.check_circle : Icons.radio_button_unchecked,
             size: 17,
-            color: completed
-                ? AppColors.primary
-                : AppColors.textSecondary,
+            color: completed ? AppColors.primary : AppColors.textSecondary,
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
@@ -545,8 +489,7 @@ class _MilestoneTask extends StatelessWidget {
                 color: completed
                     ? AppColors.textSecondary
                     : AppColors.textPrimary,
-                decoration:
-                    completed ? TextDecoration.lineThrough : null,
+                decoration: completed ? TextDecoration.lineThrough : null,
               ),
             ),
           ),
@@ -560,10 +503,7 @@ class _MilestoneStatusBadge extends StatelessWidget {
   final String text;
   final Color color;
 
-  const _MilestoneStatusBadge({
-    required this.text,
-    required this.color,
-  });
+  const _MilestoneStatusBadge({required this.text, required this.color});
 
   @override
   Widget build(BuildContext context) {

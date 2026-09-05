@@ -8,10 +8,7 @@ import '../../../../core/theme/app_text_styles.dart';
 class AiAssistantBadge extends StatelessWidget {
   final VoidCallback? onPressed;
 
-  const AiAssistantBadge({
-    super.key,
-    this.onPressed,
-  });
+  const AiAssistantBadge({super.key, this.onPressed});
 
   @override
   Widget build(BuildContext context) {

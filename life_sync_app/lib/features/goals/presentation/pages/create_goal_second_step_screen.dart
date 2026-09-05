@@ -32,7 +32,7 @@ class _CreateGoalSecondStepScreenState
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.08),
+                          color: Colors.grey.withValues(alpha: 0.08),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
@@ -227,7 +227,7 @@ class _CreateGoalSecondStepScreenState
                     border: Border.all(color: Colors.grey.shade200),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.04),
+                        color: Colors.grey.withValues(alpha: 0.04),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),

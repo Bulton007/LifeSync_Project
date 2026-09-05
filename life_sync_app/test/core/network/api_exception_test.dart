@@ -23,6 +23,25 @@ void main() {
       expect(exception.message, 'Task already exists');
     });
 
+    test('extracts clean message from raw JSON string response', () {
+      final request = RequestOptions(path: '/api/auth/login');
+      final error = DioException(
+        requestOptions: request,
+        type: DioExceptionType.badResponse,
+        response: Response<Object?>(
+          requestOptions: request,
+          statusCode: 404,
+          data: '{"success":false,"message":"email not found","status":404}',
+        ),
+      );
+
+      final exception = ApiException.fromDioException(error);
+
+      expect(exception.type, ApiFailureType.notFound);
+      expect(exception.statusCode, 404);
+      expect(exception.message, 'email not found');
+    });
+
     test('normalizes JWT entry-point errors', () {
       final request = RequestOptions(path: '/api/tasks');
       final error = DioException(

@@ -35,30 +35,38 @@ class _ViewByScreenState extends State<ViewByScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
                   ],
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'View By',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                child: RadioGroup<String>(
+                  groupValue: _selectedViewBy,
+                  onChanged: (String? value) {
+                    if (value != null) {
+                      setState(() => _selectedViewBy = value);
+                    }
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'View By',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    _buildRadioOption('Month'),
-                    const Divider(height: 1, color: Color(0xFFEEEEEE)),
-                    _buildRadioOption('Quarter'),
-                    const Divider(height: 1, color: Color(0xFFEEEEEE)),
-                    _buildRadioOption('Year'),
-                  ],
+                      const SizedBox(height: 12),
+                      _buildRadioOption('Month'),
+                      const Divider(height: 1, color: Color(0xFFEEEEEE)),
+                      _buildRadioOption('Quarter'),
+                      const Divider(height: 1, color: Color(0xFFEEEEEE)),
+                      _buildRadioOption('Year'),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 40),
@@ -147,16 +155,7 @@ class _ViewByScreenState extends State<ViewByScreen> {
                 color: Colors.black87,
               ),
             ),
-            Radio<String>(
-              value: title,
-              groupValue: _selectedViewBy,
-              activeColor: const Color(0xFF2979FF),
-              onChanged: (String? value) {
-                setState(() {
-                  _selectedViewBy = value!;
-                });
-              },
-            ),
+            Radio<String>(value: title, activeColor: const Color(0xFF2979FF)),
           ],
         ),
       ),
@@ -176,7 +175,7 @@ class _ViewByScreenState extends State<ViewByScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -225,7 +224,7 @@ class _ViewByScreenState extends State<ViewByScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),

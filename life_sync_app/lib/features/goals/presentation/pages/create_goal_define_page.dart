@@ -14,19 +14,14 @@ class CreateGoalDefinePage extends StatelessWidget {
       backgroundColor: AppColors.scaffold,
       appBar: AppBar(
         // Static UI: navigation will be connected later.
-        leading: const Icon(
-          Icons.arrow_back_ios_new,
-          size: 20,
-        ),
+        leading: const Icon(Icons.arrow_back_ios_new, size: 20),
         title: const Text('Create Goal'),
       ),
       body: const SafeArea(
         child: Column(
           children: [
             _GoalCreationSteps(),
-            Expanded(
-              child: _DefineGoalForm(),
-            ),
+            Expanded(child: _DefineGoalForm()),
             _BottomAction(),
           ],
         ),
@@ -53,21 +48,11 @@ class _GoalCreationSteps extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _StepItem(
-            number: '1',
-            label: 'Define',
-            active: true,
-          ),
+          _StepItem(number: '1', label: 'Define', active: true),
           _StepLine(active: false),
-          _StepItem(
-            number: '2',
-            label: 'Plan',
-          ),
+          _StepItem(number: '2', label: 'Plan'),
           _StepLine(active: false),
-          _StepItem(
-            number: '3',
-            label: 'Review',
-          ),
+          _StepItem(number: '3', label: 'Review'),
         ],
       ),
     );
@@ -94,22 +79,16 @@ class _StepItem extends StatelessWidget {
           height: 28,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: active
-                ? AppColors.primary
-                : AppColors.surface,
+            color: active ? AppColors.primary : AppColors.surface,
             shape: BoxShape.circle,
             border: Border.all(
-              color: active
-                  ? AppColors.primary
-                  : AppColors.border,
+              color: active ? AppColors.primary : AppColors.border,
             ),
           ),
           child: Text(
             number,
             style: AppTextStyles.micro.copyWith(
-              color: active
-                  ? AppColors.textOnPrimary
-                  : AppColors.textSecondary,
+              color: active ? AppColors.textOnPrimary : AppColors.textSecondary,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -118,11 +97,8 @@ class _StepItem extends StatelessWidget {
         Text(
           label,
           style: AppTextStyles.micro.copyWith(
-            color: active
-                ? AppColors.primary
-                : AppColors.textSecondary,
-            fontWeight:
-                active ? FontWeight.w600 : FontWeight.w400,
+            color: active ? AppColors.primary : AppColors.textSecondary,
+            fontWeight: active ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
       ],
@@ -146,9 +122,7 @@ class _StepLine extends StatelessWidget {
           bottom: 18,
         ),
         decoration: BoxDecoration(
-          color: active
-              ? AppColors.primary
-              : AppColors.disabled,
+          color: active ? AppColors.primary : AppColors.disabled,
           borderRadius: BorderRadius.circular(AppRadius.pill),
         ),
       ),
@@ -189,10 +163,7 @@ class _DefineGoalForm extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Define your goal',
-                    style: AppTextStyles.titleM,
-                  ),
+                  Text('Define your goal', style: AppTextStyles.titleM),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Start with a clear goal and describe what '
@@ -209,9 +180,7 @@ class _DefineGoalForm extends StatelessWidget {
         // Goal name
         Text(
           'Goal',
-          style: AppTextStyles.caption.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppSpacing.sm),
         const TextField(
@@ -225,9 +194,7 @@ class _DefineGoalForm extends StatelessWidget {
         // Outcome
         Text(
           'What Success Will Look Like?',
-          style: AppTextStyles.caption.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppSpacing.sm),
         const TextField(
@@ -287,16 +254,12 @@ class _StaticDateField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: AppTextStyles.caption.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppSpacing.sm),
         Container(
           height: 54,
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(AppRadius.md),
@@ -304,11 +267,7 @@ class _StaticDateField extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
-                icon,
-                size: 17,
-                color: AppColors.textSecondary,
-              ),
+              Icon(icon, size: 17, color: AppColors.textSecondary),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
@@ -344,18 +303,12 @@ class _GoalTipCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.infoMuted,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(
-          color: AppColors.info.withValues(alpha: 0.20),
-        ),
+        border: Border.all(color: AppColors.info.withValues(alpha: 0.20)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
-            Icons.lightbulb_outline,
-            color: AppColors.info,
-            size: 21,
-          ),
+          const Icon(Icons.lightbulb_outline, color: AppColors.info, size: 21),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
@@ -372,9 +325,7 @@ class _GoalTipCard extends StatelessWidget {
                 Text(
                   'A well-defined goal makes it easier to create '
                   'milestones and monitor your progress.',
-                  style: AppTextStyles.micro.copyWith(
-                    color: AppColors.info,
-                  ),
+                  style: AppTextStyles.micro.copyWith(color: AppColors.info),
                 ),
               ],
             ),
@@ -399,9 +350,7 @@ class _BottomAction extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: const BoxDecoration(
         color: AppColors.surface,
-        border: Border(
-          top: BorderSide(color: AppColors.border),
-        ),
+        border: Border(top: BorderSide(color: AppColors.border)),
       ),
       child: ElevatedButton(
         // Static UI only.

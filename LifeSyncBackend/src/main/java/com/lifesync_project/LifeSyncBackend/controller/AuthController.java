@@ -4,7 +4,7 @@ import com.lifesync_project.LifeSyncBackend.dto.Auth.ChangePasswordRequest;
 import com.lifesync_project.LifeSyncBackend.dto.Auth.ForgotPasswordRequest;
 import com.lifesync_project.LifeSyncBackend.dto.Auth.LoginRequest;
 import com.lifesync_project.LifeSyncBackend.dto.Auth.LoginResponse;
-import com.lifesync_project.LifeSyncBackend.dto.Auth.RegisterRequest;
+import com.lifesync_project.LifeSyncBackend.dto.Users.RegisterRequest;
 import com.lifesync_project.LifeSyncBackend.dto.Auth.ResetPasswordRequest;
 import com.lifesync_project.LifeSyncBackend.dto.Auth.VerifyOtpRequest;
 import com.lifesync_project.LifeSyncBackend.services.AuthService;

@@ -66,8 +66,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            Users user = userRepository.findByEmail(email)
-                    .orElse(null);
+            Users user = userDetails instanceof UserPrincipal principal
+                    ? principal.getUser()
+                    : userRepository.findByEmail(email).orElse(null);
 
             boolean tokenValid = false;
 

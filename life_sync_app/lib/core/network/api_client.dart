@@ -180,7 +180,7 @@ final class ApiClient {
       final file = await MultipartFile.fromFile(filePath, filename: fileName);
       final formData = FormData.fromMap({...fields, fieldName: file});
 
-      return request<T>(
+      return await request<T>(
         path,
         method: 'POST',
         decoder: decoder,

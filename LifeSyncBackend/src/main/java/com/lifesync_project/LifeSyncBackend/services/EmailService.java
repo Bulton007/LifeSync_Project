@@ -7,6 +7,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.CompletableFuture;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -18,35 +20,39 @@ public class EmailService {
             String email,
             String otpCode) {
 
-        SimpleMailMessage message =
-                new SimpleMailMessage();
+        // Send asynchronously in background so the client receives responses instantly without waiting
+        CompletableFuture.runAsync(() -> {
+            SimpleMailMessage message =
+                    new SimpleMailMessage();
 
-        message.setTo(email);
+            message.setTo(email);
 
-        message.setSubject("LifeSync Email Verification");
+            message.setSubject("LifeSync Email Verification");
 
-        message.setText(
-                """
-                Welcome to LifeSync!
+            message.setText(
+                    """
+                    Welcome to LifeSync!
 
-                Your verification code is:
+                    Your verification code is:
 
-                %s
+                    %s
 
-                This code will expire in 5 minutes.
+                    This code will expire in 5 minutes.
 
-                Please do not share this code with anyone.
-                """.formatted(otpCode));
+                    Please do not share this code with anyone.
+                    """.formatted(otpCode));
 
-        try {
-            mailSender.send(message);
-        } catch (MailException exception) {
-            log.warn(
-                    "Failed to send OTP email to {}. OTP for local testing: {}",
-                    email,
-                    otpCode,
-                    exception);
-        }
+            try {
+                mailSender.send(message);
+                log.info("OTP email sent successfully to {}", email);
+            } catch (MailException exception) {
+                log.warn(
+                        "Failed to send OTP email to {}. OTP for local testing: {}",
+                        email,
+                        otpCode,
+                        exception);
+            }
+        });
     }
 
 }

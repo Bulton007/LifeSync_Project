@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class WriteJournalScreen extends StatefulWidget {
@@ -45,7 +46,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.08),
+                                color: Colors.grey.withValues(alpha: 0.08),
                                 blurRadius: 8,
                                 offset: const Offset(0, 3),
                               ),
@@ -63,7 +64,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                         OutlinedButton.icon(
                           onPressed: () {},
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFF1E88E5),
+                            foregroundColor: AppColors.primary,
                             side: BorderSide(color: Colors.grey.shade300),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -76,7 +77,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                           icon: const Icon(
                             Icons.check,
                             size: 16,
-                            color: Color(0xFF1E88E5),
+                            color: AppColors.primary,
                           ),
                           label: const Text(
                             'Done',
@@ -113,7 +114,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                               Icon(
                                 Icons.calendar_today_outlined,
                                 size: 14,
-                                color: Color(0xFF1E88E5),
+                                color: AppColors.primary,
                               ),
                               SizedBox(width: 6),
                               Text(
@@ -149,7 +150,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                               Icon(
                                 Icons.label_outline,
                                 size: 14,
-                                color: Color(0xFF1E88E5),
+                                color: AppColors.primary,
                               ),
                               SizedBox(width: 4),
                               Text(
@@ -157,7 +158,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
-                                  color: Color(0xFF1E88E5),
+                                  color: AppColors.primary,
                                 ),
                               ),
                             ],
@@ -198,7 +199,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                         border: Border.all(color: Colors.grey.shade200),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.04),
+                            color: Colors.grey.withValues(alpha: 0.04),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -289,7 +290,7 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
                 color: const Color(0xFFD1D5DB),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 4,
                     offset: const Offset(0, -2),
                   ),
@@ -422,11 +423,11 @@ class _WriteJournalScreenState extends State<WriteJournalScreen> {
         margin: const EdgeInsets.symmetric(horizontal: 2),
         height: 38,
         decoration: BoxDecoration(
-          color: isBlue ? const Color(0xFF1E88E5) : Colors.white,
+          color: isBlue ? AppColors.primary : Colors.white,
           borderRadius: BorderRadius.circular(6),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
+              color: Colors.black.withValues(alpha: 0.15),
               blurRadius: 1,
               offset: const Offset(0, 1),
             ),

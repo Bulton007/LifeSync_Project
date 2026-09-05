@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/features/habits/data/models/habit_models.dart';
@@ -240,7 +241,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                             ? null
                             : _saveHabit,
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF1E88E5),
+                          foregroundColor: AppColors.primary,
                           side: BorderSide(color: Colors.grey.shade300),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -261,7 +262,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                             : const Icon(
                                 Icons.check,
                                 size: 16,
-                                color: Color(0xFF1E88E5),
+                                color: AppColors.primary,
                               ),
                         label: Text(
                           _editing == null ? 'Save' : 'Update',
@@ -314,7 +315,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                      borderSide: const BorderSide(color: AppColors.primary),
                     ),
                   ),
                 ),
@@ -576,11 +577,11 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                   icon: const Icon(
                     Icons.add,
                     size: 16,
-                    color: Color(0xFF1E88E5),
+                    color: AppColors.primary,
                   ),
                   label: const Text(
                     'Add Task',
-                    style: TextStyle(fontSize: 13, color: Color(0xFF1E88E5)),
+                    style: TextStyle(fontSize: 13, color: AppColors.primary),
                   ),
                 ),
 
@@ -605,7 +606,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                       children: [
                         Switch(
                           value: _reminderEnabled,
-                          activeColor: const Color(0xFF1E88E5),
+                          activeThumbColor: AppColors.primary,
                           onChanged: (value) {
                             setState(() {
                               _reminderEnabled = value;
@@ -723,7 +724,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 const Icon(
                   Icons.calendar_today_outlined,
                   size: 18,
-                  color: Color(0xFF1E88E5),
+                  color: AppColors.primary,
                 ),
 
                 const SizedBox(width: 10),

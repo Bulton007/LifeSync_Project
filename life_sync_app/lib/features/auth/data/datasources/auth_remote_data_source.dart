@@ -29,9 +29,8 @@ final class AuthRemoteDataSource {
     return _apiClient.post<LoginResponseModel>(
       '/api/auth/login',
       data: {'email': email, 'password': password},
-      decoder: (data) => LoginResponseModel.fromJson(
-        Map<String, dynamic>.from(data! as Map),
-      ),
+      decoder: (data) =>
+          LoginResponseModel.fromJson(Map<String, dynamic>.from(data! as Map)),
       skipAuthentication: true,
     );
   }
@@ -76,11 +75,7 @@ final class AuthRemoteDataSource {
   }) {
     return _apiClient.post<String>(
       '/api/auth/reset-password',
-      data: {
-        'email': email,
-        'otpCode': otpCode,
-        'newPassword': newPassword,
-      },
+      data: {'email': email, 'otpCode': otpCode, 'newPassword': newPassword},
       decoder: _decodeMessage,
       responseType: ResponseType.plain,
       skipAuthentication: true,
@@ -94,10 +89,7 @@ final class AuthRemoteDataSource {
   }) {
     return _apiClient.put<String>(
       '/api/auth/change-password/$userId',
-      data: {
-        'currentPassword': currentPassword,
-        'newPassword': newPassword,
-      },
+      data: {'currentPassword': currentPassword, 'newPassword': newPassword},
       decoder: _decodeMessage,
       responseType: ResponseType.plain,
     );

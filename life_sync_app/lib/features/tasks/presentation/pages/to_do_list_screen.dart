@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
@@ -105,7 +106,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                     _buildChip(
                       Icons.calendar_today_outlined,
                       _dateLabel(_controller.selectedDate.value),
-                      const Color(0xFF1E88E5),
+                      AppColors.primary,
                     ),
                     _buildChip(
                       Icons.flag_outlined,
@@ -145,7 +146,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                               }
                             },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1E88E5),
+                        backgroundColor: AppColors.primary,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -299,7 +300,10 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                           },
                           itemBuilder: (_) => const [
                             PopupMenuItem(value: 'edit', child: Text('Edit')),
-                            PopupMenuItem(value: 'delete', child: Text('Delete')),
+                            PopupMenuItem(
+                              value: 'delete',
+                              child: Text('Delete'),
+                            ),
                           ],
                         ),
                       );
@@ -319,10 +323,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
     if (title != null) await _controller.createSubTask(taskId, title);
   }
 
-  Future<void> _editSubTask(
-    BuildContext context,
-    SubTaskModel subTask,
-  ) async {
+  Future<void> _editSubTask(BuildContext context, SubTaskModel subTask) async {
     final title = await _subTaskDialog(
       context,
       title: 'Edit subtask',
@@ -375,20 +376,23 @@ class _TodoListScreenState extends State<ToDoListScreen> {
           onRefresh: () => _controller.loadTasks(refresh: true),
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 16.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeader(),
+                RepaintBoundary(child: _buildHeader()),
                 const SizedBox(height: 24),
-                _buildCalendarStrip(),
+                RepaintBoundary(child: _buildCalendarStrip()),
                 const SizedBox(height: 28),
                 const Text(
                   'Tasks',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E88E5),
+                    color: AppColors.primary,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -416,17 +420,16 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                       onAction: () => _showAddTodoPopup(context),
                     );
                   }
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: tasks.length,
-                    itemBuilder: (context, index) {
-                      final task = tasks[index];
-                      return _buildTimelineItem(
-                        task: task,
-                        isLast: index == tasks.length - 1,
-                      );
-                    },
+                  return RepaintBoundary(
+                    child: Column(
+                      children: [
+                        for (int index = 0; index < tasks.length; index++)
+                          _buildTimelineItem(
+                            task: tasks[index],
+                            isLast: index == tasks.length - 1,
+                          ),
+                      ],
+                    ),
                   );
                 }),
                 const SizedBox(height: 80),
@@ -456,7 +459,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.08),
+                  color: Colors.grey.withValues(alpha: 0.08),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
@@ -496,7 +499,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
             child: IconButton(
               icon: const Icon(
                 Icons.calendar_today_outlined,
-                color: Color(0xFF1E88E5),
+                color: AppColors.primary,
                 size: 20,
               ),
               onPressed: _pickDate,
@@ -563,7 +566,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
           dayLetter,
           style: TextStyle(
             fontSize: 12,
-            color: isSelected ? const Color(0xFF1E88E5) : Colors.grey,
+            color: isSelected ? AppColors.primary : Colors.grey,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -572,7 +575,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF1E88E5) : Colors.transparent,
+            color: isSelected ? AppColors.primary : Colors.transparent,
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
@@ -590,88 +593,89 @@ class _TodoListScreenState extends State<ToDoListScreen> {
   }
 
   Widget _buildTimelineItem({required TaskModel task, required bool isLast}) {
-    return IntrinsicHeight(
-      child: InkWell(
-        onTap: () => _showTaskDetails(task),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 65,
-              child: Text(
-                _priorityLabel(task.priority),
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
+    return InkWell(
+      onTap: () => _showTaskDetails(task),
+      child: Stack(
+        children: [
+          if (!isLast)
+            Positioned(
+              left: 75,
+              top: 22,
+              bottom: 0,
+              child: Container(width: 2, color: Colors.grey.shade300),
             ),
-            Column(
-              children: [
-                InkWell(
-                  onTap: task.isCompleted
-                      ? null
-                      : () => _controller.completeTask(task),
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    width: 22,
-                    height: 22,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: task.isCompleted
-                            ? const Color(0xFF1E88E5)
-                            : Colors.grey.shade400,
-                        width: 1.5,
-                      ),
-                      color: task.isCompleted
-                          ? const Color(0xFF1E88E5)
-                          : Colors.white,
-                    ),
-                    child: task.isCompleted
-                        ? const Icon(Icons.check, size: 14, color: Colors.white)
-                        : null,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 65,
+                child: Text(
+                  _priorityLabel(task.priority),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
                 ),
-                if (!isLast)
-                  Expanded(child: Container(width: 2, color: Colors.grey.shade300)),
-              ],
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      task.title,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                        decoration: task.isCompleted
-                            ? TextDecoration.lineThrough
-                            : null,
-                      ),
+              ),
+              InkWell(
+                onTap: task.isCompleted
+                    ? null
+                    : () => _controller.completeTask(task),
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: 22,
+                  height: 22,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: task.isCompleted
+                          ? AppColors.primary
+                          : Colors.grey.shade400,
+                      width: 1.5,
                     ),
-                    if (task.description?.isNotEmpty == true) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        task.description!,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                    ],
-                  ],
+                    color: task.isCompleted ? AppColors.primary : Colors.white,
+                  ),
+                  child: task.isCompleted
+                      ? const Icon(Icons.check, size: 14, color: Colors.white)
+                      : null,
                 ),
               ),
-            ),
-          ],
-        ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        task.title,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                          decoration: task.isCompleted
+                              ? TextDecoration.lineThrough
+                              : null,
+                        ),
+                      ),
+                      if (task.description?.isNotEmpty == true) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          task.description!,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -685,7 +689,8 @@ class _TodoListScreenState extends State<ToDoListScreen> {
     };
   }
 
-  static String _dateLabel(DateTime date) => '${date.day}/${date.month}/${date.year}';
+  static String _dateLabel(DateTime date) =>
+      '${date.day}/${date.month}/${date.year}';
 
   static bool _sameDate(DateTime first, DateTime second) {
     return first.year == second.year &&

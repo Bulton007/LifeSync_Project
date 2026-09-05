@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
@@ -20,7 +21,22 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
   void initState() {
     super.initState();
     _controller = Get.find<HabitController>();
-    _initialHabit = Get.arguments as HabitModel;
+    final args = Get.arguments;
+    if (args is HabitModel) {
+      _initialHabit = args;
+    } else {
+      _initialHabit =
+          _controller.habits.firstOrNull ??
+          HabitModel(
+            habitId: 0,
+            userId: 0,
+            name: 'Habit',
+            frequency: 'DAILY',
+            streak: 0,
+            active: true,
+            createdAt: DateTime.now(),
+          );
+    }
     final now = DateTime.now();
     _visibleMonth = DateTime(now.year, now.month);
   }
@@ -71,7 +87,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                         ),
                         child: const Icon(
                           Icons.autorenew,
-                          color: Color(0xFF1E88E5),
+                          color: AppColors.primary,
                           size: 24,
                         ),
                       ),
@@ -82,7 +98,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF1E88E5),
+                            color: AppColors.primary,
                           ),
                         ),
                       ),
@@ -102,7 +118,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                           child: const Icon(
                             Icons.edit_outlined,
                             size: 18,
-                            color: Color(0xFF1E88E5),
+                            color: AppColors.primary,
                           ),
                         ),
                       ),
@@ -157,7 +173,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                           icon: const Icon(
                             Icons.check_circle_outline,
                             size: 16,
-                            color: Color(0xFF1E88E5),
+                            color: AppColors.primary,
                           ),
                           label: 'Total completed',
                           value: '${history.length}',
@@ -174,7 +190,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                           icon: const Icon(
                             Icons.done_all,
                             size: 16,
-                            color: Color(0xFF1E88E5),
+                            color: AppColors.primary,
                           ),
                           label: 'This month',
                           value: '$completedInMonth',
@@ -187,7 +203,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                           icon: const Icon(
                             Icons.trending_flat,
                             size: 16,
-                            color: Color(0xFF1E88E5),
+                            color: AppColors.primary,
                           ),
                           label: 'Skipped',
                           value: '$skipped',
@@ -205,7 +221,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF1E88E5),
+                          color: AppColors.primary,
                         ),
                       ),
                       Row(
@@ -223,7 +239,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                             icon: const Icon(
                               Icons.chevron_left,
                               size: 18,
-                              color: Color(0xFF1E88E5),
+                              color: AppColors.primary,
                             ),
                             constraints: const BoxConstraints(),
                             padding: EdgeInsets.zero,
@@ -239,7 +255,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                             icon: const Icon(
                               Icons.chevron_right,
                               size: 18,
-                              color: Color(0xFF1E88E5),
+                              color: AppColors.primary,
                             ),
                             constraints: const BoxConstraints(),
                             padding: EdgeInsets.zero,
@@ -282,7 +298,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                         contentPadding: EdgeInsets.zero,
                         leading: const Icon(
                           Icons.check_circle,
-                          color: Color(0xFF1E88E5),
+                          color: AppColors.primary,
                           size: 20,
                         ),
                         title: Text(
@@ -459,7 +475,7 @@ class _CalendarGrid extends StatelessWidget {
                   height: 32,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: done ? const Color(0xFF1E88E5) : Colors.transparent,
+                    color: done ? AppColors.primary : Colors.transparent,
                     shape: BoxShape.circle,
                     border: scheduled && !done
                         ? Border.all(color: Colors.blue.shade100)

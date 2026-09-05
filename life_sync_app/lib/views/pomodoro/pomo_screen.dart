@@ -34,7 +34,7 @@ class _PomoScreenState extends State<PomoScreen> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.08),
+                          color: Colors.grey.withValues(alpha: 0.08),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
@@ -77,7 +77,7 @@ class _PomoScreenState extends State<PomoScreen> {
                   border: Border.all(color: Colors.grey.shade200),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.04),
+                      color: Colors.grey.withValues(alpha: 0.04),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -138,14 +138,14 @@ class _PomoScreenState extends State<PomoScreen> {
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF2979FF).withOpacity(0.08),
+                        color: const Color(0xFF2979FF).withValues(alpha: 0.08),
                         blurRadius: 30,
                         spreadRadius: 10,
                         offset: const Offset(0, 10),
                       ),
                     ],
                     border: Border.all(
-                      color: const Color(0xFF2979FF).withOpacity(0.12),
+                      color: const Color(0xFF2979FF).withValues(alpha: 0.12),
                       width: 2,
                     ),
                   ),
@@ -207,7 +207,7 @@ class _PomoScreenState extends State<PomoScreen> {
                         border: Border.all(color: Colors.grey.shade200),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.05),
+                            color: Colors.grey.withValues(alpha: 0.05),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),
@@ -262,7 +262,7 @@ class _PomoScreenState extends State<PomoScreen> {
                         border: Border.all(color: Colors.grey.shade200),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.05),
+                            color: Colors.grey.withValues(alpha: 0.05),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),

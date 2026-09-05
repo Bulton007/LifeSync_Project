@@ -8,11 +8,7 @@ class GoalStatusBadge extends StatelessWidget {
   final String label;
   final Color color;
 
-  const GoalStatusBadge({
-    super.key,
-    required this.label,
-    required this.color,
-  });
+  const GoalStatusBadge({super.key, required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +18,7 @@ class GoalStatusBadge extends StatelessWidget {
         vertical: AppSpacing.xxs,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.10),
+        color: color.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
       child: Text(

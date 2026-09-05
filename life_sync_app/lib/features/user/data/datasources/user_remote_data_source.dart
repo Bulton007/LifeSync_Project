@@ -24,11 +24,7 @@ final class UserRemoteDataSource {
   }) {
     return _apiClient.put<UserProfileModel>(
       '/api/users/$userId',
-      data: {
-        'fullName': fullName,
-        'email': email,
-        'phoneNumber': phoneNumber,
-      },
+      data: {'fullName': fullName, 'email': email, 'phoneNumber': phoneNumber},
       decoder: _decodeProfile,
     );
   }

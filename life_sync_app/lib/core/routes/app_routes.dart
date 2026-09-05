@@ -19,6 +19,7 @@ abstract final class AppRoutes {
   static const goalDetails = '/goals/details';
   static const personalProgress = '/personal-progress';
   static const notifications = '/notifications';
+  static const assistant = '/assistant';
 
   const AppRoutes._();
 }

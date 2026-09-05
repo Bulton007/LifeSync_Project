@@ -35,46 +35,50 @@ class GoalTrackerScreen extends StatelessWidget {
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Goals',
-                              style: TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF2979FF),
+                  child: RepaintBoundary(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Goals',
+                                style: TextStyle(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2979FF),
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Turn your intentions into progress.',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.grey.shade600,
+                              const SizedBox(height: 4),
+                              Text(
+                                'Turn your intentions into progress.',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.grey.shade600,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        FilledButton.icon(
-                          onPressed: () =>
-                              Get.toNamed<void>(AppRoutes.goalEditor),
-                          icon: const Icon(Icons.add, size: 17),
-                          label: const Text('New'),
-                        ),
-                      ],
+                            ],
+                          ),
+                          FilledButton.icon(
+                            onPressed: () =>
+                                Get.toNamed<void>(AppRoutes.goalEditor),
+                            icon: const Icon(Icons.add, size: 17),
+                            label: const Text('New'),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: _Overview(controller: controller),
+                  child: RepaintBoundary(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: _Overview(controller: controller),
+                    ),
                   ),
                 ),
                 const SliverToBoxAdapter(
