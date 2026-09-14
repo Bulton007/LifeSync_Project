@@ -107,6 +107,34 @@ void main() {
 
       expect(result.errorOrNull?.type, ApiFailureType.serialization);
     });
+
+    test('does not expose an HTML 503 response as a UI message', () async {
+      adapter
+        ..statusCode = 503
+        ..body = '''
+          <html>
+            <head><style>body { color: red; }</style></head>
+            <body>Application is not available</body>
+          </html>
+        '''
+        ..contentType = 'text/html';
+
+      final result = await client.post<Map<String, Object?>>(
+        '/api/auth/login',
+        data: const {
+          'email': 'nobody@example.com',
+          'password': 'DiscardedTest123',
+        },
+        decoder: _decodeMap,
+        skipAuthentication: true,
+      );
+
+      expect(result.errorOrNull?.type, ApiFailureType.server);
+      expect(
+        result.errorOrNull?.message,
+        'The server could not complete the request.',
+      );
+    });
   });
 }
 

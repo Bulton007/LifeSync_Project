@@ -3,26 +3,33 @@ import 'package:life_sync_app/core/routes/auth_guard.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/widgets/app_shell.dart';
 import 'package:life_sync_app/core/widgets/startup_page.dart';
+import 'package:life_sync_app/features/assistant/presentation/pages/assistant_screen.dart';
+import 'package:life_sync_app/features/calendar/presentation/pages/calendar_full_screen.dart';
 import 'package:life_sync_app/features/auth/presentation/bindings/auth_binding.dart';
 import 'package:life_sync_app/features/finance/presentation/bindings/finance_binding.dart';
+import 'package:life_sync_app/features/focus/presentation/bindings/focus_binding.dart';
 import 'package:life_sync_app/features/habits/presentation/bindings/habit_binding.dart';
 import 'package:life_sync_app/features/habits/presentation/pages/add_new_habit_screen.dart';
 import 'package:life_sync_app/features/habits/presentation/pages/habit_progress_screen.dart';
 import 'package:life_sync_app/features/habits/presentation/pages/habit_tracker_screen.dart';
 import 'package:life_sync_app/features/notifications/presentation/bindings/notification_binding.dart';
 import 'package:life_sync_app/features/notifications/presentation/pages/notification_history_screen.dart';
+import 'package:life_sync_app/features/journal/presentation/bindings/journal_binding.dart';
+import 'package:life_sync_app/features/journal/presentation/pages/journal_screen.dart';
+import 'package:life_sync_app/features/journal/presentation/pages/write_journal_screen.dart';
+import 'package:life_sync_app/features/onboarding/presentation/pages/onboarding_screen.dart';
 import 'package:life_sync_app/features/personal_progress/presentation/bindings/personal_progress_binding.dart';
 import 'package:life_sync_app/features/personal_progress/presentation/pages/personal_progress_screen.dart';
 import 'package:life_sync_app/features/goals/presentation/bindings/goal_binding.dart';
 import 'package:life_sync_app/features/goals/presentation/pages/create_goal_first_step_screen.dart';
 import 'package:life_sync_app/features/goals/presentation/pages/goal_details_screen.dart';
-import 'package:life_sync_app/features/home/presentation/pages/assistant_screen.dart';
 import 'package:life_sync_app/features/tasks/presentation/bindings/task_binding.dart';
 import 'package:life_sync_app/features/tasks/presentation/pages/add_to_do_list_full_screen.dart';
 import 'package:life_sync_app/features/tasks/presentation/pages/to_do_list_screen.dart';
 import 'package:life_sync_app/features/user/presentation/bindings/user_binding.dart';
 import 'package:life_sync_app/features/user/presentation/pages/change_password_page.dart';
 import 'package:life_sync_app/features/user/presentation/pages/profile_page.dart';
+import 'package:life_sync_app/features/settings/presentation/pages/settings_screen.dart';
 import 'package:life_sync_app/views/authentication/created_success_screen.dart';
 import 'package:life_sync_app/views/authentication/fill_name_screen.dart';
 import 'package:life_sync_app/views/authentication/forgot_password_screen.dart';
@@ -30,10 +37,16 @@ import 'package:life_sync_app/views/authentication/sign_in_screen.dart';
 import 'package:life_sync_app/views/authentication/sign_up_create_password_screen.dart';
 import 'package:life_sync_app/views/authentication/sign_up_screen.dart';
 import 'package:life_sync_app/views/authentication/sign_up_verify_email_screen.dart';
+import 'package:life_sync_app/views/pomodoro/focus_time_data_screen.dart';
+import 'package:life_sync_app/views/pomodoro/pomo_screen.dart';
 
 abstract final class AppPages {
   static final pages = <GetPage<dynamic>>[
     GetPage<dynamic>(name: AppRoutes.startup, page: () => const StartupPage()),
+    GetPage<dynamic>(
+      name: AppRoutes.onboarding,
+      page: () => const OnboardingScreen(),
+    ),
     GetPage<dynamic>(
       name: AppRoutes.shell,
       page: () => const AppShell(),
@@ -44,6 +57,8 @@ abstract final class AppPages {
         GoalBinding(),
         FinanceBinding(),
         NotificationBinding(),
+        JournalBinding(),
+        FocusBinding(),
       ],
       middlewares: [AuthGuard()],
     ),
@@ -145,6 +160,48 @@ abstract final class AppPages {
       name: AppRoutes.notifications,
       page: () => const NotificationHistoryScreen(),
       binding: NotificationBinding(),
+      middlewares: [AuthGuard()],
+    ),
+    GetPage<dynamic>(
+      name: AppRoutes.settings,
+      page: () => const SettingsScreen(),
+      bindings: [
+        UserBinding(),
+        TaskBinding(),
+        HabitBinding(),
+        GoalBinding(),
+        JournalBinding(),
+        FocusBinding(),
+      ],
+      middlewares: [AuthGuard()],
+    ),
+    GetPage<dynamic>(
+      name: AppRoutes.calendar,
+      page: () => const CalendarFullScreen(),
+      middlewares: [AuthGuard()],
+    ),
+    GetPage<dynamic>(
+      name: AppRoutes.journal,
+      page: () => const JournalScreen(),
+      binding: JournalBinding(),
+      middlewares: [AuthGuard()],
+    ),
+    GetPage<dynamic>(
+      name: AppRoutes.journalEditor,
+      page: () => const WriteJournalScreen(),
+      binding: JournalBinding(),
+      middlewares: [AuthGuard()],
+    ),
+    GetPage<dynamic>(
+      name: AppRoutes.focusTimer,
+      page: () => const PomoScreen(),
+      binding: FocusBinding(),
+      middlewares: [AuthGuard()],
+    ),
+    GetPage<dynamic>(
+      name: AppRoutes.focusStatistics,
+      page: () => const FocusTimeDataScreen(),
+      binding: FocusBinding(),
       middlewares: [AuthGuard()],
     ),
     GetPage<dynamic>(

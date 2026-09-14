@@ -1,12 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/di/initial_binding.dart';
 import 'package:life_sync_app/core/routes/app_pages.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/core/storage/secure_token_storage.dart';
 import 'package:life_sync_app/core/theme/app_scroll_behavior.dart';
 import 'package:life_sync_app/core/theme/app_theme.dart';
+import 'package:life_sync_app/core/theme/theme_controller.dart';
 
 void configureAppErrorHandling() {
   ErrorWidget.builder = (FlutterErrorDetails details) {
@@ -82,18 +85,7 @@ void configureAppErrorHandling() {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await _enableAndroidImmersiveMode();
-  configureAppErrorHandling();
-
   runApp(const LifeSyncApp());
-}
-
-Future<void> _enableAndroidImmersiveMode() async {
-  if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
-    return;
-  }
-
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 }
 
 class LifeSyncApp extends StatefulWidget {
@@ -107,6 +99,18 @@ class _LifeSyncAppState extends State<LifeSyncApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    if (!Get.isRegistered<SecureKeyValueStore>()) {
+      Get.put<SecureKeyValueStore>(
+        FlutterSecureKeyValueStore(const FlutterSecureStorage()),
+        permanent: true,
+      );
+    }
+    if (!Get.isRegistered<ThemeController>()) {
+      Get.put(
+        ThemeController(Get.find<SecureKeyValueStore>()),
+        permanent: true,
+      );
+    }
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -119,19 +123,24 @@ class _LifeSyncAppState extends State<LifeSyncApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _enableAndroidImmersiveMode();
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      scrollBehavior: const AppScrollBehavior(),
-      theme: AppTheme.light,
-      initialBinding: InitialBinding(),
-      initialRoute: AppRoutes.startup,
-      getPages: AppPages.pages,
+    final themeController = Get.find<ThemeController>();
+    return Obx(
+      () => GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        scrollBehavior: const AppScrollBehavior(),
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        themeMode: themeController.themeMode,
+        initialBinding: InitialBinding(),
+        initialRoute: AppRoutes.startup,
+        getPages: AppPages.pages,
+      ),
     );
   }
 }

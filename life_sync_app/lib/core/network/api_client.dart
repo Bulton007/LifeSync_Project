@@ -31,6 +31,7 @@ final class ApiClient {
     _dio.interceptors.add(AuthInterceptor(tokenStorage, onUnauthorized));
 
     if (kDebugMode) {
+      debugPrint('LifeSync API base URL: ${environment.apiBaseUrl}');
       _dio.interceptors.add(
         LogInterceptor(
           requestHeader: false,

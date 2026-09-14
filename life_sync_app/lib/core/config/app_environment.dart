@@ -3,7 +3,9 @@ import 'package:flutter/foundation.dart';
 /// Runtime configuration shared by every remote data source.
 ///
 /// Override the development default with:
-/// `--dart-define=LIFE_SYNC_API_BASE_URL=https://api.example.com`.
+/// `--dart-define=API_BASE_URL=https://api.example.com`.
+///
+/// The legacy `LIFE_SYNC_API_BASE_URL` key is still accepted.
 final class AppEnvironment {
   AppEnvironment({
     required String apiBaseUrl,
@@ -13,17 +15,23 @@ final class AppEnvironment {
   }) : apiBaseUrl = _normalizeAndValidate(apiBaseUrl);
 
   factory AppEnvironment.current() {
-    const configuredBaseUrl = String.fromEnvironment('LIFE_SYNC_API_BASE_URL');
+    const configuredBaseUrl = String.fromEnvironment('API_BASE_URL');
+    const legacyConfiguredBaseUrl = String.fromEnvironment(
+      'LIFE_SYNC_API_BASE_URL',
+    );
+    final selectedBaseUrl = configuredBaseUrl.trim().isNotEmpty
+        ? configuredBaseUrl
+        : legacyConfiguredBaseUrl;
 
-    if (configuredBaseUrl.trim().isEmpty && kReleaseMode) {
+    if (selectedBaseUrl.trim().isEmpty && kReleaseMode) {
       throw StateError(
-        'LIFE_SYNC_API_BASE_URL must be provided for release builds.',
+        'API_BASE_URL must be provided for release builds.',
       );
     }
 
     return AppEnvironment(
-      apiBaseUrl: configuredBaseUrl.trim().isNotEmpty
-          ? configuredBaseUrl
+      apiBaseUrl: selectedBaseUrl.trim().isNotEmpty
+          ? selectedBaseUrl
           : _developmentBaseUrl,
     );
   }
@@ -33,9 +41,12 @@ final class AppEnvironment {
   final Duration sendTimeout;
   final Duration receiveTimeout;
 
+  static const _androidDevelopmentBaseUrl =
+      'https://lifesync-backend-bultoncr7-dev.apps.rm3.7wse.p1.openshiftapps.com';
+
   static String get _developmentBaseUrl {
     if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://10.0.2.2:8085';
+      return _androidDevelopmentBaseUrl;
     }
 
     return 'http://localhost:8085';

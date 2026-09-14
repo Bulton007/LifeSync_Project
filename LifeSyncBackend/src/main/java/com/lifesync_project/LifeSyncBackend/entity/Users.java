@@ -39,6 +39,16 @@ public class Users {
 
     private LocalDateTime otpExpiredAt;
 
+    private Integer otpFailures;
+    private Integer otpEmailAttempts;
+    private Integer otpSendAttempts;
+    private LocalDateTime otpWindowStartedAt;
+    private LocalDateTime otpBlockedUntil;
+    private LocalDateTime otpLastSentAt;
+    private String otpPurpose;
+    private String telegramChatId;
+    private String pendingTelegramChatId;
+
     private String profileImage;
 
     @CreationTimestamp

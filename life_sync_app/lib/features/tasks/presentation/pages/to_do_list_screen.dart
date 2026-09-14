@@ -369,8 +369,8 @@ class _TodoListScreenState extends State<ToDoListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () => _controller.loadTasks(refresh: true),
@@ -387,12 +387,12 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                 const SizedBox(height: 24),
                 RepaintBoundary(child: _buildCalendarStrip()),
                 const SizedBox(height: 28),
-                const Text(
+                Text(
                   'Tasks',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                    color: colors.primaryBlue,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -440,7 +440,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddTodoPopup(context),
-        backgroundColor: const Color(0xFF2979FF),
+        backgroundColor: colors.primaryBlue,
         elevation: 4,
         child: const Icon(Icons.add, color: Colors.white, size: 28),
       ),
@@ -448,6 +448,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
   }
 
   Widget _buildHeader() {
+    final colors = context.lifeSyncColors;
     return Obx(() {
       final date = _controller.selectedDate.value;
       return Row(
@@ -455,18 +456,18 @@ class _TodoListScreenState extends State<ToDoListScreen> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: colors.elevatedSurface,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withValues(alpha: 0.08),
+                  color: colors.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
               ],
             ),
             child: IconButton(
-              icon: const Icon(Icons.chevron_left, color: Colors.black87),
+              icon: const Icon(Icons.chevron_left),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -474,9 +475,9 @@ class _TodoListScreenState extends State<ToDoListScreen> {
             children: [
               Text(
                 date.year.toString(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey,
+                  color: colors.secondaryText,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -485,21 +486,20 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
                 ),
               ),
             ],
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: colors.elevatedSurface,
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey.shade200),
+              border: Border.all(color: colors.border),
             ),
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.calendar_today_outlined,
-                color: AppColors.primary,
+                color: colors.primaryBlue,
                 size: 20,
               ),
               onPressed: _pickDate,
@@ -534,12 +534,13 @@ class _TodoListScreenState extends State<ToDoListScreen> {
   }
 
   Widget _buildChip(IconData icon, String label, Color color) {
+    final colors = context.lifeSyncColors;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: colors.inputSurface,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: colors.border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -560,13 +561,14 @@ class _TodoListScreenState extends State<ToDoListScreen> {
   }
 
   Widget _buildCalendarDay(String dayLetter, String dateNum, bool isSelected) {
+    final colors = context.lifeSyncColors;
     return Column(
       children: [
         Text(
           dayLetter,
           style: TextStyle(
             fontSize: 12,
-            color: isSelected ? AppColors.primary : Colors.grey,
+            color: isSelected ? colors.primaryBlue : colors.secondaryText,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -575,7 +577,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : Colors.transparent,
+            color: isSelected ? colors.primaryBlue : Colors.transparent,
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
@@ -584,7 +586,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.white : Colors.black87,
+              color: isSelected ? Colors.white : colors.primaryText,
             ),
           ),
         ),
@@ -593,89 +595,89 @@ class _TodoListScreenState extends State<ToDoListScreen> {
   }
 
   Widget _buildTimelineItem({required TaskModel task, required bool isLast}) {
-    return InkWell(
-      onTap: () => _showTaskDetails(task),
-      child: Stack(
-        children: [
-          if (!isLast)
-            Positioned(
-              left: 75,
-              top: 22,
-              bottom: 0,
-              child: Container(width: 2, color: Colors.grey.shade300),
+    final colors = context.lifeSyncColors;
+    return IntrinsicHeight(
+      child: InkWell(
+        onTap: () => _showTaskDetails(task),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 65,
+              child: Text(
+                _priorityLabel(task.priority),
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: colors.primaryText,
+                ),
+              ),
             ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 65,
-                child: Text(
-                  _priorityLabel(task.priority),
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: task.isCompleted
-                    ? null
-                    : () => _controller.completeTask(task),
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  width: 22,
-                  height: 22,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
+            Column(
+              children: [
+                InkWell(
+                  onTap: task.isCompleted
+                      ? null
+                      : () => _controller.completeTask(task),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: task.isCompleted
+                            ? colors.primaryBlue
+                            : colors.border,
+                        width: 1.5,
+                      ),
                       color: task.isCompleted
-                          ? AppColors.primary
-                          : Colors.grey.shade400,
-                      width: 1.5,
+                          ? colors.primaryBlue
+                          : colors.inputSurface,
                     ),
-                    color: task.isCompleted ? AppColors.primary : Colors.white,
+                    child: task.isCompleted
+                        ? const Icon(Icons.check, size: 14, color: Colors.white)
+                        : null,
                   ),
-                  child: task.isCompleted
-                      ? const Icon(Icons.check, size: 14, color: Colors.white)
-                      : null,
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                if (!isLast)
+                  Expanded(child: Container(width: 2, color: colors.border)),
+              ],
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      task.title,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: colors.primaryText,
+                        decoration: task.isCompleted
+                            ? TextDecoration.lineThrough
+                            : null,
+                      ),
+                    ),
+                    if (task.description?.isNotEmpty == true) ...[
+                      const SizedBox(height: 4),
                       Text(
-                        task.title,
+                        task.description!,
                         style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                          decoration: task.isCompleted
-                              ? TextDecoration.lineThrough
-                              : null,
+                          fontSize: 11,
+                          color: colors.secondaryText,
                         ),
                       ),
-                      if (task.description?.isNotEmpty == true) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          task.description!,
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
                     ],
-                  ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

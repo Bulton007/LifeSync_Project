@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/core/value_objects/money_amount.dart';
 import 'package:life_sync_app/features/goals/data/models/goal_models.dart';
 import 'package:life_sync_app/features/goals/presentation/controllers/goal_controller.dart';
@@ -45,274 +46,276 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: const Color(0xFFF7F9FC),
-    body: SafeArea(
-      child: Obx(() {
-        final goal =
-            _controller.goals.firstWhereOrNull(
-              (item) => item.id == _initial.id,
-            ) ??
-            _initial;
-        final milestones =
-            _controller.milestones[goal.id] ?? const <GoalMilestoneModel>[];
-        final schedules =
-            _controller.schedules[goal.id] ?? const <GoalScheduleModel>[];
-        final completeMilestones = milestones
-            .where((item) => item.completed)
-            .length;
-        return RefreshIndicator(
-          onRefresh: () async {
-            await _controller.loadGoals(refresh: true);
-            await _controller.loadDetails(goal.id);
-          },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.grey.shade100),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.chevron_left,
-                          color: Colors.black87,
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Scaffold(
+      body: SafeArea(
+        child: Obx(() {
+          final goal =
+              _controller.goals.firstWhereOrNull(
+                (item) => item.id == _initial.id,
+              ) ??
+              _initial;
+          final milestones =
+              _controller.milestones[goal.id] ?? const <GoalMilestoneModel>[];
+          final schedules =
+              _controller.schedules[goal.id] ?? const <GoalScheduleModel>[];
+          final completeMilestones = milestones
+              .where((item) => item.completed)
+              .length;
+          return RefreshIndicator(
+            onRefresh: () async {
+              await _controller.loadGoals(refresh: true);
+              await _controller.loadDetails(goal.id);
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: colors.elevatedSurface,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: colors.border),
                         ),
-                        onPressed: Get.back,
+                        child: IconButton(
+                          icon: const Icon(Icons.chevron_left),
+                          onPressed: Get.back,
+                        ),
                       ),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => Get.toNamed<void>(
+                              AppRoutes.goalEditor,
+                              arguments: goal,
+                            ),
+                            icon: Icon(
+                              Icons.edit_outlined,
+                              color: colors.primaryBlue,
+                            ),
+                          ),
+                          PopupMenuButton<String>(
+                            onSelected: (value) => _goalAction(goal, value),
+                            itemBuilder: (_) => [
+                              if (!goal.completed)
+                                const PopupMenuItem(
+                                  value: 'complete',
+                                  child: Text('Complete goal'),
+                                ),
+                              if (!goal.archived)
+                                const PopupMenuItem(
+                                  value: 'archive',
+                                  child: Text('Archive goal'),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: colors.primaryBlue.withValues(alpha: .14),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Icon(
+                          Icons.flag_outlined,
+                          color: colors.primaryBlue,
+                          size: 28,
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              goal.title,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: colors.primaryBlue,
+                              ),
+                            ),
+                            if (goal.description?.isNotEmpty == true) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                goal.description!,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: colors.secondaryText,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 20,
+                    runSpacing: 8,
+                    children: [
+                      _DateLabel(
+                        label: 'Due ${_date(goal.deadline)}',
+                        color: colors.primaryBlue,
+                      ),
+                      _DateLabel(
+                        label:
+                            'Started ${_date(goal.createdAt ?? DateTime.now())}',
+                        color: colors.secondaryText,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: colors.cardSurface,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: colors.border),
+                      boxShadow: [
+                        BoxShadow(
+                          color: colors.shadow,
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        IconButton(
-                          onPressed: () => Get.toNamed<void>(
-                            AppRoutes.goalEditor,
-                            arguments: goal,
-                          ),
-                          icon: const Icon(
-                            Icons.edit_outlined,
-                            color: Color(0xFF2979FF),
+                        Text(
+                          'Goal Progress',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: colors.secondaryText,
                           ),
                         ),
-                        PopupMenuButton<String>(
-                          onSelected: (value) => _goalAction(goal, value),
-                          itemBuilder: (_) => [
-                            if (!goal.completed)
-                              const PopupMenuItem(
-                                value: 'complete',
-                                child: Text('Complete goal'),
+                        const SizedBox(height: 6),
+                        Text(
+                          '${(goal.progress * 100).round()}%',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: colors.primaryBlue,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${goal.currentAmount.format()} of ${goal.targetAmount.format()}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: colors.secondaryText,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: LinearProgressIndicator(
+                            value: goal.progress,
+                            minHeight: 8,
+                            backgroundColor: colors.divider,
+                            valueColor: AlwaysStoppedAnimation(
+                              colors.primaryBlue,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _Metric(
+                                label: 'Milestones',
+                                value:
+                                    '$completeMilestones/${milestones.length}',
                               ),
-                            if (!goal.archived)
-                              const PopupMenuItem(
-                                value: 'archive',
-                                child: Text('Archive goal'),
+                            ),
+                            Expanded(
+                              child: _Metric(
+                                label: 'Schedules',
+                                value:
+                                    '${schedules.where((item) => item.completed).length}/${schedules.length}',
                               ),
+                            ),
+                            Expanded(
+                              child: _Metric(
+                                label: 'Status',
+                                value: goal.completed
+                                    ? 'Complete'
+                                    : goal.archived
+                                    ? 'Archived'
+                                    : 'Active',
+                              ),
+                            ),
                           ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE8F1FC),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: const Icon(
-                        Icons.flag_outlined,
-                        color: Color(0xFF2979FF),
-                        size: 28,
-                      ),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            goal.title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF2979FF),
-                            ),
-                          ),
-                          if (goal.description?.isNotEmpty == true) ...[
-                            const SizedBox(height: 4),
-                            Text(
-                              goal.description!,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Wrap(
-                  spacing: 20,
-                  runSpacing: 8,
-                  children: [
-                    _DateLabel(
-                      label: 'Due ${_date(goal.deadline)}',
-                      color: const Color(0xFF2979FF),
-                    ),
-                    _DateLabel(
-                      label:
-                          'Started ${_date(goal.createdAt ?? DateTime.now())}',
-                      color: Colors.grey,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: Colors.grey.shade200),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withValues(alpha: 0.04),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Goal Progress',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        '${(goal.progress * 100).round()}%',
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2979FF),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${goal.currentAmount.format()} of ${goal.targetAmount.format()}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: LinearProgressIndicator(
-                          value: goal.progress,
-                          minHeight: 8,
-                          backgroundColor: Colors.grey.shade100,
-                          valueColor: const AlwaysStoppedAnimation(
-                            Color(0xFF2979FF),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _Metric(
-                              label: 'Milestones',
-                              value: '$completeMilestones/${milestones.length}',
-                            ),
-                          ),
-                          Expanded(
-                            child: _Metric(
-                              label: 'Schedules',
-                              value:
-                                  '${schedules.where((item) => item.completed).length}/${schedules.length}',
-                            ),
-                          ),
-                          Expanded(
-                            child: _Metric(
-                              label: 'Status',
-                              value: goal.completed
-                                  ? 'Complete'
-                                  : goal.archived
-                                  ? 'Archived'
-                                  : 'Active',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                  const SizedBox(height: 24),
+                  _SectionHeader(
+                    title: 'Milestones',
+                    action: 'Add Milestone',
+                    onTap: () => _milestoneDialog(goal.id),
                   ),
-                ),
-                const SizedBox(height: 24),
-                _SectionHeader(
-                  title: 'Milestones',
-                  action: 'Add Milestone',
-                  onTap: () => _milestoneDialog(goal.id),
-                ),
-                const SizedBox(height: 12),
-                if (_controller.detailsLoading.contains(goal.id) &&
-                    milestones.isEmpty)
-                  const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                else if (milestones.isEmpty)
-                  const _InlineEmpty(message: 'No milestones yet.')
-                else
-                  for (final milestone in milestones) ...[
-                    _MilestoneCard(
-                      item: milestone,
-                      controller: _controller,
-                      onEdit: () =>
-                          _milestoneDialog(goal.id, existing: milestone),
-                    ),
-                    const SizedBox(height: 10),
-                  ],
-                const SizedBox(height: 20),
-                _SectionHeader(
-                  title: 'Contribution Schedule',
-                  action: 'Add Schedule',
-                  onTap: () => _scheduleDialog(goal.id),
-                ),
-                const SizedBox(height: 12),
-                if (schedules.isEmpty)
-                  const _InlineEmpty(message: 'No scheduled contributions yet.')
-                else
-                  for (final schedule in schedules) ...[
-                    _ScheduleCard(item: schedule, controller: _controller),
-                    const SizedBox(height: 10),
-                  ],
-              ],
+                  const SizedBox(height: 12),
+                  if (_controller.detailsLoading.contains(goal.id) &&
+                      milestones.isEmpty)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else if (milestones.isEmpty)
+                    const _InlineEmpty(message: 'No milestones yet.')
+                  else
+                    for (final milestone in milestones) ...[
+                      _MilestoneCard(
+                        item: milestone,
+                        controller: _controller,
+                        onEdit: () =>
+                            _milestoneDialog(goal.id, existing: milestone),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  const SizedBox(height: 20),
+                  _SectionHeader(
+                    title: 'Contribution Schedule',
+                    action: 'Add Schedule',
+                    onTap: () => _scheduleDialog(goal.id),
+                  ),
+                  const SizedBox(height: 12),
+                  if (schedules.isEmpty)
+                    const _InlineEmpty(
+                      message: 'No scheduled contributions yet.',
+                    )
+                  else
+                    for (final schedule in schedules) ...[
+                      _ScheduleCard(item: schedule, controller: _controller),
+                      const SizedBox(height: 10),
+                    ],
+                ],
+              ),
             ),
-          ),
-        );
-      }),
-    ),
-  );
+          );
+        }),
+      ),
+    );
+  }
 
   Future<void> _goalAction(GoalModel goal, String action) async {
     if (action == 'complete') {
@@ -490,17 +493,23 @@ class _Metric extends StatelessWidget {
   final String label;
   final String value;
   @override
-  Widget build(BuildContext context) => Column(
-    children: [
-      Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
-      const SizedBox(height: 4),
-      Text(
-        value,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-      ),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Column(
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontSize: 10, color: colors.secondaryText),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
 }
 
 class _SectionHeader extends StatelessWidget {
@@ -533,20 +542,23 @@ class _InlineEmpty extends StatelessWidget {
   const _InlineEmpty({required this.message});
   final String message;
   @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(18),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.grey.shade200),
-    ),
-    child: Text(
-      message,
-      textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 12, color: Colors.grey),
-    ),
-  );
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: colors.cardSurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.border),
+      ),
+      child: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 12, color: colors.secondaryText),
+      ),
+    );
+  }
 }
 
 class _MilestoneCard extends StatelessWidget {
@@ -559,62 +571,65 @@ class _MilestoneCard extends StatelessWidget {
   final GoalController controller;
   final VoidCallback onEdit;
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(14),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: item.completed ? Colors.green.shade200 : Colors.grey.shade200,
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: colors.cardSurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: item.completed
+              ? colors.positive.withValues(alpha: .55)
+              : colors.border,
+        ),
       ),
-    ),
-    child: Row(
-      children: [
-        IconButton(
-          onPressed: item.completed
-              ? null
-              : () => controller.completeMilestone(item),
-          icon: Icon(
-            item.completed ? Icons.check_circle : Icons.radio_button_unchecked,
-            color: item.completed ? Colors.green : Colors.grey,
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: item.completed
+                ? null
+                : () => controller.completeMilestone(item),
+            icon: Icon(
+              item.completed
+                  ? Icons.check_circle
+                  : Icons.radio_button_unchecked,
+              color: item.completed ? colors.positive : colors.secondaryText,
+            ),
           ),
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.title,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  decoration: item.completed
-                      ? TextDecoration.lineThrough
-                      : null,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.title,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    decoration: item.completed
+                        ? TextDecoration.lineThrough
+                        : null,
+                  ),
                 ),
-              ),
-              Text(
-                'Target ${_date(item.targetDate)}',
-                style: const TextStyle(fontSize: 10, color: Colors.grey),
-              ),
-            ],
+                Text(
+                  'Target ${_date(item.targetDate)}',
+                  style: TextStyle(fontSize: 10, color: colors.secondaryText),
+                ),
+              ],
+            ),
           ),
-        ),
-        IconButton(
-          onPressed: onEdit,
-          icon: const Icon(Icons.edit_outlined, size: 18),
-        ),
-        IconButton(
-          onPressed: () => controller.deleteMilestone(item),
-          icon: const Icon(
-            Icons.delete_outline,
-            size: 18,
-            color: Colors.redAccent,
+          IconButton(
+            onPressed: onEdit,
+            icon: const Icon(Icons.edit_outlined, size: 18),
           ),
-        ),
-      ],
-    ),
-  );
+          IconButton(
+            onPressed: () => controller.deleteMilestone(item),
+            icon: Icon(Icons.delete_outline, size: 18, color: colors.negative),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _ScheduleCard extends StatelessWidget {
@@ -622,56 +637,63 @@ class _ScheduleCard extends StatelessWidget {
   final GoalScheduleModel item;
   final GoalController controller;
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(14),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: item.completed ? Colors.green.shade200 : Colors.grey.shade200,
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: colors.cardSurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: item.completed
+              ? colors.positive.withValues(alpha: .55)
+              : colors.border,
+        ),
       ),
-    ),
-    child: Row(
-      children: [
-        IconButton(
-          onPressed: item.completed
-              ? null
-              : () => controller.completeSchedule(item),
-          icon: Icon(
-            item.completed ? Icons.check_circle : Icons.radio_button_unchecked,
-            color: item.completed ? Colors.green : Colors.grey,
-          ),
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.amount.format(),
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                'Scheduled ${_date(item.scheduleDate)}',
-                style: const TextStyle(fontSize: 10, color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
-        if (!item.completed)
+      child: Row(
+        children: [
           IconButton(
-            onPressed: () => controller.deleteSchedule(item),
-            icon: const Icon(
-              Icons.delete_outline,
-              size: 18,
-              color: Colors.redAccent,
+            onPressed: item.completed
+                ? null
+                : () => controller.completeSchedule(item),
+            icon: Icon(
+              item.completed
+                  ? Icons.check_circle
+                  : Icons.radio_button_unchecked,
+              color: item.completed ? colors.positive : colors.secondaryText,
             ),
           ),
-      ],
-    ),
-  );
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.amount.format(),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Scheduled ${_date(item.scheduleDate)}',
+                  style: TextStyle(fontSize: 10, color: colors.secondaryText),
+                ),
+              ],
+            ),
+          ),
+          if (!item.completed)
+            IconButton(
+              onPressed: () => controller.deleteSchedule(item),
+              icon: Icon(
+                Icons.delete_outline,
+                size: 18,
+                color: colors.negative,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 String _date(DateTime value) => '${value.day}/${value.month}/${value.year}';

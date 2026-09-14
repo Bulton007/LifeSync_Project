@@ -48,10 +48,13 @@ final class AuthRemoteDataSource {
     );
   }
 
-  Future<ApiResult<String>> resendOtp(String email) {
+  Future<ApiResult<String>> resendOtp(
+    String email, {
+    String channel = 'email',
+  }) {
     return _apiClient.post<String>(
       '/api/auth/resend-otp',
-      queryParameters: {'email': email},
+      queryParameters: {'email': email, 'channel': channel},
       decoder: _decodeMessage,
       responseType: ResponseType.plain,
       skipAuthentication: true,

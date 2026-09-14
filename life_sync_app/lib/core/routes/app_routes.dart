@@ -8,6 +8,7 @@ abstract final class AppRoutes {
   static const verifyEmail = '/verify-email';
   static const forgotPassword = '/forgot-password';
   static const createdSuccess = '/created-success';
+  static const onboarding = '/onboarding';
   static const profile = '/profile';
   static const changePassword = '/change-password';
   static const tasks = '/tasks';
@@ -19,6 +20,12 @@ abstract final class AppRoutes {
   static const goalDetails = '/goals/details';
   static const personalProgress = '/personal-progress';
   static const notifications = '/notifications';
+  static const settings = '/settings';
+  static const calendar = '/calendar';
+  static const journal = '/journal';
+  static const journalEditor = '/journal/edit';
+  static const focusTimer = '/focus';
+  static const focusStatistics = '/focus/statistics';
   static const assistant = '/assistant';
 
   const AppRoutes._();

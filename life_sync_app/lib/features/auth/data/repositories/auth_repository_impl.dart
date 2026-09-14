@@ -32,8 +32,10 @@ final class AuthRepositoryImpl implements AuthRepository {
   }) => _remoteDataSource.verifyOtp(email: email, otpCode: otpCode);
 
   @override
-  Future<ApiResult<String>> resendOtp(String email) =>
-      _remoteDataSource.resendOtp(email);
+  Future<ApiResult<String>> resendOtp(
+    String email, {
+    String channel = 'email',
+  }) => _remoteDataSource.resendOtp(email, channel: channel);
 
   @override
   Future<ApiResult<String>> forgotPassword(String email) =>

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
 import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:life_sync_app/features/auth/presentation/validators/auth_validators.dart';
 
 class FillNameScreen extends StatefulWidget {
   const FillNameScreen({super.key});
@@ -35,7 +36,7 @@ class _FillNameScreenState extends State<FillNameScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     final registered = await _authController.register(
-      fullName: _nameController.text,
+      fullName: _nameController.text.trim(),
       email: _arguments.email,
       password: _arguments.password!,
     );
@@ -143,14 +144,7 @@ class _FillNameScreenState extends State<FillNameScreen> {
                   controller: _nameController,
                   style: const TextStyle(fontSize: 14, color: Colors.black87),
                   onFieldSubmitted: (_) => _submit(),
-                  validator: (value) {
-                    final name = value?.trim() ?? '';
-                    if (name.isEmpty) return 'Full name is required.';
-                    if (name.length > 100) {
-                      return 'Full name must not exceed 100 characters.';
-                    }
-                    return null;
-                  },
+                  validator: AuthValidators.fullName,
                   decoration: InputDecoration(
                     hintText: 'Your Name',
                     hintStyle: TextStyle(

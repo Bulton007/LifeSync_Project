@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
 import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:life_sync_app/features/auth/presentation/validators/auth_validators.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -27,7 +28,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    final email = _emailController.text.trim();
+    final email = AuthValidators.normalizeEmail(_emailController.text);
     final sent = await _authController.forgotPassword(email);
     if (sent) {
       await Get.toNamed<void>(
@@ -109,14 +110,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   onFieldSubmitted: (_) => _submit(),
-                  validator: (value) {
-                    final email = value?.trim() ?? '';
-                    if (email.isEmpty) return 'Email is required.';
-                    if (!GetUtils.isEmail(email)) {
-                      return 'Enter a valid email address.';
-                    }
-                    return null;
-                  },
+                  validator: AuthValidators.email,
                   decoration: InputDecoration(
                     hintText: 'Email',
                     hintStyle: TextStyle(

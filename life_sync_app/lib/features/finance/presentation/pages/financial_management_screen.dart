@@ -19,8 +19,8 @@ class FinancialManagementScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final finance = Get.find<FinanceController>();
     final goals = Get.find<GoalController>();
+    final colors = context.lifeSyncColors;
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
       body: SafeArea(
         child: Obx(() {
           final view = finance.state.value;
@@ -47,7 +47,7 @@ class FinancialManagementScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -56,7 +56,7 @@ class FinancialManagementScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
+                                color: colors.primaryBlue,
                               ),
                             ),
                             SizedBox(height: 4),
@@ -64,16 +64,16 @@ class FinancialManagementScreen extends StatelessWidget {
                               'Track and manage your money here',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey,
+                                color: colors.secondaryText,
                               ),
                             ),
                           ],
                         ),
                       ),
                       PopupMenuButton<String>(
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.settings_outlined,
-                          color: AppColors.primary,
+                          color: colors.primaryBlue,
                         ),
                         onSelected: (value) {
                           if (value == 'categories') {
@@ -129,17 +129,10 @@ class FinancialManagementScreen extends StatelessWidget {
                             finance,
                             FinanceEntryType.expense,
                           ),
+                          icon: const Icon(Icons.remove, size: 18),
+                          label: const Text('Add Expense'),
                           style: FilledButton.styleFrom(
-                            backgroundColor: const Color(0xFFD32F2F),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          icon: const Icon(Icons.trending_down, size: 20),
-                          label: const Text(
-                            'Add Expense',
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                            backgroundColor: colors.negative,
                           ),
                         ),
                       ),
@@ -218,85 +211,88 @@ class _BalanceCard extends StatelessWidget {
   const _BalanceCard({required this.finance});
   final FinanceController finance;
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withValues(alpha: 0.08),
-          blurRadius: 15,
-          offset: const Offset(0, 5),
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Total balance',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            CircleAvatar(
-              backgroundColor: Color(0xFFF0F5FF),
-              child: Icon(
-                Icons.account_balance_wallet_outlined,
-                color: AppColors.primary,
-                size: 20,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Text(
-          finance.balance.format(),
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: finance.balance.minorUnits.isNegative
-                ? Colors.red
-                : Colors.black87,
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colors.cardSurface,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: colors.shadow,
+            blurRadius: 15,
+            offset: const Offset(0, 5),
           ),
-        ),
-        const SizedBox(height: 20),
-        const Divider(height: 1),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _Summary(
-              icon: Icons.trending_up,
-              color: Colors.green,
-              title: 'Income',
-              amount: finance.incomeTotal.format(),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Total balance',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: colors.secondaryText,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              CircleAvatar(
+                backgroundColor: colors.primaryBlue.withValues(alpha: .14),
+                child: Icon(
+                  Icons.account_balance_wallet_outlined,
+                  color: colors.primaryBlue,
+                  size: 20,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            finance.balance.format(),
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: finance.balance.minorUnits.isNegative
+                  ? colors.negative
+                  : colors.primaryText,
             ),
-            Container(height: 30, width: 1, color: Colors.grey.shade200),
-            _Summary(
-              icon: Icons.trending_down,
-              color: Colors.red,
-              title: 'Expense',
-              amount: finance.expenseTotal.format(),
-            ),
-            Container(height: 30, width: 1, color: Colors.grey.shade200),
-            _Summary(
-              icon: Icons.receipt_long_outlined,
-              color: AppColors.primary,
-              title: 'Entries',
-              amount: '${finance.history.length}',
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
+          ),
+          const SizedBox(height: 20),
+          const Divider(height: 1),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _Summary(
+                icon: Icons.trending_up,
+                color: colors.positive,
+                title: 'Income',
+                amount: finance.incomeTotal.format(),
+              ),
+              Container(height: 30, width: 1, color: colors.divider),
+              _Summary(
+                icon: Icons.trending_down,
+                color: colors.negative,
+                title: 'Expense',
+                amount: finance.expenseTotal.format(),
+              ),
+              Container(height: 30, width: 1, color: colors.divider),
+              _Summary(
+                icon: Icons.receipt_long_outlined,
+                color: colors.primaryBlue,
+                title: 'Entries',
+                amount: '${finance.history.length}',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _Summary extends StatelessWidget {
@@ -347,107 +343,120 @@ class _SectionTitle extends StatelessWidget {
   final String action;
   final VoidCallback onTap;
   @override
-  Widget build(BuildContext context) => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(
-        title,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-      TextButton(
-        onPressed: onTap,
-        child: Text(action, style: const TextStyle(color: AppColors.primary)),
-      ),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        TextButton(
+          onPressed: onTap,
+          child: Text(action, style: TextStyle(color: colors.primaryBlue)),
+        ),
+      ],
+    );
+  }
 }
 
 class _InlineEmpty extends StatelessWidget {
   const _InlineEmpty({required this.message});
   final String message;
   @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.grey.shade200),
-    ),
-    child: Text(
-      message,
-      textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 12, color: Colors.grey),
-    ),
-  );
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colors.cardSurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.border),
+      ),
+      child: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 12, color: colors.secondaryText),
+      ),
+    );
+  }
 }
 
 class _SavingGoalCard extends StatelessWidget {
   const _SavingGoalCard({required this.goal});
   final GoalModel goal;
   @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: () => Get.toNamed<void>(AppRoutes.goalDetails, arguments: goal),
-    child: Container(
-      width: 160,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(Icons.savings_outlined, color: Color(0xFF00ACC1)),
-              Icon(Icons.chevron_right, color: Colors.grey, size: 18),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            goal.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-          ),
-          const Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '${(goal.progress * 100).round()}%',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF00ACC1),
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return InkWell(
+      onTap: () => Get.toNamed<void>(AppRoutes.goalDetails, arguments: goal),
+      child: Container(
+        width: 160,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: colors.cardSurface,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: colors.shadow,
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Icon(Icons.savings_outlined, color: Color(0xFF00ACC1)),
+                Icon(
+                  Icons.chevron_right,
+                  color: colors.secondaryText,
+                  size: 18,
                 ),
-              ),
-              Text(
-                goal.currentAmount.format(),
-                style: const TextStyle(fontSize: 11, color: Colors.grey),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          LinearProgressIndicator(
-            value: goal.progress,
-            minHeight: 4,
-            backgroundColor: Colors.grey.shade200,
-            color: const Color(0xFF00ACC1),
-          ),
-        ],
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              goal.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            ),
+            const Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${(goal.progress * 100).round()}%',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF00ACC1),
+                  ),
+                ),
+                Text(
+                  goal.currentAmount.format(),
+                  style: TextStyle(fontSize: 11, color: colors.secondaryText),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            LinearProgressIndicator(
+              value: goal.progress,
+              minHeight: 4,
+              backgroundColor: colors.divider,
+              color: const Color(0xFF00ACC1),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _BudgetRow extends StatelessWidget {
@@ -455,59 +464,62 @@ class _BudgetRow extends StatelessWidget {
   final BudgetModel budget;
   final FinanceController finance;
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(14),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: budget.progress >= 1
-            ? Colors.red.shade200
-            : Colors.grey.shade200,
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: colors.cardSurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: budget.progress >= 1
+              ? colors.negative.withValues(alpha: .55)
+              : colors.border,
+        ),
       ),
-    ),
-    child: Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                budget.category,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  budget.category,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            Text(
-              '${budget.spentAmount.format()} / ${budget.limitAmount.format()}',
-              style: const TextStyle(fontSize: 11, color: Colors.grey),
-            ),
-            PopupMenuButton<String>(
-              onSelected: (value) {
-                if (value == 'edit') {
-                  _budgetDialog(context, finance, existing: budget);
-                } else {
-                  finance.deleteBudget(budget);
-                }
-              },
-              itemBuilder: (_) => const [
-                PopupMenuItem(value: 'edit', child: Text('Edit')),
-                PopupMenuItem(value: 'delete', child: Text('Delete')),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        LinearProgressIndicator(
-          value: budget.progress,
-          minHeight: 6,
-          backgroundColor: Colors.grey.shade200,
-          color: budget.progress >= 1 ? Colors.red : AppColors.primary,
-        ),
-      ],
-    ),
-  );
+              Text(
+                '${budget.spentAmount.format()} / ${budget.limitAmount.format()}',
+                style: TextStyle(fontSize: 11, color: colors.secondaryText),
+              ),
+              PopupMenuButton<String>(
+                onSelected: (value) {
+                  if (value == 'edit') {
+                    _budgetDialog(context, finance, existing: budget);
+                  } else {
+                    finance.deleteBudget(budget);
+                  }
+                },
+                itemBuilder: (_) => const [
+                  PopupMenuItem(value: 'edit', child: Text('Edit')),
+                  PopupMenuItem(value: 'delete', child: Text('Delete')),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          LinearProgressIndicator(
+            value: budget.progress,
+            minHeight: 6,
+            backgroundColor: colors.divider,
+            color: budget.progress >= 1 ? colors.negative : colors.primaryBlue,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _TransactionRow extends StatelessWidget {
@@ -516,16 +528,17 @@ class _TransactionRow extends StatelessWidget {
   final FinanceController finance;
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     final category = finance.categoryFor(entry.categoryId);
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: CircleAvatar(
         backgroundColor: entry.isExpense
-            ? Colors.red.shade50
-            : Colors.green.shade50,
+            ? colors.negative.withValues(alpha: .12)
+            : colors.positive.withValues(alpha: .12),
         child: Icon(
           entry.isExpense ? Icons.arrow_downward : Icons.arrow_upward,
-          color: entry.isExpense ? Colors.red : Colors.green,
+          color: entry.isExpense ? colors.negative : colors.positive,
           size: 18,
         ),
       ),
@@ -545,7 +558,7 @@ class _TransactionRow extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: entry.isExpense ? Colors.red : Colors.green,
+              color: entry.isExpense ? colors.negative : colors.positive,
             ),
           ),
           PopupMenuButton<String>(
@@ -594,9 +607,7 @@ Future<void> _entryDialog(
     context: context,
     builder: (dialogContext) => StatefulBuilder(
       builder: (context, setState) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
           '${existing == null ? 'Add' : 'Edit'} ${type == FinanceEntryType.income ? 'Income' : 'Expense'}',
           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -697,12 +708,16 @@ Future<void> _entryDialog(
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
+            onPressed: () {
+              FocusScope.of(dialogContext).unfocus();
+              Navigator.pop(dialogContext, false);
+            },
             child: const Text('Cancel'),
           ),
           FilledButton(
             onPressed: () {
               try {
+                FocusScope.of(dialogContext).unfocus();
                 Navigator.pop(
                   dialogContext,
                   title.text.trim().isNotEmpty &&
@@ -742,9 +757,7 @@ Future<void> _entryDialog(
       );
     }
   }
-  title.dispose();
-  description.dispose();
-  amount.dispose();
+  _disposeAfterDialogUnmount(title, description, amount);
 }
 
 Future<void> _categoryDialog(
@@ -757,9 +770,7 @@ Future<void> _categoryDialog(
   final saved = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       title: Text(existing == null ? 'Add category' : 'Edit category'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -819,8 +830,7 @@ Future<void> _categoryDialog(
       );
     }
   }
-  name.dispose();
-  description.dispose();
+  _disposeAfterDialogUnmount(name, description);
 }
 
 Future<void> _manageCategoriesDialog(
@@ -952,12 +962,16 @@ Future<void> _budgetDialog(
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
+            onPressed: () {
+              FocusScope.of(dialogContext).unfocus();
+              Navigator.pop(dialogContext, false);
+            },
             child: const Text('Cancel'),
           ),
           FilledButton(
             onPressed: () {
               try {
+                FocusScope.of(dialogContext).unfocus();
                 Navigator.pop(
                   dialogContext,
                   MoneyAmount.parse(amount.text).minorUnits > BigInt.zero,
@@ -982,7 +996,19 @@ Future<void> _budgetDialog(
       await finance.updateBudget(existing, category, limit);
     }
   }
-  amount.dispose();
+  _disposeAfterDialogUnmount(amount);
+}
+
+void _disposeAfterDialogUnmount(
+  TextEditingController first, [
+  TextEditingController? second,
+  TextEditingController? third,
+]) {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    first.dispose();
+    second?.dispose();
+    third?.dispose();
+  });
 }
 
 Future<void> _filterDialog(

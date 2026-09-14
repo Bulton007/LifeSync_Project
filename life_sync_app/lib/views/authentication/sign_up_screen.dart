@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
-import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
+import 'package:life_sync_app/features/auth/presentation/validators/auth_validators.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -20,7 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     Get.toNamed<void>(
       AppRoutes.createPassword,
       arguments: AuthFlowArguments(
-        email: _emailController.text.trim(),
+        email: AuthValidators.normalizeEmail(_emailController.text),
         purpose: AuthFlowPurpose.registration,
       ),
     );
@@ -123,14 +123,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     onFieldSubmitted: (_) => _continue(),
-                    validator: (value) {
-                      final email = value?.trim() ?? '';
-                      if (email.isEmpty) return 'Email is required.';
-                      if (!GetUtils.isEmail(email)) {
-                        return 'Enter a valid email address.';
-                      }
-                      return null;
-                    },
+                    validator: AuthValidators.email,
                     decoration: InputDecoration(
                       hintText: 'example@gmail.com',
                       hintStyle: TextStyle(
@@ -220,19 +213,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                   // Social Login Buttons
                   _buildSocialButton(
-                    imagePath: AppImages.facebookLogo,
+                    icon: Icons.facebook,
+                    iconColor: const Color(0xFF1877F2),
                     text: 'Continue with Facebook',
                     onPressed: _showUnavailable,
                   ),
                   const SizedBox(height: 12),
                   _buildSocialButton(
-                    imagePath: AppImages.googleLogo,
+                    icon: Icons.g_mobiledata,
+                    iconColor: Colors.red,
                     text: 'Continue with Google',
                     onPressed: _showUnavailable,
                   ),
                   const SizedBox(height: 12),
                   _buildSocialButton(
-                    imagePath: AppImages.appleLogo,
+                    icon: Icons.apple,
+                    iconColor: Colors.black,
                     text: 'Continue with Apple',
                     onPressed: _showUnavailable,
                   ),
@@ -271,9 +267,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  // Reusable Social Button Builder with PNG icons
+  // Reusable Social Button Builder
   Widget _buildSocialButton({
-    required String imagePath,
+    required IconData icon,
+    required Color iconColor,
     required String text,
     required VoidCallback onPressed,
   }) {
@@ -288,7 +285,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(imagePath, width: 22, height: 22, fit: BoxFit.contain),
+          Icon(icon, color: iconColor, size: 24),
           const SizedBox(width: 12),
           Text(
             text,

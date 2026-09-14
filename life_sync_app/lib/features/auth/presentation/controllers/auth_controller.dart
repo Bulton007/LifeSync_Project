@@ -4,6 +4,7 @@ import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/services/auth_session_service.dart';
 import 'package:life_sync_app/core/storage/token_storage.dart';
 import 'package:life_sync_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:life_sync_app/features/auth/presentation/validators/auth_validators.dart';
 
 final class AuthController extends GetxController {
   AuthController(this._repository, this._sessionService);
@@ -17,7 +18,7 @@ final class AuthController extends GetxController {
   Future<bool> login({required String email, required String password}) async {
     return _submit(() async {
       final result = await _repository.login(
-        email: email.trim(),
+        email: AuthValidators.normalizeEmail(email),
         password: password,
       );
 
@@ -44,21 +45,29 @@ final class AuthController extends GetxController {
   }) => _request(
     () => _repository.register(
       fullName: fullName.trim(),
-      email: email.trim(),
+      email: AuthValidators.normalizeEmail(email),
       password: password,
     ),
   );
 
   Future<bool> verifyOtp({required String email, required String otpCode}) =>
       _request(
-        () => _repository.verifyOtp(email: email.trim(), otpCode: otpCode),
+        () => _repository.verifyOtp(
+          email: AuthValidators.normalizeEmail(email),
+          otpCode: otpCode,
+        ),
       );
 
-  Future<bool> resendOtp(String email) =>
-      _request(() => _repository.resendOtp(email.trim()));
+  Future<bool> resendOtp(String email, {String channel = 'email'}) => _request(
+    () => _repository.resendOtp(
+      AuthValidators.normalizeEmail(email),
+      channel: channel,
+    ),
+  );
 
-  Future<bool> forgotPassword(String email) =>
-      _request(() => _repository.forgotPassword(email.trim()));
+  Future<bool> forgotPassword(String email) => _request(
+    () => _repository.forgotPassword(AuthValidators.normalizeEmail(email)),
+  );
 
   Future<bool> resetPassword({
     required String email,
@@ -66,7 +75,7 @@ final class AuthController extends GetxController {
     required String newPassword,
   }) => _request(
     () => _repository.resetPassword(
-      email: email.trim(),
+      email: AuthValidators.normalizeEmail(email),
       otpCode: otpCode,
       newPassword: newPassword,
     ),

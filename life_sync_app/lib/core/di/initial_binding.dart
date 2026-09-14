@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:life_sync_app/core/config/app_environment.dart';
 import 'package:life_sync_app/core/network/api_client.dart';
 import 'package:life_sync_app/core/services/auth_session_service.dart';
+import 'package:life_sync_app/core/services/app_preferences_service.dart';
 import 'package:life_sync_app/core/storage/secure_token_storage.dart';
 import 'package:life_sync_app/core/storage/token_storage.dart';
 
@@ -13,17 +14,27 @@ import 'package:life_sync_app/core/storage/token_storage.dart';
 final class InitialBinding extends Bindings {
   @override
   void dependencies() {
+    if (!Get.isRegistered<SecureKeyValueStore>()) {
+      Get.put<SecureKeyValueStore>(
+        FlutterSecureKeyValueStore(const FlutterSecureStorage()),
+        permanent: true,
+      );
+    }
+
     Get.lazyPut<AppEnvironment>(AppEnvironment.current, fenix: true);
 
     Get.lazyPut<TokenStorage>(
-      () => SecureTokenStorage(
-        FlutterSecureKeyValueStore(const FlutterSecureStorage()),
-      ),
+      () => SecureTokenStorage(Get.find<SecureKeyValueStore>()),
       fenix: true,
     );
 
     Get.lazyPut<AuthSessionService>(
       () => AuthSessionService(Get.find<TokenStorage>()),
+      fenix: true,
+    );
+
+    Get.lazyPut<AppPreferencesService>(
+      () => AppPreferencesService(Get.find<SecureKeyValueStore>()),
       fenix: true,
     );
 

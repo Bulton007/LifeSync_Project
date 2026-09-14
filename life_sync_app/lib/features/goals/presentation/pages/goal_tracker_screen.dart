@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/state/async_view_state.dart';
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/core/widgets/app_empty_view.dart';
 import 'package:life_sync_app/core/widgets/app_error_view.dart';
 import 'package:life_sync_app/core/widgets/app_loading_view.dart';
@@ -14,8 +15,8 @@ class GoalTrackerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<GoalController>();
+    final colors = context.lifeSyncColors;
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
       body: SafeArea(
         child: Obx(() {
           final view = controller.state.value;
@@ -35,50 +36,46 @@ class GoalTrackerScreen extends StatelessWidget {
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 SliverToBoxAdapter(
-                  child: RepaintBoundary(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Goals',
-                                style: TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF2979FF),
-                                ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Goals',
+                              style: TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                color: colors.primaryBlue,
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Turn your intentions into progress.',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey.shade600,
-                                ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Turn your intentions into progress.',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: colors.secondaryText,
                               ),
-                            ],
-                          ),
-                          FilledButton.icon(
-                            onPressed: () =>
-                                Get.toNamed<void>(AppRoutes.goalEditor),
-                            icon: const Icon(Icons.add, size: 17),
-                            label: const Text('New'),
-                          ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                        FilledButton.icon(
+                          onPressed: () =>
+                              Get.toNamed<void>(AppRoutes.goalEditor),
+                          icon: const Icon(Icons.add, size: 17),
+                          label: const Text('New'),
+                        ),
+                      ],
                     ),
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: RepaintBoundary(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: _Overview(controller: controller),
-                    ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _Overview(controller: controller),
                   ),
                 ),
                 const SliverToBoxAdapter(
@@ -89,7 +86,6 @@ class GoalTrackerScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
                       ),
                     ),
                   ),
@@ -132,16 +128,17 @@ class _Overview extends StatelessWidget {
   final GoalController controller;
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     final percent = (controller.overallProgress * 100).round();
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.cardSurface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: colors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.04),
+            color: colors.shadow,
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -152,11 +149,7 @@ class _Overview extends StatelessWidget {
         children: [
           const Text(
             'Overview',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           Row(
@@ -173,10 +166,8 @@ class _Overview extends StatelessWidget {
                       child: CircularProgressIndicator(
                         value: controller.overallProgress,
                         strokeWidth: 9,
-                        backgroundColor: Colors.grey.shade100,
-                        valueColor: const AlwaysStoppedAnimation(
-                          Color(0xFF2979FF),
-                        ),
+                        backgroundColor: colors.divider,
+                        valueColor: AlwaysStoppedAnimation(colors.primaryBlue),
                         strokeCap: StrokeCap.round,
                       ),
                     ),
@@ -190,11 +181,11 @@ class _Overview extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Overall Progress',
                           style: TextStyle(
                             fontSize: 9,
-                            color: Colors.grey,
+                            color: colors.secondaryText,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -210,19 +201,19 @@ class _Overview extends StatelessWidget {
                     _StatRow(
                       label: 'Active Goals',
                       value: '${controller.activeGoals.length}',
-                      color: const Color(0xFF2979FF),
+                      color: colors.primaryBlue,
                     ),
                     const SizedBox(height: 8),
                     _StatRow(
                       label: 'Completed',
                       value: '${controller.completedCount}',
-                      color: Colors.green,
+                      color: colors.positive,
                     ),
                     const SizedBox(height: 8),
                     _StatRow(
                       label: 'Archived',
                       value: '${controller.archivedCount}',
-                      color: Colors.grey,
+                      color: colors.secondaryText,
                     ),
                   ],
                 ),
@@ -245,47 +236,50 @@ class _StatRow extends StatelessWidget {
   final String value;
   final Color color;
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-    decoration: BoxDecoration(
-      color: const Color(0xFFF7F9FC),
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Container(
-              width: 3,
-              height: 14,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(2),
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      decoration: BoxDecoration(
+        color: colors.inputSurface,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 3,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey.shade700,
-                fontWeight: FontWeight.w500,
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: colors.secondaryText,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-          ],
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
-            color: color,
+            ],
           ),
-        ),
-      ],
-    ),
-  );
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _GoalCard extends StatelessWidget {
@@ -294,6 +288,7 @@ class _GoalCard extends StatelessWidget {
   final GoalController controller;
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     final milestoneItems =
         controller.milestones[goal.id] ?? const <GoalMilestoneModel>[];
     final completedMilestones = milestoneItems
@@ -305,26 +300,26 @@ class _GoalCard extends StatelessWidget {
         ? 'Archived'
         : '${goal.deadline.difference(DateTime.now()).inDays.clamp(0, 9999)} Days Left';
     final statusColor = goal.completed
-        ? Colors.green
+        ? colors.positive
         : goal.archived
-        ? Colors.grey
-        : const Color(0xFF2979FF);
+        ? colors.secondaryText
+        : colors.primaryBlue;
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       onTap: () => Get.toNamed<void>(AppRoutes.goalDetails, arguments: goal),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colors.cardSurface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: goal.completed
-                ? Colors.green.shade200
-                : Colors.grey.shade200,
+                ? colors.positive.withValues(alpha: .55)
+                : colors.border,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.04),
+              color: colors.shadow,
               blurRadius: 8,
               offset: const Offset(0, 3),
             ),
@@ -338,12 +333,12 @@ class _GoalCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE8F1FC),
+                    color: colors.primaryBlue.withValues(alpha: .14),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.flag_outlined,
-                    color: Color(0xFF2979FF),
+                    color: colors.primaryBlue,
                     size: 20,
                   ),
                 ),
@@ -356,12 +351,11 @@ class _GoalCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
                     ),
                   ),
                 ),
                 PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_horiz, color: Colors.grey),
+                  icon: Icon(Icons.more_horiz, color: colors.secondaryText),
                   onSelected: (value) => _action(context, value),
                   itemBuilder: (_) => [
                     const PopupMenuItem(value: 'edit', child: Text('Edit')),
@@ -390,7 +384,7 @@ class _GoalCard extends StatelessWidget {
                         : 'Target: ${goal.targetAmount.format()}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                    style: TextStyle(fontSize: 11, color: colors.secondaryText),
                   ),
                 ),
                 Container(
@@ -416,7 +410,7 @@ class _GoalCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               'Due ${_date(goal.deadline)}',
-              style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+              style: TextStyle(fontSize: 11, color: colors.secondaryText),
             ),
             const SizedBox(height: 14),
             Row(
@@ -427,7 +421,7 @@ class _GoalCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade700,
+                    color: colors.secondaryText,
                   ),
                 ),
                 Text(
@@ -435,7 +429,7 @@ class _GoalCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade700,
+                    color: colors.secondaryText,
                   ),
                 ),
               ],
@@ -446,7 +440,7 @@ class _GoalCard extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: goal.progress,
                 minHeight: 6,
-                backgroundColor: Colors.grey.shade200,
+                backgroundColor: colors.divider,
                 valueColor: AlwaysStoppedAnimation(statusColor),
               ),
             ),

@@ -13,6 +13,10 @@ public interface UserRepository extends JpaRepository<Users,Long>{
 
     Optional<Users> findByEmailIgnoreCase(String email);
 
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @org.springframework.data.jpa.repository.Query("select user from Users user where lower(user.email) = lower(:email)")
+    Optional<Users> findForOtpByEmail(@org.springframework.data.repository.query.Param("email") String email);
+
     Optional<Users> findByPhoneNumber(String phoneNumber);
 
     boolean existsByEmail(String email);

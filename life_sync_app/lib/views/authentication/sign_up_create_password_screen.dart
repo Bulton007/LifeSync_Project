@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
 import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:life_sync_app/features/auth/presentation/validators/auth_validators.dart';
 
 class SignUpCreatePasswordScreen extends StatefulWidget {
   const SignUpCreatePasswordScreen({super.key});
@@ -132,16 +133,7 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   textInputAction: TextInputAction.next,
-                  validator: (value) {
-                    final password = value ?? '';
-                    if (password.length < 8) {
-                      return 'Password must contain at least 8 characters.';
-                    }
-                    if (password.length > 100) {
-                      return 'Password must not exceed 100 characters.';
-                    }
-                    return null;
-                  },
+                  validator: AuthValidators.password,
                   decoration: InputDecoration(
                     hintText: 'Password',
                     hintStyle: TextStyle(
@@ -203,9 +195,10 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                   controller: _confirmPasswordController,
                   obscureText: _obscureConfirmPassword,
                   onFieldSubmitted: (_) => _submit(),
-                  validator: (value) => value != _passwordController.text
-                      ? 'Passwords do not match.'
-                      : null,
+                  validator: (value) => AuthValidators.confirmPassword(
+                    value,
+                    _passwordController.text,
+                  ),
                   decoration: InputDecoration(
                     hintText: 'Password',
                     hintStyle: TextStyle(

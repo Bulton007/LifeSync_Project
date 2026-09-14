@@ -1,318 +1,354 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/core/theme/app_colors.dart';
+import 'package:life_sync_app/features/focus/data/models/focus_session.dart';
+import 'package:life_sync_app/features/focus/presentation/controllers/focus_controller.dart';
+import 'package:life_sync_app/features/tasks/presentation/controllers/task_controller.dart';
 
-class PomoScreen extends StatefulWidget {
+final class PomoScreen extends StatefulWidget {
   const PomoScreen({super.key});
 
   @override
   State<PomoScreen> createState() => _PomoScreenState();
 }
 
-class _PomoScreenState extends State<PomoScreen> {
-  // Mode: 0 = Pomodoro, 1 = Stopwatch
-  int _selectedModeIndex = 0;
+final class _PomoScreenState extends State<PomoScreen> {
+  late final FocusController _controller;
+  Worker? _completionWorker;
 
-  // Running state
-  bool _isRunning = false;
+  @override
+  void initState() {
+    super.initState();
+    _controller = Get.find<FocusController>();
+    _completionWorker = ever(_controller.completionSignal, (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Pomodoro complete. Great focus!')),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _completionWorker?.dispose();
+    super.dispose();
+  }
+
+  String _duration(int totalSeconds) {
+    final hours = totalSeconds ~/ 3600;
+    final minutes = (totalSeconds % 3600) ~/ 60;
+    final seconds = totalSeconds % 60;
+    if (hours > 0) {
+      return '${hours.toString().padLeft(2, '0')}:'
+          '${minutes.toString().padLeft(2, '0')}:'
+          '${seconds.toString().padLeft(2, '0')}';
+    }
+    return '${minutes.toString().padLeft(2, '0')}:'
+        '${seconds.toString().padLeft(2, '0')}';
+  }
+
+  void _switchMode(FocusMode mode) {
+    if (_controller.switchMode(mode)) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Stop or reset the active timer before changing mode.'),
+      ),
+    );
+  }
+
+  Future<void> _chooseTask() async {
+    final taskController = Get.isRegistered<TaskController>()
+        ? Get.find<TaskController>()
+        : null;
+    final tasks = taskController?.tasks ?? const [];
+    final selected = await showModalBottomSheet<String?>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          children: [
+            const Text('Working on', style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 8),
+            ListTile(
+              leading: const Icon(Icons.close_rounded),
+              title: const Text('No associated task'),
+              onTap: () => Navigator.pop(context, ''),
+            ),
+            if (tasks.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text('No tasks are currently available.'),
+              )
+            else
+              ...tasks.map(
+                (task) => ListTile(
+                  leading: const Icon(Icons.task_alt_rounded),
+                  title: Text(task.title),
+                  onTap: () => Navigator.pop(context, task.title),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (selected != null) _controller.selectTask(selected);
+  }
+
+  Future<void> _stop() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Stop this focus session?'),
+        content: const Text(
+          'Elapsed focus time will be saved to your local statistics.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Continue'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Stop'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) await _controller.stopAndSave();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Top Bar: Back Button & Analytics Icon
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withValues(alpha: 0.08),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
+                  Material(
+                    color: colors.navigationSelected,
+                    shape: const CircleBorder(),
+                    child: IconButton(
+                      tooltip: 'Back',
+                      onPressed: Get.back<void>,
+                      icon: const Icon(Icons.chevron_left_rounded),
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton.outlined(
+                    tooltip: 'Focus statistics',
+                    onPressed: () =>
+                        Get.toNamed<void>(AppRoutes.focusStatistics),
+                    icon: Icon(
+                      Icons.pie_chart_outline_rounded,
+                      color: colors.primaryBlue,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Obx(
+                () => DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: colors.cardSurface,
+                    borderRadius: BorderRadius.circular(28),
+                    border: Border.all(color: colors.border),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _ModeTab(
+                          label: 'Pomodoro',
+                          selected:
+                              _controller.mode.value == FocusMode.pomodoro,
+                          onTap: () => _switchMode(FocusMode.pomodoro),
+                        ),
+                        _ModeTab(
+                          label: 'Stopwatch',
+                          selected:
+                              _controller.mode.value == FocusMode.stopwatch,
+                          onTap: () => _switchMode(FocusMode.stopwatch),
                         ),
                       ],
-                      border: Border.all(color: Colors.grey.shade100),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.chevron_left,
-                        color: Colors.black87,
-                      ),
-                      onPressed: () => Navigator.pop(context),
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.grey.shade200),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.pie_chart_outline,
-                        color: Color(0xFF2979FF),
-                        size: 20,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Mode Switcher (Pomodoro / Stopwatch)
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.grey.shade200),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.04),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildToggleTab('Pomodoro', 0),
-                    _buildToggleTab('Stopwatch', 1),
-                  ],
                 ),
               ),
-              const SizedBox(height: 32),
-
-              // Working on Task Label
-              Column(
-                children: [
-                  Text(
-                    'Working on',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey.shade500,
-                      fontWeight: FontWeight.w500,
+              const SizedBox(height: 28),
+              Obx(
+                () => InkWell(
+                  onTap: _controller.hasActiveSession ? null : _chooseTask,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Finish Dashboard Design',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                    child: Column(
+                      children: [
+                        Text(
+                          'Working on',
+                          style: TextStyle(
+                            color: colors.secondaryText,
+                            fontSize: 10,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                      const Icon(
-                        Icons.unfold_more,
-                        size: 16,
-                        color: Colors.grey,
-                      ),
-                    ],
+                        const SizedBox(height: 3),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              _controller.taskName.value ??
+                                  'Choose a task (optional)',
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(
+                              Icons.unfold_more,
+                              size: 15,
+                              color: _controller.hasActiveSession
+                                  ? colors.disabledText
+                                  : colors.secondaryText,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
               const Spacer(),
-
-              // Timer Display Circle
-              Center(
-                child: Container(
+              Obx(() {
+                final progress = _controller.progress;
+                return Container(
                   width: 260,
                   height: 260,
+                  padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF2979FF).withValues(alpha: 0.08),
-                        blurRadius: 30,
+                        color: colors.glow,
+                        blurRadius: 42,
                         spreadRadius: 10,
-                        offset: const Offset(0, 10),
                       ),
                     ],
-                    border: Border.all(
-                      color: const Color(0xFF2979FF).withValues(alpha: 0.12),
-                      width: 2,
-                    ),
                   ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    _selectedModeIndex == 0
-                        ? (_isRunning ? '24:16' : '25:00')
-                        : (_isRunning ? '00:05' : '00:00'),
-                    style: const TextStyle(
-                      fontSize: 46,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                      letterSpacing: 1.5,
-                    ),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      CircularProgressIndicator(
+                        value: progress,
+                        strokeWidth: 3,
+                        backgroundColor: colors.border,
+                        color: colors.primaryBlue,
+                      ),
+                      Center(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 180),
+                          child: Text(
+                            _duration(_controller.displaySeconds),
+                            key: ValueKey(_controller.displaySeconds),
+                            style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.w300,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ),
+                );
+              }),
               const Spacer(),
-
-              // Bottom Action Controls
-              if (!_isRunning) ...[
-                // Default State (Start Button)
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _isRunning = true;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2979FF),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 2,
+              Obx(() {
+                final running = _controller.isRunning.value;
+                final active = _controller.hasActiveSession;
+                if (!active) {
+                  return SizedBox(
+                    width: 132,
+                    child: FilledButton(
+                      onPressed: _controller.start,
+                      child: const Text('Start'),
                     ),
-                    child: const Text(
-                      'Start',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ] else ...[
-                // Play / Running State (Pause, Stop, and Extra Mode Button)
-                Row(
+                  );
+                }
+                return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Secondary action button (e.g., skip/sound icon)
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.grey.shade200),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withValues(alpha: 0.05),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          _selectedModeIndex == 0
-                              ? Icons.notifications_off_outlined
-                              : Icons.directions_bus_outlined,
-                          color: Colors.grey.shade700,
-                          size: 20,
-                        ),
-                        onPressed: () {},
+                    IconButton.outlined(
+                      tooltip: 'Reset without saving',
+                      onPressed: _controller.reset,
+                      icon: const Icon(Icons.restart_alt_rounded),
+                    ),
+                    const SizedBox(width: 18),
+                    IconButton.filled(
+                      tooltip: running ? 'Pause' : 'Resume',
+                      onPressed: running
+                          ? _controller.pause
+                          : _controller.start,
+                      icon: Icon(
+                        running
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
                       ),
                     ),
-                    const SizedBox(width: 20),
-
-                    // Pause Button
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF2979FF),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0xFF2979FF),
-                            blurRadius: 10,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.pause,
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _isRunning = false;
-                          });
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-
-                    // Stop / Reset Button
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.grey.shade200),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withValues(alpha: 0.05),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.stop,
-                          color: Colors.black87,
-                          size: 20,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _isRunning = false;
-                          });
-                        },
-                      ),
+                    const SizedBox(width: 18),
+                    IconButton.outlined(
+                      tooltip: 'Stop and save',
+                      onPressed: _stop,
+                      icon: const Icon(Icons.stop_rounded),
                     ),
                   ],
-                ),
-              ],
-              const SizedBox(height: 20),
+                );
+              }),
+              const SizedBox(height: 18),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildToggleTab(String title, int index) {
-    bool isSelected = _selectedModeIndex == index;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedModeIndex = index;
-          _isRunning = false; // Reset state when switching modes
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 10),
+final class _ModeTab extends StatelessWidget {
+  const _ModeTab({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(24),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 9),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF2979FF) : Colors.transparent,
+          color: selected ? colors.primaryBlue : Colors.transparent,
           borderRadius: BorderRadius.circular(24),
         ),
         child: Text(
-          title,
+          label,
           style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: isSelected ? Colors.white : Colors.grey.shade600,
+            color: selected ? Colors.white : colors.secondaryText,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),

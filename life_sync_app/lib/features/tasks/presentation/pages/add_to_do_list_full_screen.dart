@@ -129,8 +129,8 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
@@ -144,22 +144,19 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: colors.elevatedSurface,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withValues(alpha: 0.08),
+                            color: colors.shadow,
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
                         ],
-                        border: Border.all(color: Colors.grey.shade100),
+                        border: Border.all(color: colors.border),
                       ),
                       child: IconButton(
-                        icon: const Icon(
-                          Icons.chevron_left,
-                          color: Colors.black87,
-                        ),
+                        icon: const Icon(Icons.chevron_left),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ),
@@ -169,8 +166,8 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                             ? null
                             : _submit,
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.primary,
-                          side: BorderSide(color: Colors.grey.shade300),
+                          foregroundColor: colors.primaryBlue,
+                          side: BorderSide(color: colors.border),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -186,17 +183,16 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : const Icon(
+                            : Icon(
                                 Icons.check,
                                 size: 16,
-                                color: AppColors.primary,
+                                color: colors.primaryBlue,
                               ),
                         label: const Text(
                           'Save',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
-                            color: Colors.black87,
                           ),
                         ),
                       ),
@@ -211,13 +207,13 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                     _metaChip(
                       Icons.calendar_today_outlined,
                       '${_dueDate.day}/${_dueDate.month}/${_dueDate.year}',
-                      AppColors.primary,
+                      colors.primaryBlue,
                       _pickDate,
                     ),
                     _metaChip(
                       Icons.flag_outlined,
                       _priorityLabel(_priority),
-                      Colors.black87,
+                      colors.primaryText,
                       _pickPriority,
                       arrow: true,
                     ),
@@ -225,7 +221,7 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                       _metaChip(
                         Icons.fact_check_outlined,
                         _statusLabel(_status),
-                        Colors.black87,
+                        colors.primaryText,
                         _pickStatus,
                         arrow: true,
                       ),
@@ -237,13 +233,12 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black87,
                   ),
                   decoration: InputDecoration(
                     hintText: 'What do you need to get done today?',
                     hintStyle: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey.shade400,
+                      color: colors.secondaryText,
                     ),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.zero,
@@ -261,12 +256,12 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                 TextFormField(
                   controller: _descriptionController,
                   maxLines: 5,
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
+                  style: const TextStyle(fontSize: 14),
                   decoration: InputDecoration(
                     hintText: 'Add Description',
                     hintStyle: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey.shade400,
+                      color: colors.secondaryText,
                     ),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.zero,
@@ -282,7 +277,7 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                     padding: const EdgeInsets.only(top: 16),
                     child: Text(
                       message,
-                      style: const TextStyle(fontSize: 12, color: Colors.red),
+                      style: TextStyle(fontSize: 12, color: colors.negative),
                     ),
                   );
                 }),
@@ -301,15 +296,16 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
     VoidCallback onTap, {
     bool arrow = false,
   }) {
+    final colors = context.lifeSyncColors;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colors.inputSurface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(color: colors.border),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -326,7 +322,7 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
             ),
             if (arrow) ...[
               const SizedBox(width: 4),
-              const Icon(Icons.unfold_more, size: 14, color: Colors.grey),
+              Icon(Icons.unfold_more, size: 14, color: colors.secondaryText),
             ],
           ],
         ),

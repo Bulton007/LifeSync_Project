@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
 import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:life_sync_app/features/auth/presentation/validators/auth_validators.dart';
 
 class SignUpVerifyEmailScreen extends StatefulWidget {
   const SignUpVerifyEmailScreen({super.key});
@@ -13,16 +17,25 @@ class SignUpVerifyEmailScreen extends StatefulWidget {
 }
 
 class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
+  static const _fallbackResendCooldown = Duration(seconds: 60);
+
   final List<TextEditingController> _controllers = List.generate(
-    6,
+    AuthValidators.otpLength,
     (_) => TextEditingController(),
   );
-  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  final List<FocusNode> _focusNodes = List.generate(
+    AuthValidators.otpLength,
+    (_) => FocusNode(),
+  );
   late final AuthFlowArguments _arguments;
   late final AuthController _authController;
 
   bool _isComplete = false;
   bool _hasError = false;
+  int _resendSecondsRemaining = 0;
+  int _gmailAttempts = 0;
+  bool _usingTelegram = false;
+  Timer? _resendTimer;
 
   @override
   void initState() {
@@ -47,19 +60,76 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
     for (var node in _focusNodes) {
       node.dispose();
     }
+    _resendTimer?.cancel();
     super.dispose();
   }
 
+  String get _otp => _controllers.map((c) => c.text).join();
+
   void _checkCompletion() {
-    bool complete = _controllers.every((c) => c.text.isNotEmpty);
+    final complete = AuthValidators.otp(_otp) == null;
     setState(() {
       _isComplete = complete;
-      _hasError = false; // Reset error on new typing
+      _hasError = false;
+    });
+    _authController.clearError();
+  }
+
+  void _setOtp(String value) {
+    final digits = value.replaceAll(RegExp(r'\D'), '');
+    if (digits.isEmpty) {
+      _checkCompletion();
+      return;
+    }
+
+    for (var i = 0; i < _controllers.length; i += 1) {
+      _controllers[i].text = i < digits.length ? digits[i] : '';
+    }
+
+    final focusIndex = digits.length >= AuthValidators.otpLength
+        ? AuthValidators.otpLength - 1
+        : digits.length;
+    FocusScope.of(context).requestFocus(_focusNodes[focusIndex]);
+    _checkCompletion();
+  }
+
+  void _clearOtp() {
+    for (final controller in _controllers) {
+      controller.clear();
+    }
+    setState(() {
+      _isComplete = false;
+      _hasError = false;
+    });
+  }
+
+  void _startResendCooldown() {
+    _resendTimer?.cancel();
+    setState(() {
+      _resendSecondsRemaining = _fallbackResendCooldown.inSeconds;
+    });
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_resendSecondsRemaining <= 1) {
+        timer.cancel();
+        setState(() => _resendSecondsRemaining = 0);
+        return;
+      }
+      setState(() => _resendSecondsRemaining -= 1);
     });
   }
 
   Future<void> _verifyOtp() async {
-    final otp = _controllers.map((c) => c.text).join();
+    final otp = _otp;
+    final otpError = AuthValidators.otp(otp);
+    if (otpError != null) {
+      setState(() => _hasError = true);
+      _authController.errorMessage.value = otpError;
+      return;
+    }
 
     if (_arguments.purpose == AuthFlowPurpose.passwordReset) {
       await Get.toNamed<void>(
@@ -80,9 +150,21 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
     }
   }
 
-  Future<void> _resendOtp() async {
-    final sent = await _authController.resendOtp(_arguments.email);
+  Future<void> _resendOtp({String channel = 'email'}) async {
+    if (_resendSecondsRemaining > 0 || _authController.isSubmitting.value) {
+      return;
+    }
+    if (channel == 'email') setState(() => _gmailAttempts += 1);
+    final sent = await _authController.resendOtp(
+      _arguments.email,
+      channel: channel,
+    );
+    if (!mounted) return;
+    setState(() {});
     if (sent && mounted) {
+      setState(() => _usingTelegram = channel == 'telegram');
+      _clearOtp();
+      _startResendCooldown();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('A new verification code was sent.')),
       );
@@ -143,7 +225,9 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
 
               // Instructions Subtitle
               Text(
-                'We have sent a 6-digit OTP code to $_maskedEmail,\nCheck it and fill it below to verify your Email.',
+                _usingTelegram
+                    ? 'Check your linked Telegram chat for the latest 6-digit code.'
+                    : 'Check $_maskedEmail for your latest 6-digit code, including Spam. Delivery may take a moment.',
                 style: TextStyle(
                   fontSize: 13,
                   height: 1.4,
@@ -171,7 +255,7 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
               // 6-Digit OTP Input Boxes
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(6, (index) {
+                children: List.generate(AuthValidators.otpLength, (index) {
                   return SizedBox(
                     width: 44,
                     height: 56,
@@ -180,7 +264,15 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
                       focusNode: _focusNodes[index],
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.number,
-                      maxLength: 1,
+                      textInputAction: index == AuthValidators.otpLength - 1
+                          ? TextInputAction.done
+                          : TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(
+                          AuthValidators.otpLength,
+                        ),
+                      ],
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -218,8 +310,13 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
                         ),
                       ),
                       onChanged: (value) {
-                        _checkCompletion();
-                        if (value.isNotEmpty && index < 5) {
+                        if (value.length > 1) {
+                          _setOtp(value);
+                          return;
+                        }
+                        _controllers[index].text = value;
+                        if (value.isNotEmpty &&
+                            index < AuthValidators.otpLength - 1) {
                           FocusScope.of(
                             context,
                           ).requestFocus(_focusNodes[index + 1]);
@@ -228,6 +325,7 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
                             context,
                           ).requestFocus(_focusNodes[index - 1]);
                         }
+                        _checkCompletion();
                       },
                     ),
                   );
@@ -247,21 +345,47 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
                         color: Colors.grey.shade600,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: _resendOtp,
-                      child: const Text(
-                        'Send Again',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2979FF),
+                    Obx(() {
+                      final disabled =
+                          _resendSecondsRemaining > 0 ||
+                          _authController.isSubmitting.value;
+                      return GestureDetector(
+                        onTap: disabled ? null : () => _resendOtp(),
+                        child: Text(
+                          _resendSecondsRemaining > 0
+                              ? 'Send Again ($_resendSecondsRemaining)'
+                              : 'Send Again',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: disabled
+                                ? Colors.grey
+                                : const Color(0xFF2979FF),
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    }),
                   ],
                 ),
               ),
-              const SizedBox(height: 40),
+              if (_gmailAttempts >= 3) ...[
+                Obx(
+                  () => TextButton(
+                    onPressed:
+                        _authController.isSubmitting.value ||
+                            _resendSecondsRemaining > 0
+                        ? null
+                        : () => _resendOtp(channel: 'telegram'),
+                    child: const Text('Try linked Telegram instead'),
+                  ),
+                ),
+                const Text('Telegram must already be linked to your account.'),
+              ],
+              const SizedBox(height: 12),
+              const Text(
+                'Five incorrect codes temporarily block OTP attempts for 15 minutes.',
+              ),
+              const SizedBox(height: 28),
 
               // Verify Action Button (Blue when active, Grey when incomplete)
               SizedBox(

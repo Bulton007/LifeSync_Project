@@ -20,6 +20,15 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.NOT_FOUND, "email not found");
     }
 
+    @ExceptionHandler(OtpLimitException.class)
+    public ResponseEntity<?> handleOtpLimit(OtpLimitException exception) {
+        return ResponseEntity.status(429)
+                .header("Retry-After", Long.toString(exception.getRetryAfterSeconds()))
+                .body(Map.of("status", 429, "success", false,
+                        "message", exception.getMessage(),
+                        "retryAfterSeconds", exception.getRetryAfterSeconds()));
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleNotFound(ResourceNotFoundException ex) {
 

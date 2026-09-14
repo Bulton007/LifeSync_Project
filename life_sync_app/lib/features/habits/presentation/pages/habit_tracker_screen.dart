@@ -15,8 +15,8 @@ class HabitTrackerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HabitController>();
+    final colors = context.lifeSyncColors;
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
       body: SafeArea(
         child: Obx(() {
           final view = controller.state.value;
@@ -79,7 +79,7 @@ class HabitTrackerScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Get.toNamed<void>(AppRoutes.habitEditor),
-        backgroundColor: const Color(0xFF2979FF),
+        backgroundColor: colors.primaryBlue,
         elevation: 4,
         child: const Icon(Icons.add, color: Colors.white, size: 28),
       ),
@@ -93,6 +93,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     final selected = controller.selectedDate.value;
     final weekStart = selected.subtract(Duration(days: selected.weekday % 7));
     return Padding(
@@ -107,9 +108,9 @@ class _Header extends StatelessWidget {
                 children: [
                   Text(
                     '${selected.year}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey,
+                      color: colors.secondaryText,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -118,14 +119,13 @@ class _Header extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
                     ),
                   ),
                 ],
               ),
               _CircleButton(
                 icon: Icons.calendar_today_outlined,
-                color: AppColors.primary,
+                color: colors.primaryBlue,
                 onTap: () async {
                   final picked = await showDatePicker(
                     context: context,
@@ -153,7 +153,9 @@ class _Header extends StatelessWidget {
                       const ['S', 'M', 'T', 'W', 'T', 'F', 'S'][index],
                       style: TextStyle(
                         fontSize: 12,
-                        color: selectedDay ? AppColors.primary : Colors.grey,
+                        color: selectedDay
+                            ? colors.primaryBlue
+                            : colors.secondaryText,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -164,7 +166,7 @@ class _Header extends StatelessWidget {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: selectedDay
-                            ? AppColors.primary
+                            ? colors.primaryBlue
                             : Colors.transparent,
                         shape: BoxShape.circle,
                       ),
@@ -173,7 +175,9 @@ class _Header extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: selectedDay ? Colors.white : Colors.black87,
+                          color: selectedDay
+                              ? Colors.white
+                              : colors.primaryText,
                         ),
                       ),
                     ),
@@ -183,14 +187,14 @@ class _Header extends StatelessWidget {
             }),
           ),
           const SizedBox(height: 24),
-          const Align(
+          Align(
             alignment: Alignment.centerLeft,
             child: Text(
               'Habit Tracker',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppColors.primary,
+                color: colors.primaryBlue,
               ),
             ),
           ),
@@ -207,136 +211,125 @@ class _HabitCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     final done = controller.isCompletedOn(
       habit.habitId,
       controller.selectedDate.value,
     );
-    return RepaintBoundary(
-      child: Opacity(
-        opacity: habit.active ? 1 : 0.58,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.grey.shade200),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withValues(alpha: 0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
+    return Opacity(
+      opacity: habit.active ? 1 : 0.58,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: colors.cardSurface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: colors.border),
+          boxShadow: [
+            BoxShadow(
+              color: colors.shadow,
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: colors.primaryBlue.withValues(alpha: .14),
+                borderRadius: BorderRadius.circular(12),
               ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE8F1FC),
-                  borderRadius: BorderRadius.circular(12),
+              child: Icon(Icons.autorenew, color: colors.primaryBlue, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: InkWell(
+                onTap: () => Get.toNamed<void>(
+                  AppRoutes.habitProgress,
+                  arguments: habit,
                 ),
-                child: const Icon(
-                  Icons.autorenew,
-                  color: AppColors.primary,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: InkWell(
-                  onTap: () => Get.toNamed<void>(
-                    AppRoutes.habitProgress,
-                    arguments: habit,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        habit.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: Colors.black87,
-                        ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      habit.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        habit.active
-                            ? '🔥 ${habit.streak} day streak'
-                            : 'Paused',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey,
-                        ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      habit.active ? '🔥 ${habit.streak} day streak' : 'Paused',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: colors.secondaryText,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              Obx(
-                () => TextButton.icon(
-                  onPressed:
-                      done || !habit.active || controller.isSubmitting.value
-                      ? null
-                      : () async {
-                          final ok = await controller.recordCompletion(
-                            habit,
-                            controller.selectedDate.value,
-                          );
-                          if (!ok && context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  controller.errorMessage.value ??
-                                      'Could not record completion.',
-                                ),
+            ),
+            Obx(() {
+              final isSubmitting = controller.isSubmitting.value;
+              return TextButton.icon(
+                onPressed: done || !habit.active || isSubmitting
+                    ? null
+                    : () async {
+                        final ok = await controller.recordCompletion(
+                          habit,
+                          controller.selectedDate.value,
+                        );
+                        if (!ok && context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                controller.errorMessage.value ??
+                                    'Could not record completion.',
                               ),
-                            );
-                          }
-                        },
-                  style: TextButton.styleFrom(
-                    backgroundColor: done
-                        ? const Color(0xFFE8F1FC)
-                        : Colors.white,
-                    side: BorderSide(
-                      color: done ? Colors.transparent : Colors.grey.shade300,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  icon: Icon(
-                    Icons.check,
-                    size: 14,
-                    color: done ? AppColors.primary : Colors.grey,
-                  ),
-                  label: Text(
-                    done ? 'Done' : 'Complete',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: done ? AppColors.primary : Colors.grey,
-                    ),
+                            ),
+                          );
+                        }
+                      },
+                style: TextButton.styleFrom(
+                  backgroundColor: done
+                      ? colors.primaryBlue.withValues(alpha: .14)
+                      : colors.cardSurface,
+                  side: BorderSide(
+                    color: done ? Colors.transparent : colors.border,
                   ),
                 ),
-              ),
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.more_horiz, color: Colors.grey),
-                onSelected: (value) => _handleAction(context, value),
-                itemBuilder: (_) => [
-                  const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                  PopupMenuItem(
-                    value: 'active',
-                    child: Text(habit.active ? 'Pause' : 'Resume'),
+                icon: Icon(
+                  Icons.check,
+                  size: 14,
+                  color: done ? colors.primaryBlue : colors.secondaryText,
+                ),
+                label: Text(
+                  done ? 'Done' : 'Complete',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: done ? colors.primaryBlue : colors.secondaryText,
                   ),
-                  const PopupMenuItem(value: 'delete', child: Text('Delete')),
-                ],
-              ),
-            ],
-          ),
+                ),
+              );
+            }),
+            PopupMenuButton<String>(
+              icon: Icon(Icons.more_horiz, color: colors.secondaryText),
+              onSelected: (value) => _handleAction(context, value),
+              itemBuilder: (_) => [
+                const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                PopupMenuItem(
+                  value: 'active',
+                  child: Text(habit.active ? 'Pause' : 'Resume'),
+                ),
+                const PopupMenuItem(value: 'delete', child: Text('Delete')),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -393,26 +386,25 @@ class _HabitCard extends StatelessWidget {
 }
 
 class _CircleButton extends StatelessWidget {
-  const _CircleButton({
-    required this.icon,
-    required this.onTap,
-    this.color = Colors.black87,
-  });
+  const _CircleButton({required this.icon, required this.onTap, this.color});
   final IconData icon;
   final VoidCallback onTap;
-  final Color color;
+  final Color? color;
   @override
-  Widget build(BuildContext context) => Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      shape: BoxShape.circle,
-      border: Border.all(color: Colors.grey.shade200),
-    ),
-    child: IconButton(
-      icon: Icon(icon, color: color),
-      onPressed: onTap,
-    ),
-  );
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.elevatedSurface,
+        shape: BoxShape.circle,
+        border: Border.all(color: colors.border),
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: color ?? colors.primaryText),
+        onPressed: onTap,
+      ),
+    );
+  }
 }
 
 String _monthName(int month) => const [

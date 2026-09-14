@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/core/value_objects/money_amount.dart';
 import 'package:life_sync_app/features/goals/data/models/goal_models.dart';
 import 'package:life_sync_app/features/goals/presentation/controllers/goal_controller.dart';
@@ -86,208 +87,198 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: Colors.white,
-    body: SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: colors.elevatedSurface,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: colors.border),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.chevron_left),
+                        onPressed: Get.back,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      _editing == null ? 'Create Goal' : 'Edit Goal',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 28),
+                Row(
+                  children: [
+                    _step('1', 'Define', true),
+                    Expanded(
+                      child: Container(height: 2, color: colors.primaryBlue),
+                    ),
+                    _step('2', 'Track', false),
+                    Expanded(
+                      child: Container(height: 2, color: colors.divider),
+                    ),
+                    _step('3', 'Achieve', false),
+                  ],
+                ),
+                const SizedBox(height: 36),
+                TextFormField(
+                  controller: _goalController,
+                  textInputAction: TextInputAction.next,
+                  validator: (value) => value == null || value.trim().isEmpty
+                      ? 'Goal title is required'
+                      : null,
+                  decoration: _input('Goal', icon: Icons.edit_outlined),
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'What Success Will Look Like?',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _outcomeController,
+                  maxLines: 2,
+                  decoration: _input('Outcome'),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _targetController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        inputFormatters: [_moneyFormatter],
+                        validator: _positiveMoney,
+                        decoration: _input('Target amount', prefix: r'$ '),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _currentController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        inputFormatters: [_moneyFormatter],
+                        validator: _nonNegativeMoney,
+                        decoration: _input('Current amount', prefix: r'$ '),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'Deadline',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                InkWell(
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: _deadline,
+                      firstDate: DateTime.now().add(const Duration(days: 1)),
+                      lastDate: DateTime(2200),
+                    );
+                    if (picked != null) {
+                      setState(() => _deadline = picked);
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 14,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.grey.shade100),
+                      color: colors.inputSurface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: colors.border),
                     ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.chevron_left,
-                        color: Colors.black87,
-                      ),
-                      onPressed: Get.back,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Text(
-                    _editing == null ? 'Create Goal' : 'Edit Goal',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 28),
-              Row(
-                children: [
-                  _step('1', 'Define', true),
-                  Expanded(
-                    child: Container(height: 2, color: Colors.blue.shade200),
-                  ),
-                  _step('2', 'Track', false),
-                  Expanded(
-                    child: Container(height: 2, color: Colors.grey.shade200),
-                  ),
-                  _step('3', 'Achieve', false),
-                ],
-              ),
-              const SizedBox(height: 36),
-              TextFormField(
-                controller: _goalController,
-                textInputAction: TextInputAction.next,
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Goal title is required'
-                    : null,
-                decoration: _input('Goal', icon: Icons.edit_outlined),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'What Success Will Look Like?',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _outcomeController,
-                maxLines: 2,
-                decoration: _input('Outcome'),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _targetController,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      inputFormatters: [_moneyFormatter],
-                      validator: _positiveMoney,
-                      decoration: _input('Target amount', prefix: r'$ '),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _currentController,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      inputFormatters: [_moneyFormatter],
-                      validator: _nonNegativeMoney,
-                      decoration: _input('Current amount', prefix: r'$ '),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Deadline',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black54,
-                ),
-              ),
-              const SizedBox(height: 8),
-              InkWell(
-                onTap: () async {
-                  final picked = await showDatePicker(
-                    context: context,
-                    initialDate: _deadline,
-                    firstDate: DateTime.now().add(const Duration(days: 1)),
-                    lastDate: DateTime(2200),
-                  );
-                  if (picked != null) {
-                    setState(() => _deadline = picked);
-                  }
-                },
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 14,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.grey.shade200),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.calendar_today_outlined, size: 16),
-                          const SizedBox(width: 8),
-                          Text(
-                            _date(_deadline),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.calendar_today_outlined, size: 16),
+                            const SizedBox(width: 8),
+                            Text(
+                              _date(_deadline),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const Icon(
-                        Icons.unfold_more,
-                        size: 16,
-                        color: Colors.grey,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 60),
-              SizedBox(
-                width: double.infinity,
-                child: Obx(
-                  () => ElevatedButton(
-                    onPressed: _controller.isSubmitting.value ? null : _save,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2979FF),
-                      disabledBackgroundColor: const Color(0xFFEFEFF1),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 0,
+                          ],
+                        ),
+                        const Icon(
+                          Icons.unfold_more,
+                          size: 16,
+                          color: Colors.grey,
+                        ),
+                      ],
                     ),
-                    child: _controller.isSubmitting.value
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Text(
-                            _editing == null ? 'Save Goal' : 'Update Goal',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 60),
+                SizedBox(
+                  width: double.infinity,
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed: _controller.isSubmitting.value ? null : _save,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2979FF),
+                        disabledBackgroundColor: const Color(0xFFEFEFF1),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: _controller.isSubmitting.value
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              _editing == null ? 'Save Goal' : 'Update Goal',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 
   Widget _step(String number, String label, bool active) => Column(
     children: [
@@ -296,10 +287,12 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
         height: 32,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: active ? const Color(0xFF2979FF) : Colors.white,
+          color: active
+              ? context.lifeSyncColors.primaryBlue
+              : context.lifeSyncColors.inputSurface,
           shape: BoxShape.circle,
           border: Border.all(
-            color: active ? Colors.transparent : Colors.grey.shade300,
+            color: active ? Colors.transparent : context.lifeSyncColors.border,
           ),
         ),
         child: Text(
@@ -307,7 +300,7 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.bold,
-            color: active ? Colors.white : Colors.grey.shade500,
+            color: active ? Colors.white : context.lifeSyncColors.secondaryText,
           ),
         ),
       ),
@@ -317,7 +310,9 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
         style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.w600,
-          color: active ? const Color(0xFF2979FF) : Colors.grey.shade500,
+          color: active
+              ? context.lifeSyncColors.primaryBlue
+              : context.lifeSyncColors.secondaryText,
         ),
       ),
     ],
@@ -336,15 +331,18 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.grey.shade200),
+          borderSide: BorderSide(color: context.lifeSyncColors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.grey.shade200),
+          borderSide: BorderSide(color: context.lifeSyncColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFF2979FF), width: 1.5),
+          borderSide: BorderSide(
+            color: context.lifeSyncColors.primaryBlue,
+            width: 1.5,
+          ),
         ),
       );
 

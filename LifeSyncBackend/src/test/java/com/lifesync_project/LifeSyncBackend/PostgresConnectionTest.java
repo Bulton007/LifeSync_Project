@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {
     "spring.datasource.url=jdbc:postgresql://localhost:5432/lifesync",
     "spring.datasource.username=postgres",
-    "spring.datasource.password=leang30122006",
+    "spring.datasource.password=${DB_PASSWORD}",
     "spring.datasource.driver-class-name=org.postgresql.Driver",
     "spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect"
 })

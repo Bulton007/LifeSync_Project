@@ -4,6 +4,23 @@ import 'package:life_sync_app/core/network/api_exception.dart';
 
 void main() {
   group('ApiException', () {
+    test('extracts lockout messages from plain-text JSON auth responses', () {
+      final request = RequestOptions(path: '/api/auth/verify-otp');
+      final exception = ApiException.fromDioException(
+        DioException(
+          requestOptions: request,
+          type: DioExceptionType.badResponse,
+          response: Response<String>(
+            requestOptions: request,
+            statusCode: 429,
+            data:
+                '{"message":"Try again in 900 seconds.","retryAfterSeconds":900}',
+          ),
+        ),
+      );
+      expect(exception.statusCode, 429);
+      expect(exception.message, 'Try again in 900 seconds.');
+    });
     test('uses the backend message for application errors', () {
       final request = RequestOptions(path: '/api/tasks');
       final error = DioException(

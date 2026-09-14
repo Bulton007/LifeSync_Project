@@ -94,6 +94,21 @@ class AuthenticationIntegrationTests {
     }
 
     @Test
+    void loginDoesNotRevealWhetherAnEmailIsRegistered() throws Exception {
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "email": "missing-user@lifesync.test",
+                                  "password": "not-a-real-password"
+                                }
+                                """))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message")
+                        .value("Incorrect email or password."));
+    }
+
+    @Test
     void authenticatedUserCannotReadAnotherUsersProfile() throws Exception {
         Users owner = saveVerifiedUser("batch1-owner@lifesync.test");
         Users other = saveVerifiedUser("batch1-other@lifesync.test");

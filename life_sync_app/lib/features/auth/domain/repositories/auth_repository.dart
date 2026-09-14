@@ -18,7 +18,7 @@ abstract interface class AuthRepository {
     required String otpCode,
   });
 
-  Future<ApiResult<String>> resendOtp(String email);
+  Future<ApiResult<String>> resendOtp(String email, {String channel = 'email'});
 
   Future<ApiResult<String>> forgotPassword(String email);
 

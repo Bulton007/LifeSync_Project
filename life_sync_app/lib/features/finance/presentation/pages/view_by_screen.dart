@@ -155,7 +155,12 @@ class _ViewByScreenState extends State<ViewByScreen> {
                 color: Colors.black87,
               ),
             ),
-            Radio<String>(value: title, activeColor: const Color(0xFF2979FF)),
+            Icon(
+              _selectedViewBy == title
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_unchecked,
+              color: const Color(0xFF2979FF),
+            ),
           ],
         ),
       ),

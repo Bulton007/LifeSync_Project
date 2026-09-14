@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
-import 'package:life_sync_app/core/theme/app_colors.dart';
-import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:life_sync_app/features/auth/presentation/validators/auth_validators.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -31,7 +30,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     final signedIn = await _authController.login(
-      email: _emailController.text,
+      email: AuthValidators.normalizeEmail(_emailController.text),
       password: _passwordController.text,
     );
     if (signedIn) await Get.offAllNamed<void>(AppRoutes.shell);
@@ -70,7 +69,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: const [
                         Text(
                           'Hello',
                           style: TextStyle(
@@ -85,36 +84,29 @@ class _SignInScreenState extends State<SignInScreen> {
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
+                            color: Color(0xFF1E88E5),
                             height: 1.2,
                           ),
                         ),
                       ],
                     ),
-                    // LifeSync Logo badge container
+                    // Abstract Plant Logo Placeholder container
                     Container(
-                      width: 72,
-                      height: 72,
-                      padding: const EdgeInsets.all(8),
+                      width: 100,
+                      height: 60,
                       decoration: BoxDecoration(
                         color: const Color(0xFFF0F5FF),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(30),
                         border: Border.all(
-                          color: AppColors.primary.withValues(alpha: 0.2),
+                          color: const Color(0xFF1E88E5),
                           width: 1.5,
                         ),
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(14),
-                        child: Image.asset(
-                          AppImages.appLogo,
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(
-                                Icons.eco_outlined,
-                                color: AppColors.primary,
-                                size: 30,
-                              ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.eco_outlined,
+                          color: Color(0xFF1E88E5),
+                          size: 30,
                         ),
                       ),
                     ),
@@ -136,14 +128,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  validator: (value) {
-                    final email = value?.trim() ?? '';
-                    if (email.isEmpty) return 'Email is required.';
-                    if (!GetUtils.isEmail(email)) {
-                      return 'Enter a valid email address.';
-                    }
-                    return null;
-                  },
+                  validator: AuthValidators.email,
                   decoration: InputDecoration(
                     hintText: 'Email',
                     hintStyle: TextStyle(
@@ -171,7 +156,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.primary),
+                      borderSide: const BorderSide(color: Color(0xFF1E88E5)),
                     ),
                   ),
                 ),
@@ -235,7 +220,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.primary),
+                      borderSide: const BorderSide(color: Color(0xFF1E88E5)),
                     ),
                   ),
                 ),
@@ -283,7 +268,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           ? null
                           : _submit,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: const Color(0xFF2979FF),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -336,19 +321,22 @@ class _SignInScreenState extends State<SignInScreen> {
 
                 // Social Login Buttons
                 _buildSocialButton(
-                  imagePath: AppImages.facebookLogo,
+                  icon: Icons.facebook,
+                  iconColor: const Color(0xFF1877F2),
                   text: 'Continue with Facebook',
                   onPressed: _showUnavailable,
                 ),
                 const SizedBox(height: 12),
                 _buildSocialButton(
-                  imagePath: AppImages.googleLogo,
+                  icon: Icons.g_mobiledata,
+                  iconColor: Colors.red,
                   text: 'Continue with Google',
                   onPressed: _showUnavailable,
                 ),
                 const SizedBox(height: 12),
                 _buildSocialButton(
-                  imagePath: AppImages.appleLogo,
+                  icon: Icons.apple,
+                  iconColor: Colors.black,
                   text: 'Continue with Apple',
                   onPressed: _showUnavailable,
                 ),
@@ -372,7 +360,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+                          color: Color(0xFF1E88E5),
                         ),
                       ),
                     ),
@@ -386,9 +374,10 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  // Reusable Social Button Builder with PNG image icons
+  // Reusable Social Button Builder
   Widget _buildSocialButton({
-    required String imagePath,
+    required IconData icon,
+    required Color iconColor,
     required String text,
     required VoidCallback onPressed,
   }) {
@@ -403,7 +392,7 @@ class _SignInScreenState extends State<SignInScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(imagePath, width: 22, height: 22, fit: BoxFit.contain),
+          Icon(icon, color: iconColor, size: 24),
           const SizedBox(width: 12),
           Text(
             text,

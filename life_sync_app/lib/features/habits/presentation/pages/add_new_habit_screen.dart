@@ -606,7 +606,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                       children: [
                         Switch(
                           value: _reminderEnabled,
-                          activeThumbColor: AppColors.primary,
+                          activeThumbColor: const Color(0xFF1E88E5),
                           onChanged: (value) {
                             setState(() {
                               _reminderEnabled = value;

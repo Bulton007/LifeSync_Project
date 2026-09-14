@@ -18,6 +18,24 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
+    public record TelegramLinkRequest(
+            @jakarta.validation.constraints.NotBlank
+            @jakarta.validation.constraints.Pattern(regexp = "[1-9][0-9]{0,18}") String chatId) {}
+
+    public record TelegramLinkVerification(
+            @jakarta.validation.constraints.NotBlank
+            @jakarta.validation.constraints.Pattern(regexp = "[0-9]{6}") String otpCode) {}
+
+    @PostMapping("/telegram/link")
+    public ResponseEntity<String> linkTelegram(@Valid @RequestBody TelegramLinkRequest request) {
+        return ResponseEntity.ok(authService.linkTelegram(request.chatId()));
+    }
+
+    @PostMapping("/telegram/confirm")
+    public ResponseEntity<String> confirmTelegram(@Valid @RequestBody TelegramLinkVerification request) {
+        return ResponseEntity.ok(authService.confirmTelegram(request.otpCode()));
+    }
+
     private final AuthService authService;
 
     /*
@@ -58,10 +76,11 @@ public class AuthController {
      */
     @PostMapping("/resend-otp")
     public ResponseEntity<String> resendOtp(
-            @RequestParam String email) {
+            @RequestParam String email,
+            @RequestParam(defaultValue = "email") String channel) {
 
         return ResponseEntity.ok(
-                authService.resendOtp(email));
+                authService.resendOtp(email, channel));
     }
 
     /*

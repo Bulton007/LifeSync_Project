@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/core/theme/app_radius.dart';
@@ -82,70 +84,75 @@ class _NavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     return RepaintBoundary(
-      child: Container(
-        height: double.infinity,
-        padding: const EdgeInsets.all(AppSpacing.xxs),
-        decoration: BoxDecoration(
-          // Lightweight translucent glass appearance.
-          // No expensive BackdropFilter is used.
-          color: Colors.white.withValues(alpha: 0.88),
-          borderRadius: BorderRadius.circular(AppRadius.pill),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.90),
-            width: 1,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.pill),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: colors.navigationSurface,
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+              border: Border.all(
+                color: colors.primaryText.withValues(alpha: 0.18),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.shadow,
+                  blurRadius: 18,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.xxs),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _NavigationItem(
+                      icon: Icons.other_houses_outlined,
+                      selectedIcon: Icons.other_houses_outlined,
+                      label: 'Home',
+                      selected: currentIndex == 0,
+                      compact: compact,
+                      onTap: () => onTabSelected(0),
+                    ),
+                  ),
+                  Expanded(
+                    child: _NavigationItem(
+                      icon: Icons.track_changes_outlined,
+                      selectedIcon: Icons.track_changes,
+                      label: 'Goal',
+                      selected: currentIndex == 1,
+                      compact: compact,
+                      onTap: () => onTabSelected(1),
+                    ),
+                  ),
+                  Expanded(
+                    child: _NavigationItem(
+                      icon: Icons.query_stats_outlined,
+                      selectedIcon: Icons.query_stats,
+                      label: 'Finance',
+                      selected: currentIndex == 2,
+                      compact: compact,
+                      onTap: () => onTabSelected(2),
+                    ),
+                  ),
+                  Expanded(
+                    child: _NavigationItem(
+                      icon: Icons.grid_view_outlined,
+                      selectedIcon: Icons.grid_view_rounded,
+                      label: 'More',
+                      selected: currentIndex == 3,
+                      compact: compact,
+                      onTap: () => onTabSelected(3),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.foreground.withValues(alpha: 0.07),
-              blurRadius: 18,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: _NavigationItem(
-                icon: Icons.other_houses_outlined,
-                selectedIcon: Icons.other_houses_outlined,
-                label: 'Home',
-                selected: currentIndex == 0,
-                compact: compact,
-                onTap: () => onTabSelected(0),
-              ),
-            ),
-            Expanded(
-              child: _NavigationItem(
-                icon: Icons.track_changes_outlined,
-                selectedIcon: Icons.track_changes,
-                label: 'Goal',
-                selected: currentIndex == 1,
-                compact: compact,
-                onTap: () => onTabSelected(1),
-              ),
-            ),
-            Expanded(
-              child: _NavigationItem(
-                icon: Icons.query_stats_outlined,
-                selectedIcon: Icons.query_stats,
-                label: 'Finance',
-                selected: currentIndex == 2,
-                compact: compact,
-                onTap: () => onTabSelected(2),
-              ),
-            ),
-            Expanded(
-              child: _NavigationItem(
-                icon: Icons.grid_view_outlined,
-                selectedIcon: Icons.grid_view_rounded,
-                label: 'More',
-                selected: currentIndex == 3,
-                compact: compact,
-                onTap: () => onTabSelected(3),
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -175,12 +182,13 @@ class _NavigationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final itemColor = selected ? AppColors.primary : AppColors.textSecondary;
+    final colors = context.lifeSyncColors;
+    final itemColor = selected
+        ? colors.primaryBlue
+        : colors.navigationUnselected;
 
     return Material(
-      color: selected
-          ? AppColors.primaryLight.withValues(alpha: 0.90)
-          : Colors.transparent,
+      color: selected ? colors.navigationSelected : Colors.transparent,
       borderRadius: BorderRadius.circular(AppRadius.pill),
       clipBehavior: Clip.antiAlias,
       child: InkWell(

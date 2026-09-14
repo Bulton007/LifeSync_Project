@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestClient;
 import java.util.Map;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
 
 @Service
@@ -25,7 +26,11 @@ public class TelegramService {
                 """.formatted(otpCode);
 
         try {
+            SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+            requestFactory.setConnectTimeout(5000);
+            requestFactory.setReadTimeout(10000);
             return RestClient.builder()
+                    .requestFactory(requestFactory)
                     .baseUrl(telegramApiUrl)
                     .build()
                     .post()

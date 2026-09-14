@@ -1,0 +1,6 @@
+/device_*.xml
+/device_*.png
+/device_test_artifacts/
+/merge-format-results.log
+/life_sync_app/*-preview.png
+/.private-backups/
