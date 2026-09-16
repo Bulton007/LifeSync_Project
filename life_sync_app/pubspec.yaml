@@ -23,6 +23,8 @@ dependencies:
   google_fonts: ^8.2.1
   image_picker: ^1.2.3
   sqflite: ^2.4.2
+  flutter_svg: ^2.3.0
+  lottie: ^3.5.1
 
 
 # ============================================================
@@ -47,6 +49,14 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/Life-Sync SVG File/Icons/
+    - assets/Life-Sync SVG File/Icons/BottomBar/
+    - assets/Life-Sync SVG File/Icons/FinancialTab/
+    - assets/Life-Sync SVG File/Images/
+    - lib/Life-Sync SVG File/Icons/
+    - lib/Life-Sync SVG File/Icons/BottomBar/
+    - lib/Life-Sync SVG File/Icons/FinancialTab/
+    - lib/Life-Sync SVG File/Images/
 
 
 # ============================================================

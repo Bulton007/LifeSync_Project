@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/state/async_view_state.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:life_sync_app/core/widgets/app_empty_view.dart';
 import 'package:life_sync_app/core/widgets/app_error_view.dart';
 import 'package:life_sync_app/core/widgets/app_loading_view.dart';
@@ -97,7 +98,7 @@ class GoalTrackerScreen extends StatelessWidget {
                       title: 'No goals yet',
                       message:
                           'Define a measurable goal and start tracking progress.',
-                      icon: Icons.flag_outlined,
+                      svgAsset: LifeSyncSvgAssets.goalScreenMain,
                       actionLabel: 'Create goal',
                       onAction: () => Get.toNamed<void>(AppRoutes.goalEditor),
                     ),

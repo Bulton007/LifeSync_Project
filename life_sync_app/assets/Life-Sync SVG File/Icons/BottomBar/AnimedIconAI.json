@@ -1,0 +1,264 @@
+{
+  "version": 1,
+  "playbackStyle": "loop",
+  "nodes": [
+    {
+      "node": "I3050:9542;3050:9087;3050:9068",
+      "timelineDurationMs": 2000,
+      "fields": [
+        {
+          "field": "motionRotation@-1:-1",
+          "keyframes": [
+            {
+              "timeMs": 0,
+              "value": -0.7987644672393799,
+              "easingToNext": {
+                "bezierValues": {
+                  "p1x": 0.5,
+                  "p1y": 0,
+                  "p2x": 0.5,
+                  "p2y": 1
+                }
+              }
+            },
+            {
+              "timeMs": 600,
+              "value": -0.5718716382980347,
+              "easingToNext": {
+                "bezierValues": {
+                  "p1x": 0.5,
+                  "p1y": 0,
+                  "p2x": 0.5,
+                  "p2y": 1
+                }
+              }
+            },
+            {
+              "timeMs": 1199,
+              "value": -0.8881621956825256,
+              "easingToNext": {
+                "bezierValues": {
+                  "p1x": 0.5,
+                  "p1y": 0,
+                  "p2x": 0.5,
+                  "p2y": 1
+                }
+              }
+            },
+            {
+              "timeMs": 1610,
+              "value": -0.7586765885353088,
+              "easingToNext": {
+                "hold": true
+              }
+            },
+            {
+              "timeMs": 2000,
+              "value": -0.7586765885353088
+            }
+          ]
+        },
+        {
+          "field": "motionTranslationX@-1:-1",
+          "keyframes": [
+            {
+              "timeMs": 0,
+              "value": 16.76288414001465,
+              "easingToNext": {
+                "hold": true
+              }
+            },
+            {
+              "timeMs": 2000,
+              "value": 16.76288414001465
+            }
+          ]
+        },
+        {
+          "field": "motionTranslationY@-1:-1",
+          "keyframes": [
+            {
+              "timeMs": 0,
+              "value": 42.79443359375,
+              "easingToNext": {
+                "hold": true
+              }
+            },
+            {
+              "timeMs": 2000,
+              "value": 42.79443359375
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "node": "I3050:9542;3050:9087;3050:9076",
+      "timelineDurationMs": 2000,
+      "fields": [
+        {
+          "field": "motionRotation@-1:-1",
+          "keyframes": [
+            {
+              "timeMs": 0,
+              "value": 3.0856354236602783,
+              "easingToNext": {
+                "bezierValues": {
+                  "p1x": 0.5,
+                  "p1y": 0,
+                  "p2x": 0.5,
+                  "p2y": 1
+                }
+              }
+            },
+            {
+              "timeMs": 600,
+              "value": 3.16921067237854,
+              "easingToNext": {
+                "bezierValues": {
+                  "p1x": 0.5,
+                  "p1y": 0,
+                  "p2x": 0.5,
+                  "p2y": 1
+                }
+              }
+            },
+            {
+              "timeMs": 1199,
+              "value": 3.072772741317749,
+              "easingToNext": {
+                "bezierValues": {
+                  "p1x": 0.5,
+                  "p1y": 0,
+                  "p2x": 0.5,
+                  "p2y": 1
+                }
+              }
+            },
+            {
+              "timeMs": 1610,
+              "value": 3.1595101356506348,
+              "easingToNext": {
+                "hold": true
+              }
+            },
+            {
+              "timeMs": 2000,
+              "value": 3.1595101356506348
+            }
+          ]
+        },
+        {
+          "field": "motionTranslationX@-1:-1",
+          "keyframes": [
+            {
+              "timeMs": 0,
+              "value": 50.5452880859375,
+              "easingToNext": {
+                "hold": true
+              }
+            },
+            {
+              "timeMs": 2000,
+              "value": 50.5452880859375
+            }
+          ]
+        },
+        {
+          "field": "motionTranslationY@-1:-1",
+          "keyframes": [
+            {
+              "timeMs": 0,
+              "value": 15,
+              "easingToNext": {
+                "hold": true
+              }
+            },
+            {
+              "timeMs": 2000,
+              "value": 15
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "node": "I3050:9542;3050:9087;3050:9083",
+      "timelineDurationMs": 2000,
+      "fields": [
+        {
+          "field": "motionRotation@-1:-1",
+          "keyframes": [
+            {
+              "timeMs": 0,
+              "value": -0.8962461352348328,
+              "easingToNext": {
+                "bezierValues": {
+                  "p1x": 0.5,
+                  "p1y": 0,
+                  "p2x": 0.5,
+                  "p2y": 1
+                }
+              }
+            },
+            {
+              "timeMs": 600,
+              "value": -0.7357345223426819,
+              "easingToNext": {
+                "bezierValues": {
+                  "p1x": 0.5,
+                  "p1y": 0,
+                  "p2x": 0.5,
+                  "p2y": 1
+                }
+              }
+            },
+            {
+              "timeMs": 1610,
+              "value": -0.7899646759033203,
+              "easingToNext": {
+                "hold": true
+              }
+            },
+            {
+              "timeMs": 2000,
+              "value": -0.7899646759033203
+            }
+          ]
+        },
+        {
+          "field": "motionTranslationX@-1:-1",
+          "keyframes": [
+            {
+              "timeMs": 0,
+              "value": 54.47748565673828,
+              "easingToNext": {
+                "hold": true
+              }
+            },
+            {
+              "timeMs": 2000,
+              "value": 54.47748565673828
+            }
+          ]
+        },
+        {
+          "field": "motionTranslationY@-1:-1",
+          "keyframes": [
+            {
+              "timeMs": 0,
+              "value": 52.0986328125,
+              "easingToNext": {
+                "hold": true
+              }
+            },
+            {
+              "timeMs": 2000,
+              "value": 52.0986328125
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

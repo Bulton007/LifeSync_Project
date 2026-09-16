@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
 import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:life_sync_app/features/auth/presentation/validators/auth_validators.dart';
@@ -65,65 +67,11 @@ class _FillNameScreenState extends State<FillNameScreen> {
               children: [
                 const SizedBox(height: 40),
 
-                // Illustration / Graphic Placeholder Container
-                Container(
-                  height: 220,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF7F9FC),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Simulated Illustration elements
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 140,
-                            height: 90,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF2979FF),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: const Center(
-                              child: Text(
-                                'HELLO\nDana',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Positioned(
-                        bottom: 16,
-                        child: Row(
-                          children: const [
-                            Icon(
-                              Icons.waving_hand_rounded,
-                              color: Colors.orangeAccent,
-                              size: 28,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              'Welcome!',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                // Hello Dana Illustration from Life-Sync SVG File (Hello.svg)
+                SvgPicture.asset(
+                  LifeSyncSvgAssets.hello,
+                  height: 200,
+                  fit: BoxFit.contain,
                 ),
                 const SizedBox(height: 48),
 

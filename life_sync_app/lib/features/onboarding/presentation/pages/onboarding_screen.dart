@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/services/app_preferences_service.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 
 final class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -17,22 +19,25 @@ final class _OnboardingScreenState extends State<OnboardingScreen> {
 
   static const _pages = [
     _OnboardingData(
+      title: 'Introducing LifeSync!',
+      description:
+          'LifeSync brings the important parts of your life\ninto one connected space.',
+      svgAsset: LifeSyncSvgAssets.rafiki,
+      icon: Icons.auto_awesome_outlined,
+    ),
+    _OnboardingData(
       title: 'Life gets messy when everything\nlives in different places.',
       description:
           'Tasks in one place. Goals in another. Notes, habits,\nmoney… everywhere.',
+      svgAsset: LifeSyncSvgAssets.pana,
       icon: Icons.dashboard_customize_outlined,
     ),
     _OnboardingData(
       title: 'What if it all worked together?',
       description:
           'One wellbeing space connecting habits, focus,\nplanning and progress.',
+      svgAsset: LifeSyncSvgAssets.mindMap,
       icon: Icons.hub_outlined,
-    ),
-    _OnboardingData(
-      title: 'Introducing LifeSync!',
-      description:
-          'LifeSync brings the important parts of your life\ninto one connected space.',
-      icon: Icons.auto_awesome_outlined,
     ),
   ];
 
@@ -62,6 +67,7 @@ final class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     final colors = context.lifeSyncColors;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Positioned(
@@ -79,9 +85,18 @@ final class _OnboardingScreenState extends State<OnboardingScreen> {
               children: [
                 Align(
                   alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: _finish,
-                    child: Text('${_index + 1}/${_pages.length}'),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 16, top: 8),
+                    child: TextButton(
+                      onPressed: _finish,
+                      child: Text(
+                        '${_index + 1}/${_pages.length}',
+                        style: TextStyle(
+                          color: colors.secondaryText,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 Expanded(
@@ -94,7 +109,7 @@ final class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 10, 24, 18),
+                  padding: const EdgeInsets.fromLTRB(24, 10, 24, 24),
                   child: Row(
                     children: [
                       if (_index > 0)
@@ -153,50 +168,60 @@ final class _OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.lifeSyncColors;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 28),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            data.title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: colors.primaryBlue,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(height: 48),
-          TweenAnimationBuilder<double>(
-            tween: Tween(begin: .9, end: 1),
-            duration: const Duration(milliseconds: 320),
-            builder: (_, value, child) =>
-                Transform.scale(scale: value, child: child),
-            child: Container(
-              width: 168,
-              height: 168,
-              decoration: BoxDecoration(
-                color: colors.cardSurface.withValues(alpha: .75),
-                shape: BoxShape.circle,
-                border: Border.all(color: colors.border),
-                boxShadow: [BoxShadow(color: colors.glow, blurRadius: 44)],
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 28),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              data.title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: colors.primaryBlue,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                height: 1.3,
               ),
-              child: Icon(data.icon, size: 76, color: colors.primaryBlue),
             ),
-          ),
-          const SizedBox(height: 34),
-          Text(
-            data.description,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: colors.secondaryText,
-              fontSize: 12,
-              height: 1.6,
+            const SizedBox(height: 36),
+
+            // SVG in the middle of screen with preserved dimensions:
+            // width = 224.54px, height = 135.01px
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: .92, end: 1),
+              duration: const Duration(milliseconds: 320),
+              builder: (_, value, child) =>
+                  Transform.scale(scale: value, child: child),
+              child: SizedBox(
+                width: 224.54,
+                height: 135.01,
+                child: Center(
+                  child: data.svgAsset != null
+                      ? SvgPicture.asset(
+                          data.svgAsset!,
+                          width: 224.54,
+                          height: 135.01,
+                          fit: BoxFit.contain,
+                        )
+                      : Icon(data.icon, size: 84, color: colors.primaryBlue),
+                ),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 36),
+
+            Text(
+              data.description,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: colors.secondaryText,
+                fontSize: 13,
+                height: 1.6,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -225,8 +250,10 @@ final class _OnboardingData {
     required this.title,
     required this.description,
     required this.icon,
+    this.svgAsset,
   });
   final String title;
   final String description;
   final IconData icon;
+  final String? svgAsset;
 }

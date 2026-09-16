@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/core/theme/app_icons.dart';
+import 'package:lottie/lottie.dart';
 
 final class AssistantScreen extends StatefulWidget {
   const AssistantScreen({super.key});
@@ -136,9 +137,9 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                 border: Border.all(color: Colors.white, width: 1.5),
               ),
               child: ClipOval(
-                child: Image.asset(
-                  AppImages.assistantAvatar,
-                  fit: BoxFit.cover,
+                child: Lottie.asset(
+                  LifeSyncSvgAssets.animedIconAi,
+                  fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) => const Icon(
                     Icons.smart_toy_rounded,
                     color: AppColors.primary,

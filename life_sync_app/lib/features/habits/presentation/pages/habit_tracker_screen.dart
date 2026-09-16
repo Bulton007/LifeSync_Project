@@ -1,7 +1,9 @@
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:life_sync_app/core/state/async_view_state.dart';
 import 'package:life_sync_app/core/widgets/app_empty_view.dart';
 import 'package:life_sync_app/core/widgets/app_error_view.dart';
@@ -46,7 +48,7 @@ class HabitTrackerScreen extends StatelessWidget {
                     child: AppEmptyView(
                       title: 'No habits yet',
                       message: 'Create a habit to start tracking your routine.',
-                      icon: Icons.autorenew,
+                      svgAsset: LifeSyncSvgAssets.activityTracker,
                       actionLabel: 'Add habit',
                       onAction: () => Get.toNamed<void>(AppRoutes.habitEditor),
                     ),
@@ -240,7 +242,15 @@ class _HabitCard extends StatelessWidget {
                 color: colors.primaryBlue.withValues(alpha: .14),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(Icons.autorenew, color: colors.primaryBlue, size: 20),
+              child: SvgPicture.asset(
+                LifeSyncSvgAssets.icLoop,
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                  colors.primaryBlue,
+                  BlendMode.srcIn,
+                ),
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(

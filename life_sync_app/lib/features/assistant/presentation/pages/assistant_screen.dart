@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 
 final class AssistantScreen extends StatefulWidget {
   const AssistantScreen({super.key});
@@ -156,10 +158,10 @@ final class _AssistantEmpty extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
-            'assets/images/lifesync_assistant.png',
-            width: 92,
-            height: 92,
+          SvgPicture.asset(
+            LifeSyncSvgAssets.mindMap,
+            width: 180,
+            height: 120,
             fit: BoxFit.contain,
           ),
           const SizedBox(height: 16),

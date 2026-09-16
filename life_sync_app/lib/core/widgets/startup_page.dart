@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/network/api_client.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/services/app_preferences_service.dart';
 import 'package:life_sync_app/core/services/auth_session_service.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:life_sync_app/features/user/data/datasources/user_remote_data_source.dart';
 
 final class StartupPage extends StatefulWidget {
@@ -42,11 +44,7 @@ final class _StartupPageState extends State<StartupPage>
     if (!mounted) return;
 
     if (session == null) {
-      await Get.offAllNamed<void>(
-        preferences.onboardingCompleted.value
-            ? AppRoutes.signIn
-            : AppRoutes.onboarding,
-      );
+      await Get.offAllNamed<void>(AppRoutes.onboarding);
       return;
     }
 
@@ -79,8 +77,8 @@ final class _StartupPageState extends State<StartupPage>
               CurvedAnimation(parent: _animation, curve: Curves.easeOutBack),
             ),
             child: Container(
-              width: 104,
-              height: 104,
+              width: 150,
+              height: 150,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 boxShadow: [
@@ -91,10 +89,12 @@ final class _StartupPageState extends State<StartupPage>
                   ),
                 ],
               ),
-              child: Image.asset(
-                'assets/images/app_logo.png',
+              child: SvgPicture.asset(
+                LifeSyncSvgAssets.group11,
+                width: 150,
+                height: 150,
                 fit: BoxFit.contain,
-                semanticLabel: 'LifeSync',
+                semanticsLabel: 'LifeSync',
               ),
             ),
           ),

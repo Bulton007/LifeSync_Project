@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 
 class CreatedSuccessScreen extends StatelessWidget {
   const CreatedSuccessScreen({super.key});
@@ -18,55 +20,11 @@ class CreatedSuccessScreen extends StatelessWidget {
             children: [
               const Spacer(),
 
-              // Graphic / Illustration Placeholder Container
-              Container(
-                height: 240,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF7F9FC),
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Simulated Illustration
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF2979FF),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 36,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Container(
-                          width: 160,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          width: 100,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              // Success Illustration from Life-Sync SVG File (undraw_done_i0ak 1.svg)
+              SvgPicture.asset(
+                LifeSyncSvgAssets.done,
+                height: 220,
+                fit: BoxFit.contain,
               ),
               const SizedBox(height: 48),
 

@@ -1,7 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
+import 'package:lottie/lottie.dart';
 import 'package:life_sync_app/core/theme/app_radius.dart';
 import 'package:life_sync_app/core/theme/app_spacing.dart';
 import 'package:life_sync_app/core/theme/app_text_styles.dart';
@@ -111,6 +114,8 @@ class _NavigationBar extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _NavigationItem(
+                      svgAsset: LifeSyncSvgAssets.bottomHome,
+                      selectedSvgAsset: LifeSyncSvgAssets.bottomHomeSelected,
                       icon: Icons.other_houses_outlined,
                       selectedIcon: Icons.other_houses_outlined,
                       label: 'Home',
@@ -121,6 +126,8 @@ class _NavigationBar extends StatelessWidget {
                   ),
                   Expanded(
                     child: _NavigationItem(
+                      svgAsset: LifeSyncSvgAssets.bottomGoal,
+                      selectedSvgAsset: LifeSyncSvgAssets.bottomGoalSelected,
                       icon: Icons.track_changes_outlined,
                       selectedIcon: Icons.track_changes,
                       label: 'Goal',
@@ -131,6 +138,8 @@ class _NavigationBar extends StatelessWidget {
                   ),
                   Expanded(
                     child: _NavigationItem(
+                      svgAsset: LifeSyncSvgAssets.bottomFinance,
+                      selectedSvgAsset: LifeSyncSvgAssets.bottomFinanceSelected,
                       icon: Icons.query_stats_outlined,
                       selectedIcon: Icons.query_stats,
                       label: 'Finance',
@@ -141,6 +150,8 @@ class _NavigationBar extends StatelessWidget {
                   ),
                   Expanded(
                     child: _NavigationItem(
+                      svgAsset: LifeSyncSvgAssets.bottomMore,
+                      selectedSvgAsset: LifeSyncSvgAssets.bottomMoreSelected,
                       icon: Icons.grid_view_outlined,
                       selectedIcon: Icons.grid_view_rounded,
                       label: 'More',
@@ -165,16 +176,20 @@ class _NavigationBar extends StatelessWidget {
 
 class _NavigationItem extends StatelessWidget {
   const _NavigationItem({
-    required this.icon,
-    required this.selectedIcon,
     required this.label,
     required this.selected,
     required this.compact,
     required this.onTap,
+    this.icon,
+    this.selectedIcon,
+    this.svgAsset,
+    this.selectedSvgAsset,
   });
 
-  final IconData icon;
-  final IconData selectedIcon;
+  final IconData? icon;
+  final IconData? selectedIcon;
+  final String? svgAsset;
+  final String? selectedSvgAsset;
   final String label;
   final bool selected;
   final bool compact;
@@ -205,11 +220,18 @@ class _NavigationItem extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                selected ? selectedIcon : icon,
-                color: itemColor,
-                size: compact ? 18 : 20,
-              ),
+              if (svgAsset != null)
+                SvgPicture.asset(
+                  selected ? (selectedSvgAsset ?? svgAsset!) : svgAsset!,
+                  width: compact ? 20 : 22,
+                  height: compact ? 20 : 22,
+                )
+              else
+                Icon(
+                  selected ? (selectedIcon ?? icon ?? Icons.circle) : (icon ?? Icons.circle),
+                  color: itemColor,
+                  size: compact ? 18 : 20,
+                ),
               const SizedBox(height: 1),
               FittedBox(
                 fit: BoxFit.scaleDown,
@@ -276,11 +298,11 @@ class _AssistantButton extends StatelessWidget {
               ],
             ),
             child: ClipOval(
-              child: Image.asset(
-                'assets/images/lifesync_assistant.png',
+              child: Lottie.asset(
+                LifeSyncSvgAssets.animedIconAi,
                 width: size,
                 height: size,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) {
                   return Icon(
                     Icons.smart_toy_rounded,

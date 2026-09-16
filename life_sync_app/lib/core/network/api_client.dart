@@ -34,6 +34,7 @@ final class ApiClient {
       debugPrint('LifeSync API base URL: ${environment.apiBaseUrl}');
       _dio.interceptors.add(
         LogInterceptor(
+          request: false,
           requestHeader: false,
           requestBody: false,
           responseHeader: false,

@@ -2,6 +2,7 @@ import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:life_sync_app/core/widgets/app_empty_view.dart';
 import 'package:life_sync_app/core/widgets/app_error_view.dart';
 import 'package:life_sync_app/core/widgets/app_loading_view.dart';
@@ -415,7 +416,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                     return AppEmptyView(
                       title: 'No tasks for this day',
                       message: 'Add a task to start planning your day.',
-                      icon: Icons.task_alt_rounded,
+                      svgAsset: LifeSyncSvgAssets.group,
                       actionLabel: 'Add task',
                       onAction: () => _showAddTodoPopup(context),
                     );

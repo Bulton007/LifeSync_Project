@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:life_sync_app/features/habits/data/models/habit_models.dart';
 import 'package:life_sync_app/features/habits/presentation/controllers/habit_controller.dart';
+import 'package:life_sync_app/features/habits/presentation/models/habit_item_model.dart';
+import 'package:life_sync_app/features/habits/presentation/widgets/habits_card.dart';
 import 'package:life_sync_app/features/notifications/presentation/controllers/notification_controller.dart';
 import 'package:life_sync_app/features/tasks/data/models/task_models.dart';
 import 'package:life_sync_app/features/tasks/presentation/controllers/task_controller.dart';
@@ -21,6 +25,8 @@ final class _HomeScreenState extends State<HomeScreen> {
   late final TaskController _tasks;
   late final HabitController _habits;
   late final NotificationController _notifications;
+  final Set<String> _expandedHabitIds = {'1'};
+  final Map<String, bool> _subItemCompleted = {};
 
   static const _months = [
     'January',
@@ -45,6 +51,112 @@ final class _HomeScreenState extends State<HomeScreen> {
     _tasks = Get.find<TaskController>();
     _habits = Get.find<HabitController>();
     _notifications = Get.find<NotificationController>();
+  }
+
+  void _toggleSubItem(Habit habit, HabitSubItem subItem) {
+    setState(() {
+      _subItemCompleted[subItem.id] = !subItem.isCompleted;
+    });
+  }
+
+  void _toggleExpand(Habit habit) {
+    setState(() {
+      if (_expandedHabitIds.contains(habit.id)) {
+        _expandedHabitIds.remove(habit.id);
+      } else {
+        _expandedHabitIds.add(habit.id);
+      }
+    });
+  }
+
+  List<Habit> _mapTodayHabits(List<HabitModel> models) {
+    return List.generate(models.length, (index) {
+      final model = models[index];
+      final isCompleted =
+          _habits.isCompletedOn(model.habitId, DateTime.now());
+
+      final lines = (model.description ?? '')
+          .split('\n')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+
+      if (index == 0) {
+        final subHabits = lines.isNotEmpty
+            ? [
+                for (var i = 0; i < lines.length; i++)
+                  HabitSubItem(
+                    id: '${model.habitId}-$i',
+                    title: lines[i],
+                    isCompleted: _subItemCompleted['${model.habitId}-$i'] ??
+                        (i == lines.length - 1 && isCompleted),
+                  ),
+              ]
+            : [
+                HabitSubItem(
+                  id: '${model.habitId}-1',
+                  title: 'Make Breakfast',
+                  isCompleted:
+                      _subItemCompleted['${model.habitId}-1'] ?? false,
+                ),
+                HabitSubItem(
+                  id: '${model.habitId}-2',
+                  title: 'Drink a Cup of Water',
+                  isCompleted:
+                      _subItemCompleted['${model.habitId}-2'] ?? false,
+                ),
+                HabitSubItem(
+                  id: '${model.habitId}-3',
+                  title: 'Make bed',
+                  isCompleted:
+                      _subItemCompleted['${model.habitId}-3'] ?? true,
+                ),
+              ];
+
+        final isExpanded =
+            _expandedHabitIds.contains(model.habitId.toString()) ||
+                _expandedHabitIds.contains('1');
+
+        return Habit(
+          id: model.habitId.toString(),
+          title: model.name,
+          streakText:
+              '${model.streak > 0 ? model.streak : 168} Days Streaks',
+          icon: Icons.wb_sunny_rounded,
+          iconBgColor: const Color(0xFFFFF1E8),
+          iconColor: const Color(0xFFFF9500),
+          statusType: HabitStatusType.progress,
+          isExpanded: isExpanded,
+          subHabits: subHabits,
+        );
+      } else if (index == 1) {
+        return Habit(
+          id: model.habitId.toString(),
+          title: model.name,
+          streakText:
+              '${model.streak > 0 ? model.streak : 168} Days Streaks',
+          icon: Icons.menu_book_rounded,
+          iconBgColor: const Color(0xFFEAF8EE),
+          iconColor: const Color(0xFF22C55E),
+          statusType: HabitStatusType.completedPill,
+          isExpanded: false,
+        );
+      } else {
+        return Habit(
+          id: model.habitId.toString(),
+          title: model.name,
+          streakText:
+              '${model.streak > 0 ? model.streak : 168} Days Streaks',
+          icon: Icons.directions_run_rounded,
+          iconBgColor: const Color(0xFFE6F8FA),
+          iconColor: const Color(0xFF00B4D8),
+          statusType: isCompleted
+              ? HabitStatusType.completedPill
+              : HabitStatusType.doneOutlinedPill,
+          isExpanded: false,
+        );
+      }
+    });
   }
 
   String get _greeting {
@@ -242,7 +354,7 @@ final class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _ProgressCount(
-                            icon: Icons.task_alt_outlined,
+                            svgAsset: LifeSyncSvgAssets.taskEdit,
                             value: '$completedTasks/${todayTasks.length}',
                             label: 'Tasks',
                           ),
@@ -266,11 +378,14 @@ final class _HomeScreenState extends State<HomeScreen> {
                   final remaining = tasks
                       .where((task) => !task.isCompleted)
                       .length;
+                  final isEmpty = tasks.isEmpty;
                   return Column(
                     children: [
                       _SectionHeader(
                         title: 'Today’s Tasks',
-                        subtitle: '$remaining remaining',
+                        subtitle: isEmpty
+                            ? 'No tasks assigned for today.'
+                            : '$remaining remaining',
                         action: TextButton.icon(
                           onPressed: () =>
                               Get.toNamed<void>(AppRoutes.taskEditor),
@@ -278,10 +393,17 @@ final class _HomeScreenState extends State<HomeScreen> {
                           label: const Text('Add Task'),
                         ),
                       ),
-                      if (tasks.isEmpty)
-                        _EmptyRow(
-                          icon: Icons.task_alt_outlined,
-                          message: 'No tasks assigned for today.',
+                      if (isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              LifeSyncSvgAssets.group,
+                              width: 167,
+                              height: 89,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
                         )
                       else
                         ...tasks.take(3).map(_taskRow),
@@ -297,31 +419,83 @@ final class _HomeScreenState extends State<HomeScreen> {
                 }),
               ),
               const SizedBox(height: 16),
-              _SectionCard(
-                child: Obx(() {
-                  final habits = _habits.todayHabits;
-                  return Column(
-                    children: [
-                      _SectionHeader(
-                        title: 'Habits',
-                        subtitle:
-                            '${_habits.todayCompletedCount}/${habits.length} Completed',
-                        action: TextButton(
-                          onPressed: () => Get.toNamed<void>(AppRoutes.habits),
-                          child: const Text('View All'),
+              Obx(() {
+                final habits = _habits.todayHabits;
+                if (habits.isEmpty) {
+                  return _SectionCard(
+                    child: Column(
+                      children: [
+                        _SectionHeader(
+                          title: 'Habits',
+                          subtitle: 'No habits scheduled today.',
+                          action: TextButton(
+                            onPressed: () =>
+                                Get.toNamed<void>(AppRoutes.habits),
+                            child: const Text('View All'),
+                          ),
                         ),
-                      ),
-                      if (habits.isEmpty)
-                        _EmptyRow(
-                          icon: Icons.autorenew,
-                          message: 'No habits scheduled today.',
-                        )
-                      else
-                        ...habits.take(3).map(_habitRow),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 18),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              LifeSyncSvgAssets.activityTracker,
+                              width: 150,
+                              height: 120,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Center(
+                            child: Text.rich(
+                              TextSpan(
+                                text: 'Alright, what habit are we starting? ',
+                                style: TextStyle(
+                                  color: context.lifeSyncColors.secondaryText,
+                                  fontSize: 13,
+                                ),
+                                children: [
+                                  WidgetSpan(
+                                    alignment: PlaceholderAlignment.baseline,
+                                    baseline: TextBaseline.alphabetic,
+                                    child: GestureDetector(
+                                      onTap: () => Get.toNamed<void>(
+                                          AppRoutes.habitEditor),
+                                      child: Text(
+                                        'Create one',
+                                        style: TextStyle(
+                                          color: context
+                                              .lifeSyncColors.primaryBlue,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   );
-                }),
-              ),
+                }
+
+                final displayHabits = _mapTodayHabits(habits);
+                return HabitsCard(
+                  habits: displayHabits,
+                  onAddSchedule: () =>
+                      Get.toNamed<void>(AppRoutes.habitEditor),
+                  onViewAll: () => Get.toNamed<void>(AppRoutes.habits),
+                  onHabitTap: (habit) =>
+                      Get.toNamed<void>(AppRoutes.habits),
+                  onToggleExpand: _toggleExpand,
+                  onSubItemToggle: _toggleSubItem,
+                );
+              }),
             ],
           ),
         ),
@@ -370,55 +544,6 @@ final class _HomeScreenState extends State<HomeScreen> {
             Text(
               task.priority.name.capitalizeFirst!,
               style: TextStyle(color: colors.primaryBlue, fontSize: 10),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _habitRow(HabitModel habit) {
-    final colors = context.lifeSyncColors;
-    final done = _habits.isCompletedOn(habit.habitId, DateTime.now());
-    return InkWell(
-      onTap: () => Get.toNamed<void>(AppRoutes.habitProgress, arguments: habit),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          children: [
-            Container(
-              width: 34,
-              height: 34,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: colors.primaryBlue.withValues(alpha: .16),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(Icons.autorenew, color: colors.primaryBlue, size: 18),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(habit.name, style: const TextStyle(fontSize: 13)),
-                  Text(
-                    habit.active ? '🔥 ${habit.streak} day streak' : 'Paused',
-                    style: TextStyle(color: colors.secondaryText, fontSize: 10),
-                  ),
-                ],
-              ),
-            ),
-            OutlinedButton.icon(
-              onPressed: done || !habit.active || _habits.isSubmitting.value
-                  ? null
-                  : () => _habits.recordCompletion(habit, DateTime.now()),
-              icon: const Icon(Icons.check, size: 14),
-              label: Text(done ? 'Done' : 'Complete'),
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(0, 36),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-              ),
             ),
           ],
         ),
@@ -487,11 +612,13 @@ final class _SectionHeader extends StatelessWidget {
 
 final class _ProgressCount extends StatelessWidget {
   const _ProgressCount({
-    required this.icon,
     required this.value,
     required this.label,
+    this.icon,
+    this.svgAsset,
   });
-  final IconData icon;
+  final IconData? icon;
+  final String? svgAsset;
   final String value;
   final String label;
 
@@ -500,7 +627,15 @@ final class _ProgressCount extends StatelessWidget {
     final colors = context.lifeSyncColors;
     return Row(
       children: [
-        Icon(icon, color: colors.primaryBlue, size: 18),
+        if (svgAsset != null)
+          SvgPicture.asset(
+            svgAsset!,
+            width: 18,
+            height: 18,
+            colorFilter: ColorFilter.mode(colors.primaryBlue, BlendMode.srcIn),
+          )
+        else if (icon != null)
+          Icon(icon, color: colors.primaryBlue, size: 18),
         const SizedBox(width: 6),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -513,33 +648,6 @@ final class _ProgressCount extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-}
-
-final class _EmptyRow extends StatelessWidget {
-  const _EmptyRow({required this.icon, required this.message});
-  final IconData icon;
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.lifeSyncColors;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: colors.secondaryText),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              message,
-              style: TextStyle(color: colors.secondaryText, fontSize: 11),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 
 class CreatedGoalSuccessScreen extends StatelessWidget {
   const CreatedGoalSuccessScreen({super.key});
@@ -15,40 +17,11 @@ class CreatedGoalSuccessScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 10),
 
-              // Illustration / Graphic Placeholder Container
-              Container(
-                height: 280,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF7F9FC),
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Simulated Mountain Journey Illustration
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 180,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE8F1FC),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.landscape_rounded,
-                              size: 64,
-                              color: Color(0xFF2979FF),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              // Journey illustration from Life-Sync SVG File (CreatedGoalSuccess.svg)
+              SvgPicture.asset(
+                LifeSyncSvgAssets.createdGoalSuccess,
+                height: 260,
+                fit: BoxFit.contain,
               ),
               const SizedBox(height: 32),
 

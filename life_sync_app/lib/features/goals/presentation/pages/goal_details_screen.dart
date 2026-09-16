@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:life_sync_app/core/value_objects/money_amount.dart';
 import 'package:life_sync_app/features/goals/data/models/goal_models.dart';
 import 'package:life_sync_app/features/goals/presentation/controllers/goal_controller.dart';
@@ -281,7 +283,10 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                       ),
                     )
                   else if (milestones.isEmpty)
-                    const _InlineEmpty(message: 'No milestones yet.')
+                    const _InlineEmpty(
+                      message: 'No milestones yet.',
+                      svgAsset: LifeSyncSvgAssets.goalChecklist,
+                    )
                   else
                     for (final milestone in milestones) ...[
                       _MilestoneCard(
@@ -539,8 +544,10 @@ class _SectionHeader extends StatelessWidget {
 }
 
 class _InlineEmpty extends StatelessWidget {
-  const _InlineEmpty({required this.message});
+  const _InlineEmpty({required this.message, this.svgAsset});
   final String message;
+  final String? svgAsset;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.lifeSyncColors;
@@ -552,10 +559,23 @@ class _InlineEmpty extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: colors.border),
       ),
-      child: Text(
-        message,
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 12, color: colors.secondaryText),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (svgAsset != null) ...[
+            SvgPicture.asset(
+              svgAsset!,
+              height: 110,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(height: 12),
+          ],
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: colors.secondaryText),
+          ),
+        ],
       ),
     );
   }

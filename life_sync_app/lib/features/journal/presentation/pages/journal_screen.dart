@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:life_sync_app/core/theme/app_spacing.dart';
 import 'package:life_sync_app/features/journal/data/models/journal_entry.dart';
 import 'package:life_sync_app/features/journal/presentation/controllers/journal_controller.dart';
@@ -218,7 +220,12 @@ final class _JournalScreenState extends State<JournalScreen> {
       floatingActionButton: FloatingActionButton(
         tooltip: 'Write journal entry',
         onPressed: () => Get.toNamed<void>(AppRoutes.journalEditor),
-        child: const Icon(Icons.edit_outlined),
+        child: SvgPicture.asset(
+          LifeSyncSvgAssets.taskEdit,
+          width: 24,
+          height: 24,
+          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+        ),
       ),
     );
   }
@@ -385,13 +392,21 @@ final class _JournalEmpty extends StatelessWidget {
             duration: const Duration(milliseconds: 300),
             builder: (_, value, child) =>
                 Transform.scale(scale: value, child: child),
-            child: Icon(
-              searching
-                  ? Icons.search_off_rounded
-                  : Icons.auto_stories_outlined,
-              size: 92,
-              color: colors.secondaryText,
-            ),
+            child: searching
+                ? Icon(
+                    Icons.search_off_rounded,
+                    size: 92,
+                    color: colors.secondaryText,
+                  )
+                : SvgPicture.asset(
+                    LifeSyncSvgAssets.taskEdit,
+                    width: 72,
+                    height: 72,
+                    colorFilter: ColorFilter.mode(
+                      colors.primaryBlue.withValues(alpha: 0.6),
+                      BlendMode.srcIn,
+                    ),
+                  ),
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(

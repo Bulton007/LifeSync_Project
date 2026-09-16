@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_icons.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -93,76 +95,11 @@ class _SuccessIllustration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 230,
-      height: 230,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Positioned(
-            bottom: 12,
-            child: Container(
-              width: 220,
-              height: 90,
-              decoration: BoxDecoration(
-                color: AppColors.primary50,
-                borderRadius: BorderRadius.circular(AppRadius.pill),
-              ),
-            ),
-          ),
-
-          Positioned(
-            bottom: 62,
-            right: 20,
-            child: Icon(
-              Icons.landscape_outlined,
-              size: 145,
-              color: AppColors.primary200.withValues(alpha: 0.75),
-            ),
-          ),
-
-          const Positioned(
-            bottom: 42,
-            left: 72,
-            child: Icon(
-              Icons.directions_walk,
-              size: 105,
-              color: AppColors.foreground,
-            ),
-          ),
-
-          Positioned(
-            bottom: 58,
-            right: 44,
-            child: Container(width: 3, height: 70, color: AppColors.primary),
-          ),
-
-          const Positioned(
-            bottom: 112,
-            right: 22,
-            child: Icon(Icons.flag, size: 38, color: AppColors.primary),
-          ),
-
-          Positioned(
-            left: 33,
-            top: 35,
-            child: Container(
-              width: 39,
-              height: 39,
-              decoration: const BoxDecoration(
-                color: AppColors.surface,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(color: Color(0x18000000), blurRadius: 10),
-                ],
-              ),
-              child: const Icon(
-                Icons.check,
-                size: 22,
-                color: AppColors.primary,
-              ),
-            ),
-          ),
-        ],
+      width: 240,
+      height: 240,
+      child: SvgPicture.asset(
+        LifeSyncSvgAssets.createdGoalSuccess,
+        fit: BoxFit.contain,
       ),
     );
   }

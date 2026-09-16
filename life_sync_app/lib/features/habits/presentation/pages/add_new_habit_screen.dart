@@ -22,13 +22,13 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
   String _repeatFrequency = 'Weekly';
 
   final List<bool> _selectedDays = [
-    false,
     true,
     true,
-    false,
     true,
     true,
-    false,
+    true,
+    true,
+    true,
   ];
 
   final List<String> _checklist = [];
@@ -386,8 +386,19 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 const SizedBox(height: 24),
 
                 // =========================
-                // REPEAT
+                // SCHEDULE & REPEAT
                 // =========================
+                const Text(
+                  'Schedule',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -433,6 +444,11 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
 
                             setState(() {
                               _repeatFrequency = value;
+                              if (value == 'Daily') {
+                                for (var i = 0; i < _selectedDays.length; i++) {
+                                  _selectedDays[i] = true;
+                                }
+                              }
                             });
                           },
                         ),

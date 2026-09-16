@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:life_sync_app/features/auth/presentation/validators/auth_validators.dart';
 
@@ -90,25 +92,12 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ],
                     ),
-                    // Abstract Plant Logo Placeholder container
-                    Container(
-                      width: 100,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF0F5FF),
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(
-                          color: const Color(0xFF1E88E5),
-                          width: 1.5,
-                        ),
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.eco_outlined,
-                          color: Color(0xFF1E88E5),
-                          size: 30,
-                        ),
-                      ),
+                    // Abstract Plant Logo from Life-Sync SVG File (Group 11.svg)
+                    SvgPicture.asset(
+                      LifeSyncSvgAssets.group11,
+                      width: 150,
+                      height: 160,
+                      fit: BoxFit.contain,
                     ),
                   ],
                 ),

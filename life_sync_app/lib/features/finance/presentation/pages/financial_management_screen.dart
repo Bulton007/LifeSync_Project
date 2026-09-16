@@ -1,6 +1,8 @@
 import 'package:life_sync_app/core/theme/app_colors.dart';
+import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/state/async_view_state.dart';
@@ -114,7 +116,15 @@ class FinancialManagementScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          icon: const Icon(Icons.trending_up, size: 20),
+                          icon: SvgPicture.asset(
+                            LifeSyncSvgAssets.financeGrowth,
+                            width: 20,
+                            height: 20,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
+                          ),
                           label: const Text(
                             'Add Income',
                             style: TextStyle(fontWeight: FontWeight.w600),
@@ -412,7 +422,11 @@ class _SavingGoalCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(Icons.savings_outlined, color: Color(0xFF00ACC1)),
+                SvgPicture.asset(
+                  LifeSyncSvgAssets.financeSavings,
+                  width: 24,
+                  height: 24,
+                ),
                 Icon(
                   Icons.chevron_right,
                   color: colors.secondaryText,
