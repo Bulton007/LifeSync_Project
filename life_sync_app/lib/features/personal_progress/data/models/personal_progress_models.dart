@@ -11,13 +11,11 @@ final class MorningCheckingModel {
 
   factory MorningCheckingModel.fromJson(Map<String, dynamic> json) =>
       MorningCheckingModel(
-        id: (json['id'] as num).toInt(),
-        userId: (json['userId'] as num).toInt(),
-        moodRating: (json['moodRating'] as num).toInt(),
+        id: (json['id'] as num?)?.toInt() ?? 0,
+        userId: (json['userId'] as num?)?.toInt() ?? 0,
+        moodRating: (json['moodRating'] as num?)?.toInt() ?? 5,
         notes: json['notes'] as String?,
-        checkedInAt: ApiDateCodec.decodeLocalDateTime(
-          json['checkedInAt'] as String,
-        ),
+        checkedInAt: ApiDateCodec.decodeLocalDateTime(json['checkedInAt']),
       );
 
   final int id;
@@ -40,12 +38,12 @@ final class WeeklyReviewModel {
   factory WeeklyReviewModel.fromJson(
     Map<String, dynamic> json,
   ) => WeeklyReviewModel(
-    id: (json['id'] as num).toInt(),
-    userId: (json['userId'] as num).toInt(),
-    reviewSummary: json['reviewSummary'] as String,
-    startDate: ApiDateCodec.decodeLocalDateTime(json['startDate'] as String),
-    endDate: ApiDateCodec.decodeLocalDateTime(json['endDate'] as String),
-    createdAt: ApiDateCodec.decodeLocalDateTime(json['createdAt'] as String),
+    id: (json['id'] as num?)?.toInt() ?? 0,
+    userId: (json['userId'] as num?)?.toInt() ?? 0,
+    reviewSummary: (json['reviewSummary'] ?? '') as String,
+    startDate: ApiDateCodec.decodeLocalDateTime(json['startDate']),
+    endDate: ApiDateCodec.decodeLocalDateTime(json['endDate']),
+    createdAt: ApiDateCodec.decodeLocalDateTime(json['createdAt']),
   );
 
   final int id;
@@ -66,11 +64,11 @@ final class WinModel {
   });
 
   factory WinModel.fromJson(Map<String, dynamic> json) => WinModel(
-    id: (json['id'] as num).toInt(),
-    userId: (json['userId'] as num).toInt(),
-    title: json['title'] as String,
+    id: (json['id'] as num?)?.toInt() ?? 0,
+    userId: (json['userId'] as num?)?.toInt() ?? 0,
+    title: (json['title'] ?? '') as String,
     description: json['description'] as String?,
-    createdAt: ApiDateCodec.decodeLocalDateTime(json['createdAt'] as String),
+    createdAt: ApiDateCodec.decodeLocalDateTime(json['createdAt']),
   );
 
   final int id;
@@ -91,13 +89,11 @@ final class UserRewardModel {
 
   factory UserRewardModel.fromJson(Map<String, dynamic> json) =>
       UserRewardModel(
-        id: (json['id'] as num).toInt(),
-        userId: (json['userId'] as num).toInt(),
-        points: (json['points'] as num).toInt(),
-        level: (json['level'] as num).toInt(),
-        updatedAt: ApiDateCodec.decodeLocalDateTime(
-          json['updatedAt'] as String,
-        ),
+        id: (json['id'] as num?)?.toInt() ?? 0,
+        userId: (json['userId'] as num?)?.toInt() ?? 0,
+        points: (json['points'] as num?)?.toInt() ?? 0,
+        level: (json['level'] as num?)?.toInt() ?? 1,
+        updatedAt: ApiDateCodec.decodeLocalDateTime(json['updatedAt']),
       );
 
   final int id;

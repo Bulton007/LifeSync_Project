@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/core/theme/app_icons.dart';
-import 'package:lottie/lottie.dart';
 import 'package:life_sync_app/core/theme/app_radius.dart';
 import 'package:life_sync_app/core/theme/app_spacing.dart';
 import 'package:life_sync_app/core/theme/app_text_styles.dart';
@@ -298,18 +297,21 @@ class _AssistantButton extends StatelessWidget {
               ],
             ),
             child: ClipOval(
-              child: Lottie.asset(
-                LifeSyncSvgAssets.animedIconAi,
-                width: size,
-                height: size,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(
-                    Icons.smart_toy_rounded,
-                    color: Colors.white,
-                    size: size * 0.52,
-                  );
-                },
+              child: Padding(
+                padding: EdgeInsets.all(size * 0.08),
+                child: Image.asset(
+                  AppImages.assistantAvatar,
+                  width: size,
+                  height: size,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(
+                      Icons.smart_toy_rounded,
+                      color: Colors.white,
+                      size: size * 0.52,
+                    );
+                  },
+                ),
               ),
             ),
           ),

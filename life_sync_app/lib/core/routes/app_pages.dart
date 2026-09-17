@@ -3,6 +3,7 @@ import 'package:life_sync_app/core/routes/auth_guard.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/widgets/app_shell.dart';
 import 'package:life_sync_app/core/widgets/startup_page.dart';
+import 'package:life_sync_app/features/assistant/presentation/bindings/assistant_binding.dart';
 import 'package:life_sync_app/features/assistant/presentation/pages/assistant_screen.dart';
 import 'package:life_sync_app/features/calendar/presentation/pages/calendar_full_screen.dart';
 import 'package:life_sync_app/features/auth/presentation/bindings/auth_binding.dart';
@@ -207,6 +208,7 @@ abstract final class AppPages {
     GetPage<dynamic>(
       name: AppRoutes.assistant,
       page: () => const AssistantScreen(),
+      binding: AssistantBinding(),
       middlewares: [AuthGuard()],
     ),
   ];

@@ -7,6 +7,7 @@ import 'package:life_sync_app/core/services/app_preferences_service.dart';
 import 'package:life_sync_app/core/services/auth_session_service.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/core/theme/app_icons.dart';
+import 'package:life_sync_app/core/theme/theme_controller.dart';
 import 'package:life_sync_app/features/user/data/datasources/user_remote_data_source.dart';
 
 final class StartupPage extends StatefulWidget {
@@ -37,6 +38,9 @@ final class _StartupPageState extends State<StartupPage>
   }
 
   Future<void> _restoreSession() async {
+    if (Get.isRegistered<ThemeController>()) {
+      await Get.find<ThemeController>().restore();
+    }
     final preferences = Get.find<AppPreferencesService>();
     final sessionService = Get.find<AuthSessionService>();
     await preferences.restore();

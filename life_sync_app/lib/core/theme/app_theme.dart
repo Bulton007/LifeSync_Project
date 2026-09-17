@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -57,9 +58,15 @@ abstract final class AppTheme {
       scaffoldBackgroundColor: colors.pageBackground,
       canvasColor: colors.pageBackground,
       fontFamily: GoogleFonts.poppins().fontFamily,
+      fontFamilyFallback: const [
+        'Segoe UI Emoji',
+        'Apple Color Emoji',
+        'Noto Color Emoji',
+        'sans-serif',
+      ],
       textTheme: textTheme,
       visualDensity: VisualDensity.standard,
-      splashFactory: InkSparkle.splashFactory,
+      splashFactory: kIsWeb ? InkRipple.splashFactory : InkSparkle.splashFactory,
       appBarTheme: AppBarTheme(
         elevation: 0,
         scrolledUnderElevation: 0,

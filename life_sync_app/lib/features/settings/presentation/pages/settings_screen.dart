@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/services/app_preferences_service.dart';
 import 'package:life_sync_app/core/services/auth_session_service.dart';
-import 'package:life_sync_app/features/settings/presentation/widgets/settings_layout.dart';
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/core/theme/theme_controller.dart';
 import 'package:life_sync_app/features/goals/presentation/controllers/goal_controller.dart';
 import 'package:life_sync_app/features/habits/presentation/controllers/habit_controller.dart';
@@ -133,51 +133,389 @@ final class SettingsScreen extends StatelessWidget {
     final journals = Get.find<JournalController>();
     final theme = Get.find<ThemeController>();
     final preferences = Get.find<AppPreferencesService>();
-    return Obx(
-      () => SettingsLayout(
-        name: profile.state.value.data?.fullName ?? 'LifeSync user',
-        email: profile.state.value.data?.email ?? 'Profile unavailable',
-        avatar: profile.imageBytes.value,
-        counts: [
-          tasks.tasks.length,
-          goals.goals.length,
-          habits.habits.length,
-          journals.entries.length,
-        ],
-        appearance: theme.preference.value.name.capitalizeFirst!,
-        firstDay: preferences.firstDayOfWeek.value.name.capitalizeFirst!,
-        onBack: () => Navigator.of(context).maybePop(),
-        onProfile: () => Get.toNamed<void>(AppRoutes.profile),
-        onAppearance: () => _selectTheme(context),
-        onFirstDay: () => _selectFirstDay(context),
-        onLanguage: () => _unavailable(
-          context,
-          'English is the only supported language currently.',
+
+    final colors = context.lifeSyncColors;
+    final primaryBlue = colors.primaryBlue;
+    final cardBgColor = colors.cardSurface;
+
+    return Scaffold(
+      backgroundColor: colors.pageBackground,
+      body: SafeArea(
+        child: Obx(() {
+          final userName =
+              profile.state.value.data?.fullName ?? 'LifeSync user';
+          final userEmail =
+              profile.state.value.data?.email ?? 'Profile unavailable';
+          final avatarBytes = profile.imageBytes.value;
+          final appearance = theme.preference.value.name.capitalizeFirst!;
+          final firstDay =
+              preferences.firstDayOfWeek.value.name.capitalizeFirst!;
+
+          return ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            children: [
+              // Top Bar
+              Row(
+                children: [
+                  InkWell(
+                    borderRadius: BorderRadius.circular(24),
+                    onTap: () => Navigator.of(context).maybePop(),
+                    child: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: colors.cardSurface,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 18,
+                        color: colors.primaryText,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        'Setting',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: colors.primaryText,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 44),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              // Profile Card
+              InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: () => Get.toNamed<void>(AppRoutes.profile),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: cardBgColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundColor: colors.elevatedSurface,
+                        backgroundImage: avatarBytes != null
+                            ? MemoryImage(avatarBytes)
+                            : null,
+                        child: avatarBytes == null
+                            ? Icon(
+                                Icons.person_rounded,
+                                size: 30,
+                                color: colors.secondaryText,
+                              )
+                            : null,
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              userName,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: colors.primaryText,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              userEmail,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: colors.secondaryText,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        color: colors.secondaryText,
+                        size: 24,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Quick Stats Row
+              Row(
+                children: [
+                  _StatCard(
+                    icon: Icons.assignment_outlined,
+                    label: 'Tasks',
+                    count: tasks.tasks.length,
+                    color: primaryBlue,
+                  ),
+                  const SizedBox(width: 10),
+                  _StatCard(
+                    icon: Icons.track_changes_outlined,
+                    label: 'Goals',
+                    count: goals.goals.length,
+                    color: primaryBlue,
+                  ),
+                  const SizedBox(width: 10),
+                  _StatCard(
+                    icon: Icons.event_repeat_rounded,
+                    label: 'Habit',
+                    count: habits.habits.length,
+                    color: primaryBlue,
+                  ),
+                  const SizedBox(width: 10),
+                  _StatCard(
+                    icon: Icons.edit_note_rounded,
+                    label: 'Journal',
+                    count: journals.entries.length,
+                    color: primaryBlue,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              // Settings Header
+              Text(
+                'Settings & Personalization',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: colors.primaryText,
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Settings Options Group
+              Container(
+                decoration: BoxDecoration(
+                  color: cardBgColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  children: [
+                    _SettingRow(
+                      icon: Icons.brush_outlined,
+                      title: 'Appearance',
+                      value: appearance,
+                      onTap: () => _selectTheme(context),
+                    ),
+                    _SettingRow(
+                      icon: Icons.calendar_today_outlined,
+                      title: 'First Day of the Week',
+                      value: firstDay,
+                      onTap: () => _selectFirstDay(context),
+                    ),
+                    _SettingRow(
+                      icon: Icons.language_rounded,
+                      title: 'Language',
+                      value: 'English',
+                      onTap: () => _unavailable(
+                        context,
+                        'English is the only supported language currently.',
+                      ),
+                    ),
+                    _SettingRow(
+                      icon: Icons.lock_outline_rounded,
+                      title: 'Add Passcode',
+                      onTap: () => _unavailable(
+                        context,
+                        'Device passcode protection is not available yet. Your account password is unchanged.',
+                      ),
+                    ),
+                    _SettingRow(
+                      icon: Icons.notifications_none_rounded,
+                      title: 'Reminder',
+                      onTap: () => Get.toNamed<void>(AppRoutes.notifications),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+
+              // Log Out Tile
+              InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: () => _logout(context),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: cardBgColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.logout_rounded,
+                        color: Color(0xFFEF4444),
+                        size: 22,
+                      ),
+                      SizedBox(width: 14),
+                      Text(
+                        'Log out',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFFEF4444),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // More tools (untouched)
+              ExpansionTile(
+                title: const Text('More tools', style: TextStyle(fontSize: 13)),
+                children: [
+                  ListTile(
+                    title: const Text('Journal'),
+                    onTap: () => Get.toNamed<void>(AppRoutes.journal),
+                  ),
+                  ListTile(
+                    title: const Text('Pomodoro & Stopwatch'),
+                    onTap: () => Get.toNamed<void>(AppRoutes.focusTimer),
+                  ),
+                  ListTile(
+                    title: const Text('Calendar'),
+                    onTap: () => Get.toNamed<void>(AppRoutes.calendar),
+                  ),
+                  ListTile(
+                    title: const Text('Personal progress'),
+                    onTap: () => Get.toNamed<void>(AppRoutes.personalProgress),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final int count;
+  final Color color;
+
+  const _StatCard({
+    required this.icon,
+    required this.label,
+    required this.count,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+        decoration: BoxDecoration(
+          color: colors.cardSurface,
+          borderRadius: BorderRadius.circular(16),
         ),
-        onPasscode: () => _unavailable(
-          context,
-          'Device passcode protection is not available yet. Your account password is unchanged.',
-        ),
-        onReminder: () => Get.toNamed<void>(AppRoutes.notifications),
-        onLogout: () => _logout(context),
-        more: ExpansionTile(
-          title: const Text('More tools', style: TextStyle(fontSize: 13)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ListTile(
-              title: const Text('Journal'),
-              onTap: () => Get.toNamed<void>(AppRoutes.journal),
+            Row(
+              children: [
+                Icon(icon, size: 18, color: color),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: colors.secondaryText,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
-            ListTile(
-              title: const Text('Pomodoro & Stopwatch'),
-              onTap: () => Get.toNamed<void>(AppRoutes.focusTimer),
+            const SizedBox(height: 8),
+            Text(
+              '$count',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: colors.primaryText,
+              ),
             ),
-            ListTile(
-              title: const Text('Calendar'),
-              onTap: () => Get.toNamed<void>(AppRoutes.calendar),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingRow extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String? value;
+  final VoidCallback onTap;
+
+  const _SettingRow({
+    required this.icon,
+    required this.title,
+    this.value,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Icon(icon, size: 22, color: colors.primaryBlue),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: colors.primaryText,
+                ),
+              ),
             ),
-            ListTile(
-              title: const Text('Personal progress'),
-              onTap: () => Get.toNamed<void>(AppRoutes.personalProgress),
+            if (value != null) ...[
+              Text(
+                value!,
+                style: TextStyle(fontSize: 14, color: colors.secondaryText),
+              ),
+              const SizedBox(width: 4),
+            ],
+            Icon(
+              Icons.chevron_right_rounded,
+              color: colors.secondaryText,
+              size: 20,
             ),
           ],
         ),

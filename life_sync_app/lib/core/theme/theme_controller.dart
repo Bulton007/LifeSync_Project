@@ -12,23 +12,43 @@ final class ThemeController extends GetxController {
   final SecureKeyValueStore _store;
   final preference = ThemePreference.system.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    restore();
+  }
+
   ThemeMode get themeMode => switch (preference.value) {
     ThemePreference.light => ThemeMode.light,
     ThemePreference.dark => ThemeMode.dark,
     ThemePreference.system => ThemeMode.system,
   };
 
+  bool get isDarkMode {
+    if (preference.value == ThemePreference.dark) return true;
+    if (preference.value == ThemePreference.light) return false;
+    return WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+        Brightness.dark;
+  }
+
   Future<void> restore() async {
-    final saved = await _store.read(storageKey);
-    preference.value = ThemePreference.values.firstWhere(
-      (value) => value.name == saved,
-      orElse: () => ThemePreference.system,
-    );
+    try {
+      final saved = await _store.read(storageKey);
+      if (saved != null && saved.isNotEmpty) {
+        preference.value = ThemePreference.values.firstWhere(
+          (value) => value.name == saved,
+          orElse: () => ThemePreference.system,
+        );
+      }
+    } catch (_) {}
+    Get.changeThemeMode(themeMode);
   }
 
   Future<void> select(ThemePreference value) async {
     if (preference.value == value) return;
     preference.value = value;
     await _store.write(storageKey, value.name);
+    Get.changeThemeMode(themeMode);
+    update();
   }
 }

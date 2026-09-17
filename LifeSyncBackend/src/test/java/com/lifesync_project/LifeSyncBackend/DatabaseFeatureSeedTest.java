@@ -19,9 +19,9 @@ import java.util.List;
 
 @SpringBootTest
 @TestPropertySource(properties = {
-    "spring.datasource.url=jdbc:postgresql://localhost:5432/lifesync",
-    "spring.datasource.username=postgres",
-    "spring.datasource.password=${DB_PASSWORD}",
+    "spring.datasource.url=${DB_URL:jdbc:postgresql://localhost:5432/lifesync}",
+    "spring.datasource.username=${DB_USERNAME:postgres}",
+    "spring.datasource.password=${DB_PASSWORD:leang30122006}",
     "spring.datasource.driver-class-name=org.postgresql.Driver",
     "spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect",
     "spring.jpa.hibernate.ddl-auto=update"
@@ -83,10 +83,9 @@ public class DatabaseFeatureSeedTest {
                 activeUser = existingUsers.get(0);
                 activeUser.setVerified(true);
                 activeUser = userRepository.saveAndFlush(activeUser);
-            } else {
                 activeUser = Users.builder()
-                        .fullName("LifeSync Demo User")
-                        .email("user@lifesync.com")
+                        .fullName("L")
+                        .email("hongsaoleang@gmail.com")
                         .phoneNumber("+1234567890")
                         .password(passwordEncoder.encode("Password123!"))
                         .verified(true)
@@ -94,6 +93,16 @@ public class DatabaseFeatureSeedTest {
                         .build();
                 activeUser = userRepository.saveAndFlush(activeUser);
             }
+        }
+        if (userRepository.findByEmail("hongsaoleang@gmail.com").isEmpty()) {
+            userRepository.saveAndFlush(Users.builder()
+                    .fullName("L")
+                    .email("hongsaoleang@gmail.com")
+                    .phoneNumber("+85512345678")
+                    .password(passwordEncoder.encode("Password123!"))
+                    .verified(true)
+                    .createdAt(LocalDateTime.now())
+                    .build());
         }
         System.out.println("\n[2] ACTIVE USER FOR FEATURE DATA: ID " + activeUser.getId() + " (" + activeUser.getEmail() + ")");
 

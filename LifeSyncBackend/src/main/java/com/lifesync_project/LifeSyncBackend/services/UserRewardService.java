@@ -105,9 +105,11 @@ public class UserRewardService {
         authenticatedUserService.requireOwner(userId);
 
         UserReward reward = rewardRepository.findByUserId(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "User reward not found"));
+                .orElseGet(() -> UserReward.builder()
+                        .userId(userId)
+                        .points(0)
+                        .level(1)
+                        .build());
 
         reward.setPoints(Math.max(0, reward.getPoints() - points));
         reward.setLevel(calculateLevel(reward.getPoints()));

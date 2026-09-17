@@ -15,7 +15,7 @@ final class PersonalProgressScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<PersonalProgressController>();
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: context.lifeSyncColors.pageBackground,
       appBar: AppBar(title: const Text('Personal Progress')),
       body: Obx(() {
         final state = controller.state.value;
@@ -140,7 +140,7 @@ final class _RewardCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (reward != null)
+              if (reward != null || points > 0)
                 IconButton(
                   tooltip: 'Reset reward progress',
                   onPressed: controller.isSubmitting.value
@@ -173,8 +173,12 @@ final class _RewardCard extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: controller.isSubmitting.value
                       ? null
-                      : () =>
-                            _pointsDialog(context, controller, subtract: false),
+                      : () => _pointsDialog(
+                            context,
+                            controller,
+                            subtract: false,
+                            currentPoints: points,
+                          ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white54),
@@ -186,10 +190,14 @@ final class _RewardCard extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: reward == null || controller.isSubmitting.value
+                  onPressed: points <= 0 || controller.isSubmitting.value
                       ? null
-                      : () =>
-                            _pointsDialog(context, controller, subtract: true),
+                      : () => _pointsDialog(
+                            context,
+                            controller,
+                            subtract: true,
+                            currentPoints: points,
+                          ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
                     disabledForegroundColor: Colors.white38,
@@ -254,25 +262,32 @@ final class _MetricCard extends StatelessWidget {
   final String label;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.grey.shade200),
-    ),
-    child: Column(
-      children: [
-        Icon(icon, color: AppColors.primary, size: 20),
-        const SizedBox(height: 5),
-        Text(
-          value,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-        ),
-        Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
-      ],
-    ),
-  );
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+      decoration: BoxDecoration(
+        color: colors.cardSurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.border),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: AppColors.primary, size: 20),
+          const SizedBox(height: 5),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: colors.primaryText,
+            ),
+          ),
+          Text(label, style: TextStyle(fontSize: 11, color: colors.secondaryText)),
+        ],
+      ),
+    );
+  }
 }
 
 final class _SectionHeader extends StatelessWidget {
@@ -287,17 +302,24 @@ final class _SectionHeader extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Expanded(
-        child: Text(
-          title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: colors.primaryText,
+            ),
+          ),
         ),
-      ),
-      TextButton(onPressed: onPressed, child: Text(actionLabel)),
-    ],
-  );
+        TextButton(onPressed: onPressed, child: Text(actionLabel)),
+      ],
+    );
+  }
 }
 
 final class _CheckingTile extends StatelessWidget {
@@ -390,27 +412,47 @@ final class _HistoryCard extends StatelessWidget {
   final VoidCallback onDelete;
 
   @override
-  Widget build(BuildContext context) => Card(
-    margin: const EdgeInsets.only(bottom: 10),
-    child: ListTile(
-      leading: SizedBox(width: 42, child: Center(child: leading)),
-      title: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
-      subtitle: Text(subtitle),
-      trailing: PopupMenuButton<String>(
-        onSelected: (value) {
-          if (value == 'edit') {
-            onEdit();
-          } else {
-            onDelete();
-          }
-        },
-        itemBuilder: (_) => const [
-          PopupMenuItem(value: 'edit', child: Text('Edit')),
-          PopupMenuItem(value: 'delete', child: Text('Delete')),
-        ],
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Card(
+      color: colors.cardSurface,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: colors.border),
       ),
-    ),
-  );
+      margin: const EdgeInsets.only(bottom: 10),
+      child: ListTile(
+        leading: SizedBox(width: 42, child: Center(child: leading)),
+        title: Text(
+          title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: colors.primaryText,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: TextStyle(color: colors.secondaryText),
+        ),
+        trailing: PopupMenuButton<String>(
+          onSelected: (value) {
+            if (value == 'edit') {
+              onEdit();
+            } else {
+              onDelete();
+            }
+          },
+          itemBuilder: (_) => const [
+            PopupMenuItem(value: 'edit', child: Text('Edit')),
+            PopupMenuItem(value: 'delete', child: Text('Delete')),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 final class _EmptyCard extends StatelessWidget {
@@ -419,20 +461,23 @@ final class _EmptyCard extends StatelessWidget {
   final String message;
 
   @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.grey.shade200),
-    ),
-    child: Text(
-      message,
-      textAlign: TextAlign.center,
-      style: const TextStyle(color: Colors.grey, fontSize: 12),
-    ),
-  );
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colors.cardSurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.border),
+      ),
+      child: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: colors.secondaryText, fontSize: 12),
+      ),
+    );
+  }
 }
 
 final class _InlineError extends StatelessWidget {
@@ -720,6 +765,7 @@ Future<void> _pointsDialog(
   BuildContext context,
   PersonalProgressController controller, {
   required bool subtract,
+  int currentPoints = 0,
 }) async {
   final formKey = GlobalKey<FormState>();
   final points = TextEditingController();
@@ -734,12 +780,21 @@ Future<void> _pointsDialog(
           autofocus: true,
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          decoration: const InputDecoration(labelText: 'Points'),
+          decoration: InputDecoration(
+            labelText: 'Points',
+            helperText: subtract
+                ? 'Current balance: $currentPoints points'
+                : 'Adds to your total progress points',
+          ),
           validator: (value) {
             final parsed = int.tryParse(value ?? '');
-            return parsed == null || parsed <= 0
-                ? 'Enter a positive number.'
-                : null;
+            if (parsed == null || parsed <= 0) {
+              return 'Enter a positive number.';
+            }
+            if (subtract && parsed > currentPoints) {
+              return 'Cannot remove more than current $currentPoints points.';
+            }
+            return null;
           },
         ),
       ),
