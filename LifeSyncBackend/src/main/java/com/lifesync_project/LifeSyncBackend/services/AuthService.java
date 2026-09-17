@@ -35,6 +35,16 @@ public class AuthService {
     private final JwtService jwtService;
 
     /*
+     * Check if email already exists
+     */
+    public boolean checkEmailExists(String email) {
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+        return userRepository.existsByEmailIgnoreCase(email.trim().toLowerCase());
+    }
+
+    /*
      * Register
      */
     public String register(RegisterRequest request) {

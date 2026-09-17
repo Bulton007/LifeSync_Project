@@ -72,8 +72,7 @@ final class _HomeScreenState extends State<HomeScreen> {
   List<Habit> _mapTodayHabits(List<HabitModel> models) {
     return List.generate(models.length, (index) {
       final model = models[index];
-      final isCompleted =
-          _habits.isCompletedOn(model.habitId, DateTime.now());
+      final isCompleted = _habits.isCompletedOn(model.habitId, DateTime.now());
 
       final lines = (model.description ?? '')
           .split('\n')
@@ -88,7 +87,8 @@ final class _HomeScreenState extends State<HomeScreen> {
                   HabitSubItem(
                     id: '${model.habitId}-$i',
                     title: lines[i],
-                    isCompleted: _subItemCompleted['${model.habitId}-$i'] ??
+                    isCompleted:
+                        _subItemCompleted['${model.habitId}-$i'] ??
                         (i == lines.length - 1 && isCompleted),
                   ),
               ]
@@ -96,32 +96,28 @@ final class _HomeScreenState extends State<HomeScreen> {
                 HabitSubItem(
                   id: '${model.habitId}-1',
                   title: 'Make Breakfast',
-                  isCompleted:
-                      _subItemCompleted['${model.habitId}-1'] ?? false,
+                  isCompleted: _subItemCompleted['${model.habitId}-1'] ?? false,
                 ),
                 HabitSubItem(
                   id: '${model.habitId}-2',
                   title: 'Drink a Cup of Water',
-                  isCompleted:
-                      _subItemCompleted['${model.habitId}-2'] ?? false,
+                  isCompleted: _subItemCompleted['${model.habitId}-2'] ?? false,
                 ),
                 HabitSubItem(
                   id: '${model.habitId}-3',
                   title: 'Make bed',
-                  isCompleted:
-                      _subItemCompleted['${model.habitId}-3'] ?? true,
+                  isCompleted: _subItemCompleted['${model.habitId}-3'] ?? true,
                 ),
               ];
 
         final isExpanded =
             _expandedHabitIds.contains(model.habitId.toString()) ||
-                _expandedHabitIds.contains('1');
+            _expandedHabitIds.contains('1');
 
         return Habit(
           id: model.habitId.toString(),
           title: model.name,
-          streakText:
-              '${model.streak > 0 ? model.streak : 168} Days Streaks',
+          streakText: '${model.streak > 0 ? model.streak : 168} Days Streaks',
           icon: Icons.wb_sunny_rounded,
           iconBgColor: const Color(0xFFFFF1E8),
           iconColor: const Color(0xFFFF9500),
@@ -133,8 +129,7 @@ final class _HomeScreenState extends State<HomeScreen> {
         return Habit(
           id: model.habitId.toString(),
           title: model.name,
-          streakText:
-              '${model.streak > 0 ? model.streak : 168} Days Streaks',
+          streakText: '${model.streak > 0 ? model.streak : 168} Days Streaks',
           icon: Icons.menu_book_rounded,
           iconBgColor: const Color(0xFFEAF8EE),
           iconColor: const Color(0xFF22C55E),
@@ -145,8 +140,7 @@ final class _HomeScreenState extends State<HomeScreen> {
         return Habit(
           id: model.habitId.toString(),
           title: model.name,
-          streakText:
-              '${model.streak > 0 ? model.streak : 168} Days Streaks',
+          streakText: '${model.streak > 0 ? model.streak : 168} Days Streaks',
           icon: Icons.directions_run_rounded,
           iconBgColor: const Color(0xFFE6F8FA),
           iconColor: const Color(0xFF00B4D8),
@@ -371,6 +365,34 @@ final class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  _HomeQuickAction(
+                    icon: Icons.timer_outlined,
+                    label: 'Focus',
+                    onTap: () => Get.toNamed<void>(AppRoutes.focusTimer),
+                  ),
+                  const SizedBox(width: 8),
+                  _HomeQuickAction(
+                    icon: Icons.edit_note_rounded,
+                    label: 'Journal',
+                    onTap: () => Get.toNamed<void>(AppRoutes.journal),
+                  ),
+                  const SizedBox(width: 8),
+                  _HomeQuickAction(
+                    icon: Icons.calendar_month_rounded,
+                    label: 'Calendar',
+                    onTap: () => Get.toNamed<void>(AppRoutes.calendar),
+                  ),
+                  const SizedBox(width: 8),
+                  _HomeQuickAction(
+                    icon: Icons.emoji_events_outlined,
+                    label: 'Progress',
+                    onTap: () => Get.toNamed<void>(AppRoutes.personalProgress),
+                  ),
+                ],
+              ),
               const SizedBox(height: 16),
               _SectionCard(
                 child: Obx(() {
@@ -461,12 +483,14 @@ final class _HomeScreenState extends State<HomeScreen> {
                                     baseline: TextBaseline.alphabetic,
                                     child: GestureDetector(
                                       onTap: () => Get.toNamed<void>(
-                                          AppRoutes.habitEditor),
+                                        AppRoutes.habitEditor,
+                                      ),
                                       child: Text(
                                         'Create one',
                                         style: TextStyle(
                                           color: context
-                                              .lifeSyncColors.primaryBlue,
+                                              .lifeSyncColors
+                                              .primaryBlue,
                                           fontWeight: FontWeight.w600,
                                           fontSize: 13,
                                         ),
@@ -487,11 +511,9 @@ final class _HomeScreenState extends State<HomeScreen> {
                 final displayHabits = _mapTodayHabits(habits);
                 return HabitsCard(
                   habits: displayHabits,
-                  onAddSchedule: () =>
-                      Get.toNamed<void>(AppRoutes.habitEditor),
+                  onAddSchedule: () => Get.toNamed<void>(AppRoutes.habitEditor),
                   onViewAll: () => Get.toNamed<void>(AppRoutes.habits),
-                  onHabitTap: (habit) =>
-                      Get.toNamed<void>(AppRoutes.habits),
+                  onHabitTap: (habit) => Get.toNamed<void>(AppRoutes.habits),
                   onToggleExpand: _toggleExpand,
                   onSubItemToggle: _toggleSubItem,
                 );
@@ -648,6 +670,64 @@ final class _ProgressCount extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+final class _HomeQuickAction extends StatelessWidget {
+  const _HomeQuickAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            decoration: BoxDecoration(
+              color: colors.cardSurface,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: colors.primaryBlue.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, size: 20, color: colors.primaryBlue),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: colors.primaryText,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

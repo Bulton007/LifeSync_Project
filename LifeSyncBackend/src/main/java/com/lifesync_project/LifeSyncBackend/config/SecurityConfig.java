@@ -81,6 +81,10 @@ public class SecurityConfig {
                                 "/v3/api-docs/**")
                         .permitAll()
 
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/auth/check-email")
+                        .permitAll()
+
                         .requestMatchers(HttpMethod.POST,
                                 "/api/auth/register",
                                 "/api/auth/login",

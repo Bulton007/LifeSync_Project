@@ -1,30 +1,78 @@
 import 'package:dio/dio.dart';
+import 'package:life_sync_app/core/network/api_client.dart';
 import 'package:life_sync_app/core/storage/secure_token_storage.dart';
 import 'package:life_sync_app/features/assistant/data/models/chat_message.dart';
 
 final class GeminiAssistantService {
-  GeminiAssistantService(this._secureStore, {this._defaultApiKey})
-    : _dio = Dio(
-        BaseOptions(
-          connectTimeout: const Duration(seconds: 45),
-          receiveTimeout: const Duration(seconds: 60),
-          sendTimeout: const Duration(seconds: 45),
-          headers: {'Content-Type': 'application/json'},
-        ),
-      );
+  GeminiAssistantService(
+    this._secureStore, {
+    this.apiClient,
+    this.defaultApiKey,
+    String? apiBaseUrl,
+    String? preferredModel,
+  }) : _apiBase = _normalizeBaseUrl(
+         apiBaseUrl != null && apiBaseUrl.trim().isNotEmpty
+             ? apiBaseUrl
+             : const String.fromEnvironment(
+                 'GEMINI_API_BASE_URL',
+                 defaultValue:
+                     'https://generativelanguage.googleapis.com/v1beta',
+               ),
+       ),
+       _preferredModel =
+           preferredModel != null && preferredModel.trim().isNotEmpty
+           ? preferredModel.trim()
+           : const String.fromEnvironment(
+               'GEMINI_MODEL',
+               defaultValue: 'gemini-3.6-flash',
+             ),
+       _dio = Dio(
+         BaseOptions(
+           connectTimeout: const Duration(
+             seconds: int.fromEnvironment(
+               'GEMINI_CONNECT_TIMEOUT_SECONDS',
+               defaultValue: 45,
+             ),
+           ),
+           receiveTimeout: const Duration(
+             seconds: int.fromEnvironment(
+               'GEMINI_RECEIVE_TIMEOUT_SECONDS',
+               defaultValue: 60,
+             ),
+           ),
+           sendTimeout: const Duration(
+             seconds: int.fromEnvironment(
+               'GEMINI_SEND_TIMEOUT_SECONDS',
+               defaultValue: 45,
+             ),
+           ),
+           headers: {'Content-Type': 'application/json'},
+         ),
+       );
 
   static const _apiKeyStorageKey = 'gemini.api_key';
-  static const _apiBase = 'https://generativelanguage.googleapis.com/v1beta';
+  final String _apiBase;
+  final String _preferredModel;
 
   final SecureKeyValueStore _secureStore;
+  final ApiClient? apiClient;
   final Dio _dio;
-  final String? _defaultApiKey;
+  final String? defaultApiKey;
   String? _resolvedModel;
   String? _inMemoryApiKey;
   bool _explicitlyCleared = false;
 
+  static String _normalizeBaseUrl(String url) {
+    return url.trim().replaceAll(RegExp(r'/+$'), '');
+  }
+
   Future<String?> getApiKey() async {
     if (_explicitlyCleared) return null;
+
+    if (apiClient != null) {
+      return '__BACKEND_MANAGED__';
+    }
+
     if (_inMemoryApiKey != null && _inMemoryApiKey!.isNotEmpty) {
       return _inMemoryApiKey;
     }
@@ -36,15 +84,15 @@ final class GeminiAssistantService {
       }
     } catch (_) {}
 
-    const envKey = String.fromEnvironment('GEMINI_API_KEY');
-    if (envKey.trim().isNotEmpty) {
-      _inMemoryApiKey = _cleanKey(envKey);
+    final defaultKey = defaultApiKey;
+    if (defaultKey != null && defaultKey.trim().isNotEmpty) {
+      _inMemoryApiKey = _cleanKey(defaultKey);
       return _inMemoryApiKey;
     }
 
-    final defaultKey = _defaultApiKey;
-    if (defaultKey != null && defaultKey.trim().isNotEmpty) {
-      _inMemoryApiKey = _cleanKey(defaultKey);
+    const envKey = String.fromEnvironment('GEMINI_API_KEY');
+    if (envKey.trim().isNotEmpty) {
+      _inMemoryApiKey = _cleanKey(envKey);
       return _inMemoryApiKey;
     }
 
@@ -95,11 +143,13 @@ final class GeminiAssistantService {
           .where((name) => name.isNotEmpty)
           .toSet();
 
-      const candidatePreferences = [
+      final candidatePreferences = [
+        _preferredModel,
+        'gemini-3.6-flash',
+        'gemini-flash-latest',
+        'gemini-2.5-flash-lite',
+        'gemini-3.5-flash',
         'gemini-3.5-flash-lite',
-        'gemini-2.5-flash',
-        'gemini-2.5-pro',
-        'gemini-2.0-flash',
       ];
 
       for (final candidate in candidatePreferences) {
@@ -132,6 +182,37 @@ final class GeminiAssistantService {
     final apiKey = await getApiKey();
     if (apiKey == null || apiKey.isEmpty) {
       throw StateError('NO_API_KEY');
+    }
+
+    final client = apiClient;
+    if (client != null && apiKey == '__BACKEND_MANAGED__') {
+      final historyPayload = conversationHistory
+          .where((m) => !m.isError && m.sender != MessageSender.system)
+          .map(
+            (m) => {
+              'role': m.sender == MessageSender.user ? 'user' : 'model',
+              'text': m.text,
+            },
+          )
+          .toList(growable: false);
+
+      final result = await client.post<Map<String, dynamic>>(
+        '/api/assistant/chat',
+        data: {'prompt': prompt, 'history': historyPayload},
+        decoder: (data) =>
+            data is Map<String, dynamic> ? data : <String, dynamic>{},
+      );
+
+      return result.when(
+        success: (data) {
+          final reply = data['reply'] as String?;
+          if (reply != null && reply.trim().isNotEmpty) {
+            return reply.trim();
+          }
+          throw Exception('Received empty response from assistant.');
+        },
+        failure: (error) => throw Exception(error.message),
+      );
     }
 
     final contents = <Map<String, dynamic>>[];
@@ -178,6 +259,7 @@ final class GeminiAssistantService {
     final resolved = await _getOrResolveModel(apiKey);
     final candidateModels = [
       resolved,
+      _preferredModel,
       'gemini-3.5-flash-lite',
       'gemini-2.5-flash',
       'gemini-2.0-flash',

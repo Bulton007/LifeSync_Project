@@ -227,7 +227,9 @@ class _NavigationItem extends StatelessWidget {
                 )
               else
                 Icon(
-                  selected ? (selectedIcon ?? icon ?? Icons.circle) : (icon ?? Icons.circle),
+                  selected
+                      ? (selectedIcon ?? icon ?? Icons.circle)
+                      : (icon ?? Icons.circle),
                   color: itemColor,
                   size: compact ? 18 : 20,
                 ),

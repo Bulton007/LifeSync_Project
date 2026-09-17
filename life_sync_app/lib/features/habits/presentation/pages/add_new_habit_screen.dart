@@ -21,15 +21,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
 
   String _repeatFrequency = 'Weekly';
 
-  final List<bool> _selectedDays = [
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-  ];
+  final List<bool> _selectedDays = [true, true, true, true, true, true, true];
 
   final List<String> _checklist = [];
 

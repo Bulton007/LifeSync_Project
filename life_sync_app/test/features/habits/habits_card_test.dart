@@ -5,8 +5,9 @@ import 'package:life_sync_app/features/habits/presentation/widgets/habits_card.d
 
 void main() {
   group('HabitsCard Tests', () {
-    testWidgets('renders empty illustration when habits list is empty',
-        (tester) async {
+    testWidgets('renders empty illustration when habits list is empty', (
+      tester,
+    ) async {
       var clickedAddSchedule = false;
       await tester.pumpWidget(
         MaterialApp(
@@ -33,8 +34,9 @@ void main() {
       expect(clickedAddSchedule, isTrue);
     });
 
-    testWidgets('renders all 3 habits and responds to interaction',
-        (tester) async {
+    testWidgets('renders all 3 habits and responds to interaction', (
+      tester,
+    ) async {
       var habits = [
         const Habit(
           id: '1',
@@ -56,11 +58,7 @@ void main() {
               title: 'Drink a Cup of Water',
               isCompleted: false,
             ),
-            HabitSubItem(
-              id: '1-3',
-              title: 'Make bed',
-              isCompleted: true,
-            ),
+            HabitSubItem(id: '1-3', title: 'Make bed', isCompleted: true),
           ],
         ),
         const Habit(

@@ -35,16 +35,15 @@ final class WeeklyReviewModel {
     required this.createdAt,
   });
 
-  factory WeeklyReviewModel.fromJson(
-    Map<String, dynamic> json,
-  ) => WeeklyReviewModel(
-    id: (json['id'] as num?)?.toInt() ?? 0,
-    userId: (json['userId'] as num?)?.toInt() ?? 0,
-    reviewSummary: (json['reviewSummary'] ?? '') as String,
-    startDate: ApiDateCodec.decodeLocalDateTime(json['startDate']),
-    endDate: ApiDateCodec.decodeLocalDateTime(json['endDate']),
-    createdAt: ApiDateCodec.decodeLocalDateTime(json['createdAt']),
-  );
+  factory WeeklyReviewModel.fromJson(Map<String, dynamic> json) =>
+      WeeklyReviewModel(
+        id: (json['id'] as num?)?.toInt() ?? 0,
+        userId: (json['userId'] as num?)?.toInt() ?? 0,
+        reviewSummary: (json['reviewSummary'] ?? '') as String,
+        startDate: ApiDateCodec.decodeLocalDateTime(json['startDate']),
+        endDate: ApiDateCodec.decodeLocalDateTime(json['endDate']),
+        createdAt: ApiDateCodec.decodeLocalDateTime(json['createdAt']),
+      );
 
   final int id;
   final int userId;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:life_sync_app/core/database/database_factory_init.dart';
 import 'package:life_sync_app/core/di/initial_binding.dart';
 import 'package:life_sync_app/core/routes/app_pages.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
@@ -85,6 +86,8 @@ void configureAppErrorHandling() {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  initLifeSyncDatabaseFactory();
+  configureAppErrorHandling();
   runApp(const LifeSyncApp());
 }
 

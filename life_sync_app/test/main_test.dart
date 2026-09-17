@@ -21,7 +21,9 @@ void main() {
     expect(find.byType(StartupPage), findsOneWidget);
   });
 
-  testWidgets('renders graceful recovery view when a widget throws', (tester) async {
+  testWidgets('renders graceful recovery view when a widget throws', (
+    tester,
+  ) async {
     final widget = ErrorWidget.builder(
       FlutterErrorDetails(exception: Exception('Test error')),
     );

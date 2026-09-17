@@ -66,7 +66,9 @@ abstract final class AppTheme {
       ],
       textTheme: textTheme,
       visualDensity: VisualDensity.standard,
-      splashFactory: kIsWeb ? InkRipple.splashFactory : InkSparkle.splashFactory,
+      splashFactory: kIsWeb
+          ? InkRipple.splashFactory
+          : InkSparkle.splashFactory,
       appBarTheme: AppBarTheme(
         elevation: 0,
         scrolledUnderElevation: 0,

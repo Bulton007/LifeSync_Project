@@ -9,6 +9,10 @@ final class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
 
   @override
+  Future<ApiResult<bool>> checkEmailExists(String email) =>
+      _remoteDataSource.checkEmailExists(email);
+
+  @override
   Future<ApiResult<String>> register({
     required String fullName,
     required String email,

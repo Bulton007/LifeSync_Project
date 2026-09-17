@@ -73,10 +73,7 @@ class HabitsCard extends StatelessWidget {
                       padding: EdgeInsets.only(top: 2),
                       child: Text(
                         'No habits scheduled today.',
-                        style: TextStyle(
-                          color: secondaryText,
-                          fontSize: 11,
-                        ),
+                        style: TextStyle(color: secondaryText, fontSize: 11),
                       ),
                     ),
                 ],
@@ -170,8 +167,7 @@ class HabitsCard extends StatelessWidget {
                   ),
                 ),
               ),
-          ]
-          else ...[
+          ] else ...[
             for (var i = 0; i < habits.length; i++) ...[
               if (i > 0) const SizedBox(height: 6),
               HabitItem(

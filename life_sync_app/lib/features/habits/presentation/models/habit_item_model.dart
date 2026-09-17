@@ -12,11 +12,7 @@ class HabitSubItem {
   final String title;
   final bool isCompleted;
 
-  HabitSubItem copyWith({
-    String? id,
-    String? title,
-    bool? isCompleted,
-  }) {
+  HabitSubItem copyWith({String? id, String? title, bool? isCompleted}) {
     return HabitSubItem(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -61,8 +57,7 @@ class Habit {
   final List<HabitSubItem> subHabits;
   final bool isExpanded;
 
-  int get completedCount =>
-      subHabits.where((item) => item.isCompleted).length;
+  int get completedCount => subHabits.where((item) => item.isCompleted).length;
 
   double get progressFraction =>
       subHabits.isEmpty ? 0.0 : completedCount / subHabits.length;

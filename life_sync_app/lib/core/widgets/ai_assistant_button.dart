@@ -5,11 +5,7 @@ import 'package:lottie/lottie.dart';
 /// Circular floating AI assistant button with a soft blue/purple gradient,
 /// subtle glow shadow, and cute robot animation face.
 class AIAssistantButton extends StatelessWidget {
-  const AIAssistantButton({
-    this.size = 56.0,
-    this.onTap,
-    super.key,
-  });
+  const AIAssistantButton({this.size = 56.0, this.onTap, super.key});
 
   final double size;
   final VoidCallback? onTap;

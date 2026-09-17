@@ -62,7 +62,7 @@ final class AssistantController extends GetxController {
         ChatMessage(
           text:
               'Gemini API key is not configured yet.\n\n'
-              'Please enter your Google Gemini API key by tapping the key icon in the top right, or using `--dart-define=GEMINI_API_KEY=your_key`. You can get a free API key at aistudio.google.com.',
+              'Please ensure the backend server is running and configured with GEMINI_API_KEY in .env.',
           sender: MessageSender.assistant,
           timestamp: DateTime.now(),
           isError: true,
@@ -89,7 +89,8 @@ final class AssistantController extends GetxController {
     } catch (e) {
       messages.add(
         ChatMessage(
-          text: 'Error generating response: ${e.toString().replaceAll('Exception: ', '')}',
+          text:
+              'Error generating response: ${e.toString().replaceAll('Exception: ', '')}',
           sender: MessageSender.assistant,
           timestamp: DateTime.now(),
           isError: true,

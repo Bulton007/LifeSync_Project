@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
+import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:life_sync_app/features/auth/presentation/validators/auth_validators.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -14,13 +15,36 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final AuthController _authController;
 
-  void _continue() {
+  @override
+  void initState() {
+    super.initState();
+    _authController = Get.find<AuthController>();
+    _emailController.addListener(_onEmailChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _authController.clearError();
+    });
+  }
+
+  void _onEmailChanged() {
+    if (_authController.errorMessage.value != null) {
+      _authController.clearError();
+    }
+  }
+
+  Future<void> _continue() async {
     if (!_formKey.currentState!.validate()) return;
+    final normalizedEmail = AuthValidators.normalizeEmail(
+      _emailController.text,
+    );
+    final exists = await _authController.checkEmailExists(normalizedEmail);
+    if (exists != false) return;
+
     Get.toNamed<void>(
       AppRoutes.createPassword,
       arguments: AuthFlowArguments(
-        email: AuthValidators.normalizeEmail(_emailController.text),
+        email: normalizedEmail,
         purpose: AuthFlowPurpose.registration,
       ),
     );
@@ -34,6 +58,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
+    _emailController.removeListener(_onEmailChanged);
     _emailController.dispose();
     super.dispose();
   }
@@ -155,28 +180,66 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  Obx(() {
+                    final message = _authController.errorMessage.value;
+                    if (message == null) return const SizedBox(height: 24);
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8, bottom: 16),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            size: 16,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              message,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.red,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
 
                   // Continue Button
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _continue,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2979FF),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                    child: Obx(
+                      () => ElevatedButton(
+                        onPressed: _authController.isSubmitting.value
+                            ? null
+                            : _continue,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2979FF),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 2,
                         ),
-                        elevation: 2,
-                      ),
-                      child: const Text(
-                        'Continue',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                        child: _authController.isSubmitting.value
+                            ? const SizedBox.square(
+                                dimension: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                'Continue',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
                       ),
                     ),
                   ),

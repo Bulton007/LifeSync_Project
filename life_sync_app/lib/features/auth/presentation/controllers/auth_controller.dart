@@ -38,6 +38,26 @@ final class AuthController extends GetxController {
     });
   }
 
+  Future<bool?> checkEmailExists(String email) async {
+    return _submitWithResult<bool>(() async {
+      final result = await _repository.checkEmailExists(
+        AuthValidators.normalizeEmail(email),
+      );
+      return result.when(
+        success: (exists) {
+          if (exists) {
+            errorMessage.value = 'Email is already registered.';
+          }
+          return exists;
+        },
+        failure: (exception) {
+          _recordFailure(exception);
+          return null;
+        },
+      );
+    });
+  }
+
   Future<bool> register({
     required String fullName,
     required String email,
@@ -123,14 +143,19 @@ final class AuthController extends GetxController {
   }
 
   Future<bool> _submit(Future<bool> Function() operation) async {
-    if (isSubmitting.value) return false;
+    final result = await _submitWithResult<bool>(operation);
+    return result ?? false;
+  }
+
+  Future<T?> _submitWithResult<T>(Future<T?> Function() operation) async {
+    if (isSubmitting.value) return null;
     isSubmitting.value = true;
     errorMessage.value = null;
     try {
       return await operation();
     } on Object {
       errorMessage.value = 'The operation could not be completed.';
-      return false;
+      return null;
     } finally {
       isSubmitting.value = false;
     }

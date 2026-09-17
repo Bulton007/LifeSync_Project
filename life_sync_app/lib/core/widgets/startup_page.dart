@@ -38,6 +38,7 @@ final class _StartupPageState extends State<StartupPage>
   }
 
   Future<void> _restoreSession() async {
+    final startTime = DateTime.now();
     if (Get.isRegistered<ThemeController>()) {
       await Get.find<ThemeController>().restore();
     }
@@ -46,6 +47,15 @@ final class _StartupPageState extends State<StartupPage>
     await preferences.restore();
     final session = await sessionService.restoreSession();
     if (!mounted) return;
+
+    if (!Get.testMode) {
+      final elapsed = DateTime.now().difference(startTime);
+      final remaining = const Duration(milliseconds: 1400) - elapsed;
+      if (remaining > Duration.zero) {
+        await Future<void>.delayed(remaining);
+      }
+      if (!mounted) return;
+    }
 
     if (session == null) {
       await Get.offAllNamed<void>(AppRoutes.onboarding);
@@ -72,7 +82,10 @@ final class _StartupPageState extends State<StartupPage>
   @override
   Widget build(BuildContext context) {
     final colors = context.lifeSyncColors;
+    const double logoSize = 320.0;
+
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: FadeTransition(
           opacity: CurvedAnimation(parent: _animation, curve: Curves.easeOut),
@@ -80,30 +93,48 @@ final class _StartupPageState extends State<StartupPage>
             scale: Tween<double>(begin: .88, end: 1).animate(
               CurvedAnimation(parent: _animation, curve: Curves.easeOutBack),
             ),
-            child: Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: colors.glow,
-                    blurRadius: 42,
-                    spreadRadius: 8,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: logoSize,
+                    height: logoSize,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: colors.glow,
+                        blurRadius: 28,
+                        spreadRadius: 4,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: SvgPicture.asset(
-                LifeSyncSvgAssets.group11,
-                width: 150,
-                height: 150,
-                fit: BoxFit.contain,
-                semanticsLabel: 'LifeSync',
-              ),
+                  child: SvgPicture.asset(
+                    LifeSyncSvgAssets.group11,
+                    width: logoSize,
+                    height: logoSize,
+                    fit: BoxFit.contain,
+                    semanticsLabel: 'LifeSync',
+                  ),
+                ),
+                const SizedBox(height: 28),
+                const Text(
+                  'LifeSync',
+                  style: TextStyle(
+                    fontSize: 34,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                    color: Color(0xFF1E88E5),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

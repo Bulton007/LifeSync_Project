@@ -52,11 +52,7 @@ class HabitItem extends StatelessWidget {
                     color: habit.iconBgColor,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(
-                    habit.icon,
-                    color: habit.iconColor,
-                    size: 22,
-                  ),
+                  child: Icon(habit.icon, color: habit.iconColor, size: 22),
                 ),
                 const SizedBox(width: 12),
 
@@ -116,8 +112,7 @@ class HabitItem extends StatelessWidget {
                     item: habit.subHabits[i],
                     isFirst: i == 0,
                     isLast: i == habit.subHabits.length - 1,
-                    onToggle: () =>
-                        onSubItemToggle?.call(habit.subHabits[i]),
+                    onToggle: () => onSubItemToggle?.call(habit.subHabits[i]),
                   ),
               ],
             ),
@@ -180,11 +175,7 @@ class HabitItem extends StatelessWidget {
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.check_rounded,
-                    size: 14,
-                    color: primaryBlue,
-                  ),
+                  Icon(Icons.check_rounded, size: 14, color: primaryBlue),
                   SizedBox(width: 4),
                   Text(
                     'Completed',
@@ -211,8 +202,10 @@ class HabitItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 4.5),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 4.5,
+              ),
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(16),
@@ -221,11 +214,7 @@ class HabitItem extends StatelessWidget {
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.check_rounded,
-                    size: 14,
-                    color: primaryBlue,
-                  ),
+                  Icon(Icons.check_rounded, size: 14, color: primaryBlue),
                   SizedBox(width: 4),
                   Text(
                     'Done',

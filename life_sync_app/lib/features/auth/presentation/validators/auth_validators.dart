@@ -13,7 +13,8 @@ abstract final class AuthValidators {
     return null;
   }
 
-  static String normalizeEmail(String? value) => (value ?? '').trim().toLowerCase();
+  static String normalizeEmail(String? value) =>
+      (value ?? '').trim().toLowerCase();
 
   static String? password(String? value) {
     final password = value ?? '';
@@ -45,7 +46,9 @@ abstract final class AuthValidators {
 
   static String? otp(String value) {
     if (value.isEmpty) return 'OTP is required.';
-    if (!RegExp(r'^\d+$').hasMatch(value)) return 'OTP must contain only digits.';
+    if (!RegExp(r'^\d+$').hasMatch(value)) {
+      return 'OTP must contain only digits.';
+    }
     if (value.length != otpLength) {
       return 'OTP must contain exactly $otpLength digits.';
     }

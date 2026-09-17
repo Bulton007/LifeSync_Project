@@ -99,10 +99,44 @@ void main() {
       expect(verified, isFalse);
       expect(controller.errorMessage.value, 'OTP expired.');
     });
+
+    test('sets error message and returns true when email exists', () async {
+      repository.checkEmailExistsResult = const ApiSuccess(true);
+
+      final exists = await controller.checkEmailExists(' CODEX@EXAMPLE.COM ');
+
+      expect(exists, isTrue);
+      expect(repository.lastEmail, 'codex@example.com');
+      expect(controller.errorMessage.value, 'Email is already registered.');
+    });
+
+    test('returns false without error when email is available', () async {
+      repository.checkEmailExistsResult = const ApiSuccess(false);
+
+      final exists = await controller.checkEmailExists('new-user@example.com');
+
+      expect(exists, isFalse);
+      expect(controller.errorMessage.value, isNull);
+    });
+
+    test('returns null and sets error message on checkEmail failure', () async {
+      repository.checkEmailExistsResult = const ApiFailure(
+        ApiException(
+          type: ApiFailureType.network,
+          message: 'Network connection failed.',
+        ),
+      );
+
+      final exists = await controller.checkEmailExists('user@example.com');
+
+      expect(exists, isNull);
+      expect(controller.errorMessage.value, 'Network connection failed.');
+    });
   });
 }
 
 final class _FakeAuthRepository implements AuthRepository {
+  ApiResult<bool> checkEmailExistsResult = const ApiSuccess(false);
   ApiResult<String> registerResult = const ApiSuccess('Registered.');
   ApiResult<LoginResponseModel> loginResult = const ApiFailure(
     ApiException(
@@ -114,6 +148,12 @@ final class _FakeAuthRepository implements AuthRepository {
   Completer<ApiResult<String>>? registerCompleter;
   int registerCalls = 0;
   String? lastEmail;
+
+  @override
+  Future<ApiResult<bool>> checkEmailExists(String email) {
+    lastEmail = email;
+    return Future.value(checkEmailExistsResult);
+  }
 
   @override
   Future<ApiResult<String>> register({

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:life_sync_app/core/services/focus_sound_service.dart';
 import 'package:life_sync_app/core/storage/secure_token_storage.dart';
 import 'package:life_sync_app/features/focus/data/models/focus_session.dart';
 import 'package:life_sync_app/features/focus/domain/repositories/focus_repository.dart';
@@ -43,12 +44,26 @@ final class FocusController extends GetxController with WidgetsBindingObserver {
   final isRunning = false.obs;
   final elapsedSeconds = 0.obs;
   final taskName = RxnString();
+  final selectedSound = 'Focus Bell'.obs;
   final sessions = <FocusSession>[].obs;
   final isLoading = false.obs;
   final errorMessage = RxnString();
   final completionSignal = 0.obs;
   final period = FocusPeriod.month.obs;
   final periodAnchor = DateTime.now().obs;
+
+  void selectSound(String value) {
+    selectedSound.value = value;
+    FocusSoundService.play(value);
+  }
+
+  void playCurrentSound() {
+    FocusSoundService.play(selectedSound.value);
+  }
+
+  void playSessionSound(String? sound) {
+    FocusSoundService.play(sound ?? selectedSound.value);
+  }
 
   Timer? _ticker;
   DateTime? _segmentStartedAt;
@@ -218,6 +233,7 @@ final class FocusController extends GetxController with WidgetsBindingObserver {
     final duration = elapsedSeconds.value;
     if (duration > 0) {
       await _recordSession(completed: false, duration: duration);
+      FocusSoundService.play(selectedSound.value);
     }
     reset();
   }
@@ -276,6 +292,7 @@ final class FocusController extends GetxController with WidgetsBindingObserver {
     _ticker = null;
     isRunning.value = false;
     await _recordSession(completed: true, duration: pomodoroSeconds);
+    FocusSoundService.play(selectedSound.value);
     completionSignal.value++;
     reset();
     _completing = false;
@@ -290,11 +307,13 @@ final class FocusController extends GetxController with WidgetsBindingObserver {
         id: null,
         mode: mode.value,
         taskName: taskName.value,
+        soundName: selectedSound.value,
         startedAt: _sessionStartedAt ?? _clock.now(),
         durationSeconds: duration,
         completed: completed,
       ),
     );
+    sessions.removeWhere((item) => item.id != null && item.id == created.id);
     sessions.insert(0, created);
   }
 

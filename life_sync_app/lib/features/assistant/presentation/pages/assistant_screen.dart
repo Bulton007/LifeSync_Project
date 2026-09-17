@@ -188,25 +188,6 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                         ],
                       ),
                       const Spacer(),
-                      Obx(
-                        () => IconButton(
-                          tooltip: _controller.hasApiKey.value
-                              ? 'Gemini API Key (Configured)'
-                              : 'Configure Gemini API Key',
-                          onPressed: () => _showApiKeyDialog(context),
-                          icon: Badge(
-                            isLabelVisible: !_controller.hasApiKey.value,
-                            backgroundColor: Colors.amber,
-                            smallSize: 8,
-                            child: Icon(
-                              Icons.key_rounded,
-                              color: _controller.hasApiKey.value
-                                  ? colors.primaryBlue
-                                  : colors.secondaryText,
-                            ),
-                          ),
-                        ),
-                      ),
                       IconButton(
                         tooltip: 'Clear Chat',
                         onPressed: () {
@@ -442,33 +423,6 @@ final class _AssistantEmpty extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          if (!hasKey)
-            Container(
-              margin: const EdgeInsets.only(bottom: 24),
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: Colors.amber.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.amber.withValues(alpha: 0.4)),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.key_outlined, color: Colors.amber, size: 22),
-                  const SizedBox(width: 10),
-                  const Expanded(
-                    child: Text(
-                      'Gemini API key is required to activate AI responses.',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: onConfigureKey,
-                    child: const Text('Add Key'),
-                  ),
-                ],
-              ),
-            ),
-
           const Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -543,9 +497,7 @@ final class _PromptChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: colors.cardSurface,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: colors.primaryText.withValues(alpha: 0.08),
-          ),
+          border: Border.all(color: colors.primaryText.withValues(alpha: 0.08)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -633,9 +585,7 @@ final class _AssistantBubble extends StatelessWidget {
           Container(
             width: 34,
             height: 34,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-            ),
+            decoration: const BoxDecoration(shape: BoxShape.circle),
             child: ClipOval(
               child: Image.asset(
                 AppImages.assistantAvatar,
@@ -674,19 +624,13 @@ final class _AssistantBubble extends StatelessWidget {
                   SelectableText(
                     message.text,
                     style: TextStyle(
-                      color: message.isError ? Colors.red.shade800 : colors.primaryText,
+                      color: message.isError
+                          ? Colors.red.shade800
+                          : colors.primaryText,
                       fontSize: 14,
                       height: 1.45,
                     ),
                   ),
-                  if (message.isError && message.text.contains('Gemini API key')) ...[
-                    const SizedBox(height: 8),
-                    FilledButton.tonalIcon(
-                      onPressed: onConfigureKey,
-                      icon: const Icon(Icons.key_rounded, size: 16),
-                      label: const Text('Configure Gemini Key'),
-                    ),
-                  ],
                 ],
               ),
             ),
@@ -742,16 +686,15 @@ final class _ThinkingBubble extends StatelessWidget {
                   height: 14,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4F7FFF)),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Color(0xFF4F7FFF),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
                 Text(
                   'LifeSync AI is thinking...',
-                  style: TextStyle(
-                    color: colors.secondaryText,
-                    fontSize: 12.5,
-                  ),
+                  style: TextStyle(color: colors.secondaryText, fontSize: 12.5),
                 ),
               ],
             ),

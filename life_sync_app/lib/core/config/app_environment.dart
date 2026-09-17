@@ -12,6 +12,9 @@ final class AppEnvironment {
     this.connectTimeout = const Duration(seconds: 8),
     this.sendTimeout = const Duration(seconds: 8),
     this.receiveTimeout = const Duration(seconds: 10),
+    this.geminiApiKey = '',
+    this.geminiApiBaseUrl = 'https://generativelanguage.googleapis.com/v1beta',
+    this.geminiModel = 'gemini-2.5-flash',
   }) : apiBaseUrl = _normalizeAndValidate(apiBaseUrl);
 
   factory AppEnvironment.current() {
@@ -24,15 +27,42 @@ final class AppEnvironment {
         : legacyConfiguredBaseUrl;
 
     if (selectedBaseUrl.trim().isEmpty && kReleaseMode) {
-      throw StateError(
-        'API_BASE_URL must be provided for release builds.',
-      );
+      throw StateError('API_BASE_URL must be provided for release builds.');
     }
+
+    const connectTimeoutSec = int.fromEnvironment(
+      'API_CONNECT_TIMEOUT_SECONDS',
+      defaultValue: 8,
+    );
+    const sendTimeoutSec = int.fromEnvironment(
+      'API_SEND_TIMEOUT_SECONDS',
+      defaultValue: 8,
+    );
+    const receiveTimeoutSec = int.fromEnvironment(
+      'API_RECEIVE_TIMEOUT_SECONDS',
+      defaultValue: 10,
+    );
+
+    const configuredGeminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
+    const configuredGeminiBaseUrl = String.fromEnvironment(
+      'GEMINI_API_BASE_URL',
+      defaultValue: 'https://generativelanguage.googleapis.com/v1beta',
+    );
+    const configuredGeminiModel = String.fromEnvironment(
+      'GEMINI_MODEL',
+      defaultValue: 'gemini-2.5-flash',
+    );
 
     return AppEnvironment(
       apiBaseUrl: selectedBaseUrl.trim().isNotEmpty
           ? selectedBaseUrl
           : _developmentBaseUrl,
+      connectTimeout: Duration(seconds: connectTimeoutSec),
+      sendTimeout: Duration(seconds: sendTimeoutSec),
+      receiveTimeout: Duration(seconds: receiveTimeoutSec),
+      geminiApiKey: configuredGeminiApiKey,
+      geminiApiBaseUrl: configuredGeminiBaseUrl,
+      geminiModel: configuredGeminiModel,
     );
   }
 
@@ -40,6 +70,9 @@ final class AppEnvironment {
   final Duration connectTimeout;
   final Duration sendTimeout;
   final Duration receiveTimeout;
+  final String geminiApiKey;
+  final String geminiApiBaseUrl;
+  final String geminiModel;
 
   static const _androidDevelopmentBaseUrl =
       'https://lifesync-backend-bultoncr7-dev.apps.rm3.7wse.p1.openshiftapps.com';

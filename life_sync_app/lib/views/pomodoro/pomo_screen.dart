@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
+import 'package:life_sync_app/core/services/focus_sound_service.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/features/focus/data/models/focus_session.dart';
 import 'package:life_sync_app/features/focus/presentation/controllers/focus_controller.dart';
@@ -21,6 +22,7 @@ final class _PomoScreenState extends State<PomoScreen> {
   void initState() {
     super.initState();
     _controller = Get.find<FocusController>();
+    _controller.loadSessions();
     _completionWorker = ever(_controller.completionSignal, (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,6 +48,19 @@ final class _PomoScreenState extends State<PomoScreen> {
     }
     return '${minutes.toString().padLeft(2, '0')}:'
         '${seconds.toString().padLeft(2, '0')}';
+  }
+
+  String _formatDateTime(DateTime dt) {
+    final now = DateTime.now();
+    final isToday =
+        dt.year == now.year && dt.month == now.month && dt.day == now.day;
+    final hour = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
+    final ampm = dt.hour >= 12 ? 'PM' : 'AM';
+    final minute = dt.minute.toString().padLeft(2, '0');
+    if (isToday) {
+      return 'Today, $hour:$minute $ampm';
+    }
+    return '${dt.month}/${dt.day}, $hour:$minute $ampm';
   }
 
   void _switchMode(FocusMode mode) {
@@ -97,13 +112,60 @@ final class _PomoScreenState extends State<PomoScreen> {
     if (selected != null) _controller.selectTask(selected);
   }
 
+  Future<void> _chooseSound() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          children: [
+            const Text(
+              'Focus Sound & Ambience',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            ...FocusSoundService.availableSounds.map(
+              (sound) => Obx(
+                () => ListTile(
+                  leading: const Icon(Icons.music_note_rounded),
+                  title: Text(sound),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        tooltip: 'Preview sound',
+                        icon: const Icon(Icons.volume_up_rounded),
+                        onPressed: () => FocusSoundService.play(sound),
+                      ),
+                      if (_controller.selectedSound.value == sound)
+                        const Icon(
+                          Icons.check_circle_rounded,
+                          color: Color(0xFF1E88E5),
+                        ),
+                    ],
+                  ),
+                  onTap: () {
+                    _controller.selectSound(sound);
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _stop() async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Stop this focus session?'),
         content: const Text(
-          'Elapsed focus time will be saved to your local statistics.',
+          'Elapsed focus time will be saved to your local database.',
         ),
         actions: [
           TextButton(
@@ -112,12 +174,23 @@ final class _PomoScreenState extends State<PomoScreen> {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Stop'),
+            child: const Text('Stop and Record'),
           ),
         ],
       ),
     );
-    if (confirmed == true) await _controller.stopAndSave();
+    if (confirmed == true) {
+      await _controller.stopAndSave();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Session recorded with ${_controller.selectedSound.value}!',
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   @override
@@ -125,8 +198,8 @@ final class _PomoScreenState extends State<PomoScreen> {
     final colors = context.lifeSyncColors;
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
           child: Column(
             children: [
               Row(
@@ -182,63 +255,49 @@ final class _PomoScreenState extends State<PomoScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 28),
-              Obx(
-                () => InkWell(
-                  onTap: _controller.hasActiveSession ? null : _chooseTask,
-                  borderRadius: BorderRadius.circular(12),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Working on',
-                          style: TextStyle(
-                            color: colors.secondaryText,
-                            fontSize: 10,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              _controller.taskName.value ??
-                                  'Choose a task (optional)',
-                              style: const TextStyle(fontSize: 13),
-                            ),
-                            const SizedBox(width: 4),
-                            Icon(
-                              Icons.unfold_more,
-                              size: 15,
-                              color: _controller.hasActiveSession
-                                  ? colors.disabledText
-                                  : colors.secondaryText,
-                            ),
-                          ],
-                        ),
-                      ],
+              const SizedBox(height: 20),
+              // Task & Sound Controls Row
+              Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                alignment: WrapAlignment.center,
+                children: [
+                  Obx(
+                    () => ActionChip(
+                      avatar: const Icon(Icons.task_alt_rounded, size: 16),
+                      label: Text(
+                        _controller.taskName.value ?? 'Choose Task',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      onPressed: _controller.hasActiveSession ? null : _chooseTask,
                     ),
                   ),
-                ),
+                  Obx(
+                    () => ActionChip(
+                      avatar: const Icon(Icons.music_note_rounded, size: 16),
+                      label: Text(
+                        _controller.selectedSound.value,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      onPressed: _chooseSound,
+                    ),
+                  ),
+                ],
               ),
-              const Spacer(),
+              const SizedBox(height: 28),
               Obx(() {
                 final progress = _controller.progress;
                 return Container(
-                  width: 260,
-                  height: 260,
+                  width: 250,
+                  height: 250,
                   padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
                         color: colors.glow,
-                        blurRadius: 42,
-                        spreadRadius: 10,
+                        blurRadius: 36,
+                        spreadRadius: 8,
                       ),
                     ],
                   ),
@@ -269,16 +328,18 @@ final class _PomoScreenState extends State<PomoScreen> {
                   ),
                 );
               }),
-              const Spacer(),
+              const SizedBox(height: 28),
               Obx(() {
                 final running = _controller.isRunning.value;
                 final active = _controller.hasActiveSession;
                 if (!active) {
                   return SizedBox(
-                    width: 132,
-                    child: FilledButton(
+                    width: 140,
+                    height: 44,
+                    child: FilledButton.icon(
                       onPressed: _controller.start,
-                      child: const Text('Start'),
+                      icon: const Icon(Icons.play_arrow_rounded),
+                      label: const Text('Start'),
                     ),
                   );
                 }
@@ -304,14 +365,181 @@ final class _PomoScreenState extends State<PomoScreen> {
                     ),
                     const SizedBox(width: 18),
                     IconButton.outlined(
-                      tooltip: 'Stop and save',
+                      tooltip: 'Stop and record',
                       onPressed: _stop,
                       icon: const Icon(Icons.stop_rounded),
                     ),
                   ],
                 );
               }),
-              const SizedBox(height: 18),
+              const SizedBox(height: 36),
+
+              // RECORDED SESSIONS SECTION
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Recorded Sessions',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  TextButton.icon(
+                    onPressed: () =>
+                        Get.toNamed<void>(AppRoutes.focusStatistics),
+                    icon: const Icon(Icons.bar_chart_rounded, size: 16),
+                    label: const Text('View Stats'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Obx(() {
+                final sessions = _controller.sessions;
+                if (sessions.isEmpty) {
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 24,
+                      horizontal: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colors.cardSurface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: colors.border),
+                    ),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.timer_outlined,
+                          size: 36,
+                          color: colors.disabledText,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'No recorded sessions yet.',
+                          style: TextStyle(
+                            color: colors.secondaryText,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Press Start, then Stop to record your session here.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: colors.disabledText,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: sessions.take(6).length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 10),
+                  itemBuilder: (context, index) {
+                    final session = sessions[index];
+                    return Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: colors.cardSurface,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: colors.border),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: colors.navigationSelected,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              session.completed
+                                  ? Icons.check_circle_rounded
+                                  : Icons.timer_outlined,
+                              color: colors.primaryBlue,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  session.taskName?.isNotEmpty == true
+                                      ? session.taskName!
+                                      : (session.mode == FocusMode.pomodoro
+                                          ? 'Pomodoro Focus'
+                                          : 'Stopwatch Session'),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  '${_duration(session.durationSeconds)} • ${_formatDateTime(session.startedAt)}',
+                                  style: TextStyle(
+                                    color: colors.secondaryText,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              _controller.playSessionSound(session.soundName);
+                              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  duration: const Duration(seconds: 1),
+                                  content: Text(
+                                    'Playing sound: ${session.soundName ?? 'Focus Bell'}',
+                                  ),
+                                ),
+                              );
+                            },
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: colors.navigationSelected,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.volume_up_rounded,
+                                    size: 16,
+                                    color: colors.primaryBlue,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    session.soundName ?? 'Focus Bell',
+                                    style: TextStyle(
+                                      color: colors.primaryBlue,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }),
             ],
           ),
         ),

@@ -32,34 +32,46 @@ void main() {
     controller.dispose();
   });
 
-  test('AssistantController starts with no messages and no api key by default', () async {
-    await controller.checkApiKey();
-    expect(controller.messages, isEmpty);
-    expect(controller.isLoading.value, isFalse);
-    expect(controller.hasApiKey.value, isFalse);
-  });
+  test(
+    'AssistantController starts with no messages and no api key by default',
+    () async {
+      await controller.checkApiKey();
+      expect(controller.messages, isEmpty);
+      expect(controller.isLoading.value, isFalse);
+      expect(controller.hasApiKey.value, isFalse);
+    },
+  );
 
-  test('Saving and clearing Gemini API key updates state and storage', () async {
-    await controller.saveApiKey('test-key-12345');
-    expect(controller.hasApiKey.value, isTrue);
-    expect(await controller.getApiKey(), 'test-key-12345');
+  test(
+    'Saving and clearing Gemini API key updates state and storage',
+    () async {
+      await controller.saveApiKey('test-key-12345');
+      expect(controller.hasApiKey.value, isTrue);
+      expect(await controller.getApiKey(), 'test-key-12345');
 
-    await controller.clearApiKey();
-    expect(controller.hasApiKey.value, isFalse);
-    expect(await controller.getApiKey(), isNull);
-  });
+      await controller.clearApiKey();
+      expect(controller.hasApiKey.value, isFalse);
+      expect(await controller.getApiKey(), isNull);
+    },
+  );
 
-  test('Sending message when API key is missing adds helpful configuration prompt', () async {
-    await controller.sendMessage('Hello assistant!');
+  test(
+    'Sending message when API key is missing adds helpful configuration prompt',
+    () async {
+      await controller.sendMessage('Hello assistant!');
 
-    expect(controller.messages.length, 2);
-    expect(controller.messages[0].sender, MessageSender.user);
-    expect(controller.messages[0].text, 'Hello assistant!');
+      expect(controller.messages.length, 2);
+      expect(controller.messages[0].sender, MessageSender.user);
+      expect(controller.messages[0].text, 'Hello assistant!');
 
-    expect(controller.messages[1].sender, MessageSender.assistant);
-    expect(controller.messages[1].isError, isTrue);
-    expect(controller.messages[1].text, contains('Gemini API key is not configured yet'));
-  });
+      expect(controller.messages[1].sender, MessageSender.assistant);
+      expect(controller.messages[1].isError, isTrue);
+      expect(
+        controller.messages[1].text,
+        contains('Gemini API key is not configured yet'),
+      );
+    },
+  );
 
   test('Clear conversation resets messages list', () async {
     await controller.sendMessage('Test');

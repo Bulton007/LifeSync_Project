@@ -8,6 +8,23 @@ final class AuthRemoteDataSource {
 
   final ApiClient _apiClient;
 
+  Future<ApiResult<bool>> checkEmailExists(String email) {
+    return _apiClient.get<bool>(
+      '/api/auth/check-email',
+      queryParameters: {'email': email},
+      decoder: (data) {
+        if (data is Map && data.containsKey('exists')) {
+          return data['exists'] as bool;
+        }
+        if (data is bool) {
+          return data;
+        }
+        throw const FormatException('Expected exists boolean in response.');
+      },
+      skipAuthentication: true,
+    );
+  }
+
   Future<ApiResult<String>> register({
     required String fullName,
     required String email,

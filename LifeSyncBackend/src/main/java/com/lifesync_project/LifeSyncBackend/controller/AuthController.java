@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -37,6 +39,19 @@ public class AuthController {
     }
 
     private final AuthService authService;
+
+    /*
+     * Check Email Exists
+     */
+    @GetMapping("/check-email")
+    public ResponseEntity<Map<String, Object>> checkEmail(
+            @RequestParam String email) {
+        boolean exists = authService.checkEmailExists(email);
+        return ResponseEntity.ok(Map.of(
+                "email", email,
+                "exists", exists
+        ));
+    }
 
     /*
      * Register

@@ -563,11 +563,7 @@ class _InlineEmpty extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (svgAsset != null) ...[
-            SvgPicture.asset(
-              svgAsset!,
-              height: 110,
-              fit: BoxFit.contain,
-            ),
+            SvgPicture.asset(svgAsset!, height: 110, fit: BoxFit.contain),
             const SizedBox(height: 12),
           ],
           Text(

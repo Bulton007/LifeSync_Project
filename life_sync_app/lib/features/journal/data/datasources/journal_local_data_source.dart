@@ -9,9 +9,7 @@ final class JournalLocalDataSource {
   final LifeSyncDatabase _database;
   final AuthSessionService _sessionService;
 
-  int get _ownerId =>
-      _sessionService.currentSession?.userId ??
-      (throw StateError('A signed-in user is required for local journals.'));
+  int get _ownerId => _sessionService.currentSession?.userId ?? 0;
 
   Future<List<JournalEntry>> readAll() async {
     final database = await _database.database;

@@ -174,11 +174,11 @@ final class _RewardCard extends StatelessWidget {
                   onPressed: controller.isSubmitting.value
                       ? null
                       : () => _pointsDialog(
-                            context,
-                            controller,
-                            subtract: false,
-                            currentPoints: points,
-                          ),
+                          context,
+                          controller,
+                          subtract: false,
+                          currentPoints: points,
+                        ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white54),
@@ -193,11 +193,11 @@ final class _RewardCard extends StatelessWidget {
                   onPressed: points <= 0 || controller.isSubmitting.value
                       ? null
                       : () => _pointsDialog(
-                            context,
-                            controller,
-                            subtract: true,
-                            currentPoints: points,
-                          ),
+                          context,
+                          controller,
+                          subtract: true,
+                          currentPoints: points,
+                        ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
                     disabledForegroundColor: Colors.white38,
@@ -283,7 +283,10 @@ final class _MetricCard extends StatelessWidget {
               color: colors.primaryText,
             ),
           ),
-          Text(label, style: TextStyle(fontSize: 11, color: colors.secondaryText)),
+          Text(
+            label,
+            style: TextStyle(fontSize: 11, color: colors.secondaryText),
+          ),
         ],
       ),
     );
@@ -433,10 +436,7 @@ final class _HistoryCard extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        subtitle: Text(
-          subtitle,
-          style: TextStyle(color: colors.secondaryText),
-        ),
+        subtitle: Text(subtitle, style: TextStyle(color: colors.secondaryText)),
         trailing: PopupMenuButton<String>(
           onSelected: (value) {
             if (value == 'edit') {
@@ -497,78 +497,246 @@ final class _InlineError extends StatelessWidget {
   );
 }
 
+final class _CheckingDialog extends StatefulWidget {
+  const _CheckingDialog({this.existing});
+
+  final MorningCheckingModel? existing;
+
+  @override
+  State<_CheckingDialog> createState() => _CheckingDialogState();
+}
+
+final class _CheckingDialogState extends State<_CheckingDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _notesController;
+  late int _mood;
+
+  @override
+  void initState() {
+    super.initState();
+    _notesController = TextEditingController(
+      text: widget.existing?.notes ?? '',
+    );
+    _mood = (widget.existing?.moodRating ?? 5).clamp(1, 10);
+  }
+
+  @override
+  void dispose() {
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        widget.existing == null ? 'Morning check-in' : 'Edit check-in',
+      ),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DropdownButtonFormField<int>(
+              initialValue: _mood,
+              decoration: const InputDecoration(labelText: 'Mood (1–10)'),
+              items: [
+                for (var value = 1; value <= 10; value++)
+                  DropdownMenuItem(value: value, child: Text('$value / 10')),
+              ],
+              onChanged: (value) {
+                if (value != null) setState(() => _mood = value);
+              },
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _notesController,
+              maxLength: 2000,
+              maxLines: 4,
+              decoration: const InputDecoration(
+                labelText: 'Notes (optional)',
+                alignLabelWithHint: true,
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              Navigator.pop(context, (
+                mood: _mood,
+                notes: _notesController.text.trim(),
+              ));
+            }
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    );
+  }
+}
+
 Future<void> _checkingDialog(
   BuildContext context,
   PersonalProgressController controller, {
   MorningCheckingModel? existing,
 }) async {
-  final formKey = GlobalKey<FormState>();
-  final notes = TextEditingController(text: existing?.notes ?? '');
-  var mood = existing?.moodRating ?? 5;
+  final messenger = ScaffoldMessenger.of(context);
   final result = await showDialog<({int mood, String notes})>(
     context: context,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setState) => AlertDialog(
-        title: Text(existing == null ? 'Morning check-in' : 'Edit check-in'),
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              DropdownButtonFormField<int>(
-                initialValue: mood,
-                decoration: const InputDecoration(labelText: 'Mood (1–10)'),
-                items: [
-                  for (var value = 1; value <= 10; value++)
-                    DropdownMenuItem(value: value, child: Text('$value / 10')),
-                ],
-                onChanged: (value) {
-                  if (value != null) setState(() => mood = value);
-                },
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: notes,
-                maxLength: 2000,
-                maxLines: 4,
-                decoration: const InputDecoration(
-                  labelText: 'Notes (optional)',
-                  alignLabelWithHint: true,
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                Navigator.pop(dialogContext, (mood: mood, notes: notes.text));
-              }
-            },
-            child: const Text('Save'),
-          ),
-        ],
-      ),
-    ),
+    builder: (_) => _CheckingDialog(existing: existing),
   );
-  notes.dispose();
   if (result == null) return;
   final saved = existing == null
       ? await controller.createChecking(
           moodRating: result.mood,
-          notes: result.notes,
+          notes: result.notes.isEmpty ? null : result.notes,
         )
       : await controller.updateChecking(
           existing,
           moodRating: result.mood,
-          notes: result.notes,
+          notes: result.notes.isEmpty ? null : result.notes,
         );
-  if (context.mounted) _showResult(context, controller, saved);
+  _showResult(messenger, controller, saved);
+}
+
+final class _ReviewDialog extends StatefulWidget {
+  const _ReviewDialog({this.existing});
+
+  final WeeklyReviewModel? existing;
+
+  @override
+  State<_ReviewDialog> createState() => _ReviewDialogState();
+}
+
+final class _ReviewDialogState extends State<_ReviewDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _summaryController;
+  late DateTime _start;
+  late DateTime _end;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _summaryController = TextEditingController(
+      text: widget.existing?.reviewSummary ?? '',
+    );
+    _start =
+        widget.existing?.startDate ?? now.subtract(const Duration(days: 6));
+    _end = widget.existing?.endDate ?? now;
+    if (_end.isBefore(_start)) {
+      _end = _start;
+    }
+  }
+
+  @override
+  void dispose() {
+    _summaryController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.existing == null ? 'Weekly review' : 'Edit review'),
+      content: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: _summaryController,
+                maxLength: 5000,
+                maxLines: 5,
+                decoration: const InputDecoration(
+                  labelText: 'Review summary',
+                  alignLabelWithHint: true,
+                ),
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'Review summary is required.'
+                    : null,
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Start date'),
+                subtitle: Text(_date(_start)),
+                trailing: const Icon(Icons.calendar_today_outlined),
+                onTap: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: _start,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2200),
+                  );
+                  if (picked != null && mounted) {
+                    setState(() {
+                      _start = picked;
+                      if (_end.isBefore(_start)) {
+                        _end = _start;
+                      }
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('End date'),
+                subtitle: Text(_date(_end)),
+                trailing: const Icon(Icons.calendar_today_outlined),
+                onTap: () async {
+                  final effectiveInitial = _end.isBefore(_start)
+                      ? _start
+                      : _end;
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: effectiveInitial,
+                    firstDate: _start,
+                    lastDate: DateTime(2200),
+                  );
+                  if (picked != null && mounted) {
+                    setState(() => _end = picked);
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () {
+            if (!_formKey.currentState!.validate()) return;
+            if (_end.isBefore(_start)) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('End date cannot be before start date.'),
+                ),
+              );
+              return;
+            }
+            Navigator.pop(context, (
+              summary: _summaryController.text.trim(),
+              start: _start,
+              end: _end,
+            ));
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    );
+  }
 }
 
 Future<void> _reviewDialog(
@@ -576,91 +744,12 @@ Future<void> _reviewDialog(
   PersonalProgressController controller, {
   WeeklyReviewModel? existing,
 }) async {
-  final formKey = GlobalKey<FormState>();
-  final summary = TextEditingController(text: existing?.reviewSummary ?? '');
-  final now = DateTime.now();
-  var start = existing?.startDate ?? now.subtract(const Duration(days: 6));
-  var end = existing?.endDate ?? now;
+  final messenger = ScaffoldMessenger.of(context);
   final result =
       await showDialog<({String summary, DateTime start, DateTime end})>(
         context: context,
-        builder: (dialogContext) => StatefulBuilder(
-          builder: (context, setState) => AlertDialog(
-            title: Text(existing == null ? 'Weekly review' : 'Edit review'),
-            content: Form(
-              key: formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      controller: summary,
-                      maxLength: 5000,
-                      maxLines: 5,
-                      decoration: const InputDecoration(
-                        labelText: 'Review summary',
-                        alignLabelWithHint: true,
-                      ),
-                      validator: (value) =>
-                          value == null || value.trim().isEmpty
-                          ? 'Review summary is required.'
-                          : null,
-                    ),
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: const Text('Start date'),
-                      subtitle: Text(_date(start)),
-                      trailing: const Icon(Icons.calendar_today_outlined),
-                      onTap: () async {
-                        final picked = await showDatePicker(
-                          context: context,
-                          initialDate: start,
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2200),
-                        );
-                        if (picked != null) setState(() => start = picked);
-                      },
-                    ),
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: const Text('End date'),
-                      subtitle: Text(_date(end)),
-                      trailing: const Icon(Icons.calendar_today_outlined),
-                      onTap: () async {
-                        final picked = await showDatePicker(
-                          context: context,
-                          initialDate: end,
-                          firstDate: start,
-                          lastDate: DateTime(2200),
-                        );
-                        if (picked != null) setState(() => end = picked);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: const Text('Cancel'),
-              ),
-              FilledButton(
-                onPressed: () {
-                  if (!formKey.currentState!.validate()) return;
-                  Navigator.pop(dialogContext, (
-                    summary: summary.text,
-                    start: start,
-                    end: end,
-                  ));
-                },
-                child: const Text('Save'),
-              ),
-            ],
-          ),
-        ),
+        builder: (_) => _ReviewDialog(existing: existing),
       );
-  summary.dispose();
   if (result == null) return;
   final startDate = DateTime(
     result.start.year,
@@ -687,28 +776,52 @@ Future<void> _reviewDialog(
           startDate: startDate,
           endDate: endDate,
         );
-  if (context.mounted) _showResult(context, controller, saved);
+  _showResult(messenger, controller, saved);
 }
 
-Future<void> _winDialog(
-  BuildContext context,
-  PersonalProgressController controller, {
-  WinModel? existing,
-}) async {
-  final formKey = GlobalKey<FormState>();
-  final title = TextEditingController(text: existing?.title ?? '');
-  final description = TextEditingController(text: existing?.description ?? '');
-  final result = await showDialog<({String title, String description})>(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(existing == null ? 'Record a win' : 'Edit win'),
+final class _WinDialog extends StatefulWidget {
+  const _WinDialog({this.existing});
+
+  final WinModel? existing;
+
+  @override
+  State<_WinDialog> createState() => _WinDialogState();
+}
+
+final class _WinDialogState extends State<_WinDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _titleController;
+  late final TextEditingController _descriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(
+      text: widget.existing?.title ?? '',
+    );
+    _descriptionController = TextEditingController(
+      text: widget.existing?.description ?? '',
+    );
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.existing == null ? 'Record a win' : 'Edit win'),
       content: Form(
-        key: formKey,
+        key: _formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextFormField(
-              controller: title,
+              controller: _titleController,
               maxLength: 200,
               decoration: const InputDecoration(labelText: 'Title'),
               validator: (value) => value == null || value.trim().isEmpty
@@ -716,7 +829,7 @@ Future<void> _winDialog(
                   : null,
             ),
             TextFormField(
-              controller: description,
+              controller: _descriptionController,
               maxLength: 1000,
               maxLines: 3,
               decoration: const InputDecoration(
@@ -728,37 +841,120 @@ Future<void> _winDialog(
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(dialogContext),
+          onPressed: () => Navigator.pop(context),
           child: const Text('Cancel'),
         ),
         FilledButton(
           onPressed: () {
-            if (formKey.currentState!.validate()) {
-              Navigator.pop(dialogContext, (
-                title: title.text,
-                description: description.text,
+            if (_formKey.currentState!.validate()) {
+              Navigator.pop(context, (
+                title: _titleController.text.trim(),
+                description: _descriptionController.text.trim(),
               ));
             }
           },
           child: const Text('Save'),
         ),
       ],
-    ),
+    );
+  }
+}
+
+Future<void> _winDialog(
+  BuildContext context,
+  PersonalProgressController controller, {
+  WinModel? existing,
+}) async {
+  final messenger = ScaffoldMessenger.of(context);
+  final result = await showDialog<({String title, String description})>(
+    context: context,
+    builder: (_) => _WinDialog(existing: existing),
   );
-  title.dispose();
-  description.dispose();
   if (result == null) return;
   final saved = existing == null
       ? await controller.createWin(
           title: result.title,
-          description: result.description,
+          description: result.description.isEmpty ? null : result.description,
         )
       : await controller.updateWin(
           existing,
           title: result.title,
-          description: result.description,
+          description: result.description.isEmpty ? null : result.description,
         );
-  if (context.mounted) _showResult(context, controller, saved);
+  _showResult(messenger, controller, saved);
+}
+
+final class _PointsDialog extends StatefulWidget {
+  const _PointsDialog({required this.subtract, this.currentPoints = 0});
+
+  final bool subtract;
+  final int currentPoints;
+
+  @override
+  State<_PointsDialog> createState() => _PointsDialogState();
+}
+
+final class _PointsDialogState extends State<_PointsDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _pointsController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pointsController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _pointsController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.subtract ? 'Remove points' : 'Add progress points'),
+      content: Form(
+        key: _formKey,
+        child: TextFormField(
+          controller: _pointsController,
+          autofocus: true,
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          decoration: InputDecoration(
+            labelText: 'Points',
+            helperText: widget.subtract
+                ? 'Current balance: ${widget.currentPoints} points'
+                : 'Adds to your total progress points',
+          ),
+          validator: (value) {
+            final parsed = int.tryParse(value?.trim() ?? '');
+            if (parsed == null || parsed <= 0) {
+              return 'Enter a positive number.';
+            }
+            if (widget.subtract && parsed > widget.currentPoints) {
+              return 'Cannot remove more than current ${widget.currentPoints} points.';
+            }
+            return null;
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              Navigator.pop(context, int.parse(_pointsController.text.trim()));
+            }
+          },
+          child: Text(widget.subtract ? 'Remove' : 'Add'),
+        ),
+      ],
+    );
+  }
 }
 
 Future<void> _pointsDialog(
@@ -767,65 +963,24 @@ Future<void> _pointsDialog(
   required bool subtract,
   int currentPoints = 0,
 }) async {
-  final formKey = GlobalKey<FormState>();
-  final points = TextEditingController();
+  final messenger = ScaffoldMessenger.of(context);
   final result = await showDialog<int>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(subtract ? 'Remove points' : 'Add progress points'),
-      content: Form(
-        key: formKey,
-        child: TextFormField(
-          controller: points,
-          autofocus: true,
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          decoration: InputDecoration(
-            labelText: 'Points',
-            helperText: subtract
-                ? 'Current balance: $currentPoints points'
-                : 'Adds to your total progress points',
-          ),
-          validator: (value) {
-            final parsed = int.tryParse(value ?? '');
-            if (parsed == null || parsed <= 0) {
-              return 'Enter a positive number.';
-            }
-            if (subtract && parsed > currentPoints) {
-              return 'Cannot remove more than current $currentPoints points.';
-            }
-            return null;
-          },
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(dialogContext),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: () {
-            if (formKey.currentState!.validate()) {
-              Navigator.pop(dialogContext, int.parse(points.text));
-            }
-          },
-          child: Text(subtract ? 'Remove' : 'Add'),
-        ),
-      ],
-    ),
+    builder: (_) =>
+        _PointsDialog(subtract: subtract, currentPoints: currentPoints),
   );
-  points.dispose();
   if (result == null) return;
   final saved = subtract
       ? await controller.subtractPoints(result)
       : await controller.addPoints(result);
-  if (context.mounted) _showResult(context, controller, saved);
+  _showResult(messenger, controller, saved);
 }
 
 Future<void> _resetReward(
   BuildContext context,
   PersonalProgressController controller,
 ) async {
+  final messenger = ScaffoldMessenger.of(context);
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
@@ -845,7 +1000,7 @@ Future<void> _resetReward(
   );
   if (confirmed != true) return;
   final saved = await controller.resetReward();
-  if (context.mounted) _showResult(context, controller, saved);
+  _showResult(messenger, controller, saved);
 }
 
 Future<void> _delete(
@@ -854,6 +1009,7 @@ Future<void> _delete(
   Future<bool> Function() operation,
   PersonalProgressController controller,
 ) async {
+  final messenger = ScaffoldMessenger.of(context);
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
@@ -873,21 +1029,29 @@ Future<void> _delete(
   );
   if (confirmed != true) return;
   final saved = await operation();
-  if (context.mounted) _showResult(context, controller, saved);
+  _showResult(messenger, controller, saved);
 }
 
 void _showResult(
-  BuildContext context,
+  ScaffoldMessengerState messenger,
   PersonalProgressController controller,
   bool success,
 ) {
-  ScaffoldMessenger.of(context).showSnackBar(
+  messenger.hideCurrentSnackBar();
+  messenger.showSnackBar(
     SnackBar(
       content: Text(
         success
-            ? 'Progress updated.'
+            ? 'Progress updated successfully.'
             : controller.errorMessage.value ?? 'Progress could not be updated.',
+        style: const TextStyle(fontWeight: FontWeight.w500),
       ),
+      backgroundColor: success
+          ? const Color(0xFF10B981)
+          : const Color(0xFFEF4444),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      duration: const Duration(seconds: 2),
     ),
   );
 }

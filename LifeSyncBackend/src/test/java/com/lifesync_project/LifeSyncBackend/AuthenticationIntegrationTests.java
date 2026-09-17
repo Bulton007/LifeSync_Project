@@ -94,6 +94,23 @@ class AuthenticationIntegrationTests {
     }
 
     @Test
+    void checkEmailReturnsTrueIfRegisteredAndFalseIfNot() throws Exception {
+        String existingEmail = "check-email-exists@lifesync.test";
+        saveVerifiedUser(existingEmail);
+
+        mockMvc.perform(get("/api/auth/check-email")
+                        .param("email", existingEmail))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.exists").value(true))
+                .andExpect(jsonPath("$.email").value(existingEmail));
+
+        mockMvc.perform(get("/api/auth/check-email")
+                        .param("email", "available-new-email@lifesync.test"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.exists").value(false));
+    }
+
+    @Test
     void loginDoesNotRevealWhetherAnEmailIsRegistered() throws Exception {
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -95,8 +95,8 @@ class _SignInScreenState extends State<SignInScreen> {
                     // Abstract Plant Logo from Life-Sync SVG File (Group 11.svg)
                     SvgPicture.asset(
                       LifeSyncSvgAssets.group11,
-                      width: 150,
-                      height: 160,
+                      width: 175,
+                      height: 180,
                       fit: BoxFit.contain,
                     ),
                   ],

@@ -4,3 +4,15 @@
 /merge-format-results.log
 /life_sync_app/*-preview.png
 /.private-backups/
+
+# Environment files
+.env
+.env.*
+!.env.example
+*.env
+
+# Logs
+*.log
+logs/
+LifeSyncBackend/logs/
+

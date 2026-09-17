@@ -58,16 +58,19 @@ abstract final class AppIcons {
   static const String iconGoals = LifeSyncSvgAssets.bottomGoal;
   static const String iconGoalsSelected = LifeSyncSvgAssets.bottomGoalSelected;
   static const String iconFinance = LifeSyncSvgAssets.bottomFinance;
-  static const String iconFinanceSelected = LifeSyncSvgAssets.bottomFinanceSelected;
+  static const String iconFinanceSelected =
+      LifeSyncSvgAssets.bottomFinanceSelected;
   static const String iconHabits = 'assets/icons/habits.svg';
   static const String iconJournal = LifeSyncSvgAssets.bottomJournal;
-  static const String iconJournalSelected = LifeSyncSvgAssets.bottomJournalSelected;
+  static const String iconJournalSelected =
+      LifeSyncSvgAssets.bottomJournalSelected;
   static const String iconMore = LifeSyncSvgAssets.bottomMore;
   static const String iconMoreSelected = LifeSyncSvgAssets.bottomMoreSelected;
   static const String iconPomo = LifeSyncSvgAssets.bottomPomo;
   static const String iconPomoSelected = LifeSyncSvgAssets.bottomPomoSelected;
   static const String iconSetting = LifeSyncSvgAssets.bottomSetting;
-  static const String iconSettingSelected = LifeSyncSvgAssets.bottomSettingSelected;
+  static const String iconSettingSelected =
+      LifeSyncSvgAssets.bottomSettingSelected;
   static const String iconBot = 'assets/icons/bot.svg';
   static const String iconPlus = 'assets/icons/plus.svg';
   static const String iconNotification = 'assets/icons/notification.svg';
@@ -129,26 +132,19 @@ abstract final class LifeSyncSvgAssets {
       'assets/Life-Sync SVG File/Icons/task-edit-01.svg';
 
   // Screen Illustrations & Vector Graphics
-  static const String hello =
-      'assets/Life-Sync SVG File/Images/Hello.svg';
-  static const String bro =
-      'assets/Life-Sync SVG File/Images/bro.svg';
-  static const String pana =
-      'assets/Life-Sync SVG File/Images/pana.svg';
-  static const String rafiki =
-      'assets/Life-Sync SVG File/Images/rafiki.svg';
+  static const String hello = 'assets/Life-Sync SVG File/Images/Hello.svg';
+  static const String bro = 'assets/Life-Sync SVG File/Images/bro.svg';
+  static const String pana = 'assets/Life-Sync SVG File/Images/pana.svg';
+  static const String rafiki = 'assets/Life-Sync SVG File/Images/rafiki.svg';
   static const String goalScreenMain =
       'assets/Life-Sync SVG File/Images/GoalScreenMain.svg';
   static const String goalChecklist =
       'assets/Life-Sync SVG File/Images/Goal-Checklist.svg';
   static const String createdGoalSuccess =
       'assets/Life-Sync SVG File/Images/CreatedGoalSuccess.svg';
-  static const String mindMap =
-      'assets/Life-Sync SVG File/Images/mind-map.svg';
-  static const String group11 =
-      'assets/Life-Sync SVG File/Images/Group 11.svg';
-  static const String group =
-      'assets/Life-Sync SVG File/Images/Group.svg';
+  static const String mindMap = 'assets/Life-Sync SVG File/Images/mind-map.svg';
+  static const String group11 = 'assets/Life-Sync SVG File/Images/Group 11.svg';
+  static const String group = 'assets/Life-Sync SVG File/Images/Group.svg';
   static const String activityTracker =
       'assets/Life-Sync SVG File/Images/undraw_activity-tracker_3o6r 1.svg';
   static const String done =

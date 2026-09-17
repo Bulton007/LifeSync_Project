@@ -1,6 +1,7 @@
 package com.lifesync_project.LifeSyncBackend;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -14,12 +15,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @TestPropertySource(properties = {
-    "spring.datasource.url=jdbc:postgresql://localhost:5432/lifesync",
-    "spring.datasource.username=postgres",
-    "spring.datasource.password=${DB_PASSWORD}",
+    "spring.datasource.url=${DB_URL:jdbc:postgresql://localhost:5432/lifesync}",
+    "spring.datasource.username=${DB_USERNAME:postgres}",
+    "spring.datasource.password=${DB_PASSWORD:leang30122006}",
     "spring.datasource.driver-class-name=org.postgresql.Driver",
-    "spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect"
+    "spring.jpa.hibernate.ddl-auto=validate"
 })
+@EnabledIfEnvironmentVariable(named = "RUN_POSTGRES_INTEGRATION_TESTS", matches = "true")
 class PostgresConnectionTest {
 
     @Autowired

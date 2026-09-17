@@ -23,7 +23,6 @@ import java.util.List;
     "spring.datasource.username=${DB_USERNAME:postgres}",
     "spring.datasource.password=${DB_PASSWORD:leang30122006}",
     "spring.datasource.driver-class-name=org.postgresql.Driver",
-    "spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect",
     "spring.jpa.hibernate.ddl-auto=update"
 })
 public class DatabaseFeatureSeedTest {
@@ -73,37 +72,17 @@ public class DatabaseFeatureSeedTest {
         }
 
         // 2. Pick or create active user for features
-        Users activeUser = existingUsers.stream()
-                .filter(u -> Boolean.TRUE.equals(u.getVerified()))
-                .findFirst()
-                .orElse(null);
-
-        if (activeUser == null) {
-            if (!existingUsers.isEmpty()) {
-                activeUser = existingUsers.get(0);
-                activeUser.setVerified(true);
-                activeUser = userRepository.saveAndFlush(activeUser);
-                activeUser = Users.builder()
-                        .fullName("L")
+        Users activeUser = userRepository.findByEmail("hongsaoleang@gmail.com")
+                .orElseGet(() -> userRepository.saveAndFlush(Users.builder()
+                        .fullName("Hong Sao Leang")
                         .email("hongsaoleang@gmail.com")
-                        .phoneNumber("+1234567890")
+                        .phoneNumber("+85512345678")
                         .password(passwordEncoder.encode("Password123!"))
                         .verified(true)
                         .createdAt(LocalDateTime.now())
-                        .build();
-                activeUser = userRepository.saveAndFlush(activeUser);
-            }
-        }
-        if (userRepository.findByEmail("hongsaoleang@gmail.com").isEmpty()) {
-            userRepository.saveAndFlush(Users.builder()
-                    .fullName("L")
-                    .email("hongsaoleang@gmail.com")
-                    .phoneNumber("+85512345678")
-                    .password(passwordEncoder.encode("Password123!"))
-                    .verified(true)
-                    .createdAt(LocalDateTime.now())
-                    .build());
-        }
+                        .build()));
+        activeUser.setVerified(true);
+        activeUser = userRepository.saveAndFlush(activeUser);
         System.out.println("\n[2] ACTIVE USER FOR FEATURE DATA: ID " + activeUser.getId() + " (" + activeUser.getEmail() + ")");
 
         // 3. Insert 3 Tasks into tasks table

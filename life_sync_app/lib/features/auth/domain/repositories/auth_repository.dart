@@ -2,6 +2,8 @@ import 'package:life_sync_app/core/network/api_result.dart';
 import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
 
 abstract interface class AuthRepository {
+  Future<ApiResult<bool>> checkEmailExists(String email);
+
   Future<ApiResult<String>> register({
     required String fullName,
     required String email,

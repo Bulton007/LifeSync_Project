@@ -187,25 +187,25 @@ final class _OnboardingPage extends StatelessWidget {
             ),
             const SizedBox(height: 36),
 
-            // SVG in the middle of screen with preserved dimensions:
-            // width = 224.54px, height = 135.01px
+            // SVG in the middle of screen with enhanced visibility:
+            // width = 270px, height = 180px
             TweenAnimationBuilder<double>(
               tween: Tween(begin: .92, end: 1),
               duration: const Duration(milliseconds: 320),
               builder: (_, value, child) =>
                   Transform.scale(scale: value, child: child),
               child: SizedBox(
-                width: 224.54,
-                height: 135.01,
+                width: 270,
+                height: 180,
                 child: Center(
                   child: data.svgAsset != null
                       ? SvgPicture.asset(
                           data.svgAsset!,
-                          width: 224.54,
-                          height: 135.01,
+                          width: 270,
+                          height: 180,
                           fit: BoxFit.contain,
                         )
-                      : Icon(data.icon, size: 84, color: colors.primaryBlue),
+                      : Icon(data.icon, size: 96, color: colors.primaryBlue),
                 ),
               ),
             ),

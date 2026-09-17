@@ -78,7 +78,10 @@ void main() {
         skipAuthentication: true,
       );
 
-      expect(result.dataOrNull, 'Register successfully. Please verify your OTP.');
+      expect(
+        result.dataOrNull,
+        'Register successfully. Please verify your OTP.',
+      );
       expect(adapter.lastRequest?.responseType, ResponseType.plain);
     });
 

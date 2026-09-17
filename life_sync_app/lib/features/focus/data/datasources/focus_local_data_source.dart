@@ -8,9 +8,7 @@ final class FocusLocalDataSource {
   final LifeSyncDatabase _database;
   final AuthSessionService _sessionService;
 
-  int get _ownerId =>
-      _sessionService.currentSession?.userId ??
-      (throw StateError('A signed-in user is required for focus history.'));
+  int get _ownerId => _sessionService.currentSession?.userId ?? 0;
 
   Future<List<FocusSession>> readAll() async {
     final database = await _database.database;

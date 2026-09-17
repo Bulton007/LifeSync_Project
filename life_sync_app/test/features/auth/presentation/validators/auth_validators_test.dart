@@ -10,7 +10,10 @@ void main() {
 
     test('rejects empty and invalid email addresses', () {
       expect(AuthValidators.email(''), 'Email is required.');
-      expect(AuthValidators.email('not-an-email'), 'Enter a valid email address.');
+      expect(
+        AuthValidators.email('not-an-email'),
+        'Enter a valid email address.',
+      );
     });
 
     test('normalizes email casing and whitespace', () {
@@ -34,7 +37,10 @@ void main() {
     });
 
     test('validates password confirmation', () {
-      expect(AuthValidators.confirmPassword('Test123456', 'Test123456'), isNull);
+      expect(
+        AuthValidators.confirmPassword('Test123456', 'Test123456'),
+        isNull,
+      );
       expect(
         AuthValidators.confirmPassword('Test123457', 'Test123456'),
         'Passwords do not match.',
@@ -54,7 +60,10 @@ void main() {
       expect(AuthValidators.otp('123456'), isNull);
       expect(AuthValidators.otp(''), 'OTP is required.');
       expect(AuthValidators.otp('12345'), 'OTP must contain exactly 6 digits.');
-      expect(AuthValidators.otp('1234567'), 'OTP must contain exactly 6 digits.');
+      expect(
+        AuthValidators.otp('1234567'),
+        'OTP must contain exactly 6 digits.',
+      );
       expect(AuthValidators.otp('12a456'), 'OTP must contain only digits.');
     });
   });

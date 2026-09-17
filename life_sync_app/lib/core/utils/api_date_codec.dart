@@ -61,8 +61,8 @@ abstract final class ApiDateCodec {
     final str = value.toString().trim();
     if (str.isEmpty) return DateTime.now();
 
-    final parsed = DateTime.tryParse(str) ??
-        DateTime.tryParse(str.replaceFirst(' ', 'T'));
+    final parsed =
+        DateTime.tryParse(str) ?? DateTime.tryParse(str.replaceFirst(' ', 'T'));
     if (parsed != null) {
       return parsed.isUtc ? parsed.toLocal() : parsed;
     }

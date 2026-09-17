@@ -12,7 +12,9 @@ import 'package:life_sync_app/features/tasks/presentation/controllers/task_contr
 import 'package:life_sync_app/features/user/presentation/controllers/profile_controller.dart';
 
 final class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({this.onBackPressed, super.key});
+
+  final VoidCallback? onBackPressed;
 
   Future<void> _selectTheme(BuildContext context) async {
     final controller = Get.find<ThemeController>();
@@ -159,7 +161,15 @@ final class SettingsScreen extends StatelessWidget {
                 children: [
                   InkWell(
                     borderRadius: BorderRadius.circular(24),
-                    onTap: () => Navigator.of(context).maybePop(),
+                    onTap: () {
+                      if (onBackPressed != null) {
+                        onBackPressed!();
+                      } else if (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop();
+                      } else {
+                        Get.offAllNamed<void>(AppRoutes.shell);
+                      }
+                    },
                     child: Container(
                       width: 44,
                       height: 44,
@@ -261,6 +271,7 @@ final class SettingsScreen extends StatelessWidget {
                     label: 'Tasks',
                     count: tasks.tasks.length,
                     color: primaryBlue,
+                    onTap: () => Get.toNamed<void>(AppRoutes.tasks),
                   ),
                   const SizedBox(width: 10),
                   _StatCard(
@@ -268,6 +279,7 @@ final class SettingsScreen extends StatelessWidget {
                     label: 'Goals',
                     count: goals.goals.length,
                     color: primaryBlue,
+                    onTap: () => Get.toNamed<void>(AppRoutes.goalEditor),
                   ),
                   const SizedBox(width: 10),
                   _StatCard(
@@ -275,6 +287,7 @@ final class SettingsScreen extends StatelessWidget {
                     label: 'Habit',
                     count: habits.habits.length,
                     color: primaryBlue,
+                    onTap: () => Get.toNamed<void>(AppRoutes.habits),
                   ),
                   const SizedBox(width: 10),
                   _StatCard(
@@ -282,6 +295,7 @@ final class SettingsScreen extends StatelessWidget {
                     label: 'Journal',
                     count: journals.entries.length,
                     color: primaryBlue,
+                    onTap: () => Get.toNamed<void>(AppRoutes.journal),
                   ),
                 ],
               ),
@@ -380,27 +394,52 @@ final class SettingsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // More tools (untouched)
-              ExpansionTile(
-                title: const Text('More tools', style: TextStyle(fontSize: 13)),
-                children: [
-                  ListTile(
-                    title: const Text('Journal'),
-                    onTap: () => Get.toNamed<void>(AppRoutes.journal),
-                  ),
-                  ListTile(
-                    title: const Text('Pomodoro & Stopwatch'),
-                    onTap: () => Get.toNamed<void>(AppRoutes.focusTimer),
-                  ),
-                  ListTile(
-                    title: const Text('Calendar'),
-                    onTap: () => Get.toNamed<void>(AppRoutes.calendar),
-                  ),
-                  ListTile(
-                    title: const Text('Personal progress'),
-                    onTap: () => Get.toNamed<void>(AppRoutes.personalProgress),
-                  ),
-                ],
+              // Productivity & More Tools Group
+              Text(
+                'Productivity & More Tools',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: colors.primaryText,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                decoration: BoxDecoration(
+                  color: cardBgColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  children: [
+                    _SettingRow(
+                      icon: Icons.edit_note_rounded,
+                      title: 'Journal',
+                      value: '${journals.entries.length} entries',
+                      onTap: () => Get.toNamed<void>(AppRoutes.journal),
+                    ),
+                    _SettingRow(
+                      icon: Icons.timer_outlined,
+                      title: 'Pomodoro & Stopwatch',
+                      onTap: () => Get.toNamed<void>(AppRoutes.focusTimer),
+                    ),
+                    _SettingRow(
+                      icon: Icons.insights_rounded,
+                      title: 'Focus Statistics',
+                      onTap: () => Get.toNamed<void>(AppRoutes.focusStatistics),
+                    ),
+                    _SettingRow(
+                      icon: Icons.calendar_month_rounded,
+                      title: 'Calendar',
+                      onTap: () => Get.toNamed<void>(AppRoutes.calendar),
+                    ),
+                    _SettingRow(
+                      icon: Icons.emoji_events_outlined,
+                      title: 'Personal Progress & Wins',
+                      onTap: () =>
+                          Get.toNamed<void>(AppRoutes.personalProgress),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 24),
             ],
@@ -416,54 +455,63 @@ class _StatCard extends StatelessWidget {
   final String label;
   final int count;
   final Color color;
+  final VoidCallback? onTap;
 
   const _StatCard({
     required this.icon,
     required this.label,
     required this.count,
     required this.color,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final colors = context.lifeSyncColors;
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-        decoration: BoxDecoration(
-          color: colors.cardSurface,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+            decoration: BoxDecoration(
+              color: colors.cardSurface,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(icon, size: 18, color: color),
-                const SizedBox(width: 4),
-                Flexible(
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: colors.secondaryText,
-                      fontWeight: FontWeight.w500,
+                Row(
+                  children: [
+                    Icon(icon, size: 18, color: color),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: colors.secondaryText,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    overflow: TextOverflow.ellipsis,
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '$count',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: colors.primaryText,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              '$count',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: colors.primaryText,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

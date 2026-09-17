@@ -33,11 +33,7 @@ final class AppEmptyView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (svgAsset != null)
-              SvgPicture.asset(
-                svgAsset!,
-                height: 150,
-                fit: BoxFit.contain,
-              )
+              SvgPicture.asset(svgAsset!, height: 150, fit: BoxFit.contain)
             else
               Icon(icon, color: AppColors.textSecondary, size: 40),
             const SizedBox(height: AppSpacing.md),
