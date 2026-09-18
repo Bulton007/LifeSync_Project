@@ -53,10 +53,20 @@ final class AppEnvironment {
       defaultValue: 'gemini-2.5-flash',
     );
 
+    String effectiveBaseUrl = selectedBaseUrl.trim().isNotEmpty
+        ? selectedBaseUrl
+        : _developmentBaseUrl;
+
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+      final parsed = Uri.tryParse(effectiveBaseUrl.trim());
+      if (parsed != null &&
+          (parsed.host == 'localhost' || parsed.host == '127.0.0.1')) {
+        effectiveBaseUrl = parsed.replace(host: '10.0.2.2').toString();
+      }
+    }
+
     return AppEnvironment(
-      apiBaseUrl: selectedBaseUrl.trim().isNotEmpty
-          ? selectedBaseUrl
-          : _developmentBaseUrl,
+      apiBaseUrl: effectiveBaseUrl,
       connectTimeout: Duration(seconds: connectTimeoutSec),
       sendTimeout: Duration(seconds: sendTimeoutSec),
       receiveTimeout: Duration(seconds: receiveTimeoutSec),
@@ -74,8 +84,7 @@ final class AppEnvironment {
   final String geminiApiBaseUrl;
   final String geminiModel;
 
-  static const _androidDevelopmentBaseUrl =
-      'https://lifesync-backend-bultoncr7-dev.apps.rm3.7wse.p1.openshiftapps.com';
+  static const _androidDevelopmentBaseUrl = 'http://10.0.2.2:8085';
 
   static String get _developmentBaseUrl {
     if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {

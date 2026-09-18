@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:life_sync_app/core/theme/app_colors.dart';
 
 class AddMilestoneScreen extends StatefulWidget {
   const AddMilestoneScreen({super.key});
@@ -69,6 +70,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
   // Add a task
   void _addTask() {
     final controller = TextEditingController();
+    final colors = context.lifeSyncColors;
 
     showDialog(
       context: context,
@@ -79,7 +81,12 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
             controller: controller,
             autofocus: true,
             maxLength: 100,
-            decoration: const InputDecoration(hintText: 'Enter task name'),
+            style: TextStyle(color: colors.primaryText),
+            cursorColor: colors.primaryBlue,
+            decoration: InputDecoration(
+              hintText: 'Enter task name',
+              hintStyle: TextStyle(color: colors.secondaryText),
+            ),
           ),
           actions: [
             TextButton(
@@ -115,6 +122,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
   // Edit an existing task
   void _editTask(int index) {
     final controller = TextEditingController(text: _tasks[index]);
+    final colors = context.lifeSyncColors;
 
     showDialog(
       context: context,
@@ -125,7 +133,12 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
             controller: controller,
             autofocus: true,
             maxLength: 100,
-            decoration: const InputDecoration(hintText: 'Enter task name'),
+            style: TextStyle(color: colors.primaryText),
+            cursorColor: colors.primaryBlue,
+            decoration: InputDecoration(
+              hintText: 'Enter task name',
+              hintStyle: TextStyle(color: colors.secondaryText),
+            ),
           ),
           actions: [
             TextButton(
@@ -160,8 +173,11 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colors.pageBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
@@ -176,33 +192,33 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colors.cardSurface,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withValues(alpha: 0.08),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
                       ],
-                      border: Border.all(color: Colors.grey.shade100),
+                      border: Border.all(color: colors.border),
                     ),
                     child: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.close,
-                        color: Colors.black87,
+                        color: colors.primaryText,
                         size: 20,
                       ),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
 
-                  const Text(
+                  Text(
                     'New Milestone',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: colors.primaryText,
                     ),
                   ),
 
@@ -210,7 +226,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                     onPressed: _saveMilestone,
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFF2979FF),
-                      side: BorderSide(color: Colors.grey.shade300),
+                      side: BorderSide(color: colors.border),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -224,12 +240,12 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                       size: 16,
                       color: Color(0xFF2979FF),
                     ),
-                    label: const Text(
+                    label: Text(
                       'Save',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 13,
-                        color: Colors.black87,
+                        color: colors.primaryText,
                       ),
                     ),
                   ),
@@ -249,12 +265,12 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade700,
+                      color: colors.primaryText,
                     ),
                   ),
                   Text(
                     '${_nameController.text.length}/60',
-                    style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
+                    style: TextStyle(fontSize: 11, color: colors.secondaryText),
                   ),
                 ],
               ),
@@ -264,34 +280,36 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
               TextField(
                 controller: _nameController,
                 maxLength: 60,
+                style: TextStyle(color: colors.primaryText, fontSize: 14),
+                cursorColor: colors.primaryBlue,
                 onChanged: (_) {
                   setState(() {});
                 },
                 decoration: InputDecoration(
                   hintText: 'Set a Major Step for Your Goal',
                   hintStyle: TextStyle(
-                    color: Colors.grey.shade400,
+                    color: colors.secondaryText,
                     fontSize: 14,
                   ),
                   counterText: '',
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: colors.inputSurface,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 16,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF2979FF),
+                    borderSide: BorderSide(
+                      color: colors.primaryBlue,
                       width: 1.5,
                     ),
                   ),
@@ -311,12 +329,12 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade700,
+                      color: colors.primaryText,
                     ),
                   ),
                   Text(
                     '${_descController.text.length}/250',
-                    style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
+                    style: TextStyle(fontSize: 11, color: colors.secondaryText),
                   ),
                 ],
               ),
@@ -326,6 +344,8 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
               TextField(
                 controller: _descController,
                 maxLength: 250,
+                style: TextStyle(color: colors.primaryText, fontSize: 14),
+                cursorColor: colors.primaryBlue,
                 onChanged: (_) {
                   setState(() {});
                 },
@@ -333,28 +353,28 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                 decoration: InputDecoration(
                   hintText: 'Add Context',
                   hintStyle: TextStyle(
-                    color: Colors.grey.shade400,
+                    color: colors.secondaryText,
                     fontSize: 14,
                   ),
                   counterText: '',
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: colors.inputSurface,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 16,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF2979FF),
+                    borderSide: BorderSide(
+                      color: colors.primaryBlue,
                       width: 1.5,
                     ),
                   ),
@@ -372,12 +392,12 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Tasks',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                          color: colors.primaryText,
                         ),
                       ),
 
@@ -387,7 +407,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                         'Assign Task into the Milestone at least 1',
                         style: TextStyle(
                           fontSize: 11,
-                          color: Colors.grey.shade500,
+                          color: colors.secondaryText,
                         ),
                       ),
                     ],
@@ -396,7 +416,9 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                   OutlinedButton.icon(
                     onPressed: _generateAiTasks,
                     style: OutlinedButton.styleFrom(
-                      backgroundColor: const Color(0xFFE8F1FC),
+                      backgroundColor: isDark
+                          ? colors.elevatedSurface
+                          : const Color(0xFFE8F1FC),
                       side: BorderSide.none,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -436,23 +458,23 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                     horizontal: 16,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
+                    color: colors.cardSurface,
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.grey.shade200),
+                    border: Border.all(color: colors.border),
                   ),
                   child: Column(
                     children: [
                       Icon(
                         Icons.task_alt,
                         size: 32,
-                        color: Colors.grey.shade400,
+                        color: colors.secondaryText,
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'No tasks added yet',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.grey.shade500,
+                          color: colors.secondaryText,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -460,7 +482,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                         'Add at least one task to continue',
                         style: TextStyle(
                           fontSize: 11,
-                          color: Colors.grey.shade400,
+                          color: colors.disabledText,
                         ),
                       ),
                     ],
@@ -478,19 +500,19 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: colors.cardSurface,
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.grey.shade200),
+                    border: Border.all(color: colors.border),
                   ),
                   child: Row(
                     children: [
                       Expanded(
                         child: Text(
                           '${index + 1}.  $task',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
-                            color: Colors.black87,
+                            color: colors.primaryText,
                           ),
                         ),
                       ),

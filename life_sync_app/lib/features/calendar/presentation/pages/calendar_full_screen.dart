@@ -55,7 +55,7 @@ final class _CalendarFullScreenState extends State<CalendarFullScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: context.lifeSyncColors.pageBackground,
       body: SafeArea(
         child: Obx(() {
           final state = _taskController.state.value;

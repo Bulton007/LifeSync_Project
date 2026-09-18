@@ -43,8 +43,9 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: colors.pageBackground,
       body: SafeArea(
         child: Obx(() {
           final habit =
@@ -82,12 +83,12 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE8F1FC),
+                          color: colors.primaryBlue.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.autorenew,
-                          color: AppColors.primary,
+                          color: colors.primaryBlue,
                           size: 24,
                         ),
                       ),
@@ -95,11 +96,13 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                       Expanded(
                         child: Text(
                           habit.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
+                            color: colors.primaryText,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       InkWell(
@@ -111,14 +114,14 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: colors.cardSurface,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey.shade200),
+                            border: Border.all(color: colors.border),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.edit_outlined,
                             size: 18,
-                            color: AppColors.primary,
+                            color: colors.primaryBlue,
                           ),
                         ),
                       ),
@@ -130,15 +133,19 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                       Icon(
                         Icons.calendar_today_outlined,
                         size: 14,
-                        color: Colors.grey.shade600,
+                        color: colors.secondaryText,
                       ),
                       const SizedBox(width: 6),
-                      Text(
-                        'Started on ${_formatDate(habit.startDate ?? habit.createdAt ?? DateTime.now())}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade600,
-                          fontWeight: FontWeight.w500,
+                      Expanded(
+                        child: Text(
+                          'Started on ${_formatDate(habit.startDate ?? habit.createdAt ?? DateTime.now())}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: colors.secondaryText,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
@@ -149,7 +156,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                       habit.description!,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade700,
+                        color: colors.secondaryText,
                       ),
                     ),
                   ],
@@ -218,28 +225,28 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                     children: [
                       Text(
                         '${_visibleMonth.year}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+                          color: colors.primaryBlue,
                         ),
                       ),
                       Row(
                         children: [
                           Text(
                             _monthName(_visibleMonth.month),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                              color: colors.primaryText,
                             ),
                           ),
                           const SizedBox(width: 8),
                           IconButton(
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.chevron_left,
                               size: 18,
-                              color: AppColors.primary,
+                              color: colors.primaryBlue,
                             ),
                             constraints: const BoxConstraints(),
                             padding: EdgeInsets.zero,
@@ -252,10 +259,10 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                           ),
                           const SizedBox(width: 8),
                           IconButton(
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.chevron_right,
                               size: 18,
-                              color: AppColors.primary,
+                              color: colors.primaryBlue,
                             ),
                             constraints: const BoxConstraints(),
                             padding: EdgeInsets.zero,
@@ -277,35 +284,36 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                     completedDates: completedDates,
                   ),
                   const SizedBox(height: 24),
-                  const Text(
+                  Text(
                     'Completion history',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: colors.primaryText,
                     ),
                   ),
                   const SizedBox(height: 10),
                   if (history.isEmpty)
-                    const Text(
+                    Text(
                       'No completions recorded yet.',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 12, color: colors.secondaryText),
                     )
                   else
                     for (final log in history.take(12))
                       ListTile(
                         dense: true,
                         contentPadding: EdgeInsets.zero,
-                        leading: const Icon(
+                        leading: Icon(
                           Icons.check_circle,
-                          color: AppColors.primary,
+                          color: colors.primaryBlue,
                           size: 20,
                         ),
                         title: Text(
                           _formatDate(log.completedDate),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
+                            color: colors.primaryText,
                           ),
                         ),
                         subtitle: log.note.isEmpty
@@ -314,6 +322,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                                 log.note,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: colors.secondaryText),
                               ),
                       ),
                 ],
@@ -325,20 +334,23 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
     );
   }
 
-  Widget _backButton() => Align(
-    alignment: Alignment.centerLeft,
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.grey.shade100),
+  Widget _backButton() {
+    final colors = context.lifeSyncColors;
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        decoration: BoxDecoration(
+          color: colors.cardSurface,
+          shape: BoxShape.circle,
+          border: Border.all(color: colors.border),
+        ),
+        child: IconButton(
+          icon: Icon(Icons.chevron_left, color: colors.primaryText),
+          onPressed: Get.back,
+        ),
       ),
-      child: IconButton(
-        icon: const Icon(Icons.chevron_left, color: Colors.black87),
-        onPressed: Get.back,
-      ),
-    ),
-  );
+    );
+  }
 }
 
 class _StatCard extends StatelessWidget {
@@ -353,58 +365,67 @@ class _StatCard extends StatelessWidget {
   final String value;
   final String suffix;
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.grey.shade200),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            icon,
-            const SizedBox(width: 6),
-            Expanded(
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        RichText(
-          text: TextSpan(
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colors.cardSurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              TextSpan(
-                text: '$value ',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              TextSpan(
-                text: suffix,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w500,
+              icon,
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colors.secondaryText,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],
           ),
-        ),
-      ],
-    ),
-  );
+          const SizedBox(height: 8),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '$value ',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: colors.primaryText,
+                    ),
+                  ),
+                  TextSpan(
+                    text: suffix,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: colors.secondaryText,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _CalendarGrid extends StatelessWidget {
@@ -418,18 +439,19 @@ class _CalendarGrid extends StatelessWidget {
   final Set<String> completedDates;
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     final first = DateTime(month.year, month.month);
     final leading = first.weekday - 1;
     final count = DateTime(month.year, month.month + 1, 0).day;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.cardSurface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: colors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -446,7 +468,7 @@ class _CalendarGrid extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey,
+                      color: colors.secondaryText,
                     ),
                   ),
                 )
@@ -478,7 +500,9 @@ class _CalendarGrid extends StatelessWidget {
                     color: done ? AppColors.primary : Colors.transparent,
                     shape: BoxShape.circle,
                     border: scheduled && !done
-                        ? Border.all(color: Colors.blue.shade100)
+                        ? Border.all(
+                            color: colors.primaryBlue.withValues(alpha: 0.3),
+                          )
                         : null,
                   ),
                   child: Text(
@@ -489,8 +513,8 @@ class _CalendarGrid extends StatelessWidget {
                       color: done
                           ? Colors.white
                           : scheduled
-                          ? Colors.black87
-                          : Colors.grey.shade300,
+                          ? colors.primaryText
+                          : colors.secondaryText.withValues(alpha: 0.4),
                     ),
                   ),
                 ),

@@ -266,9 +266,10 @@ class _HabitCard extends StatelessWidget {
                       habit.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
+                        color: colors.primaryText,
                       ),
                     ),
                     const SizedBox(height: 2),

@@ -36,8 +36,11 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: colors.pageBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
@@ -52,31 +55,32 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: colors.cardSurface,
                           shape: BoxShape.circle,
+                          border: Border.all(color: colors.border),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withValues(alpha: 0.08),
+                              color: Colors.black.withValues(alpha: 0.08),
                               blurRadius: 8,
                               offset: const Offset(0, 3),
                             ),
                           ],
                         ),
                         child: IconButton(
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.chevron_left,
-                            color: Colors.black87,
+                            color: colors.primaryText,
                           ),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ),
                       const SizedBox(width: 12),
-                      const Text(
+                      Text(
                         'Financial Analysis',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                          color: colors.primaryText,
                         ),
                       ),
                     ],
@@ -87,27 +91,28 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colors.cardSurface,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.grey.shade200),
+                      border: Border.all(color: colors.border),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: _mainTimeframe,
+                        dropdownColor: colors.cardSurface,
                         isDense: true,
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.keyboard_arrow_down,
                           size: 16,
-                          color: Colors.black54,
+                          color: colors.secondaryText,
                         ),
                         items: ['Month', 'Quoter', 'Year'].map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(
                               value,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.black87,
+                                color: colors.primaryText,
                               ),
                             ),
                           );
@@ -127,11 +132,12 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                   horizontal: 12,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colors.cardSurface,
                   borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: colors.border),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.04),
+                      color: Colors.black.withValues(alpha: 0.04),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -141,10 +147,10 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.chevron_left,
                         size: 18,
-                        color: Colors.black54,
+                        color: colors.secondaryText,
                       ),
                       onPressed: () {},
                     ),
@@ -152,17 +158,17 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                       _mainTimeframe == 'Quoter'
                           ? 'June ,July, Aug 2026'
                           : 'August 2026',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: colors.primaryText,
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.chevron_right,
                         size: 18,
-                        color: Colors.black54,
+                        color: colors.secondaryText,
                       ),
                       onPressed: () {},
                     ),
@@ -175,11 +181,12 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colors.cardSurface,
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: colors.border),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.06),
+                      color: Colors.black.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -188,39 +195,45 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildSummaryItem(
-                      icon: Icons.trending_up,
-                      iconBg: Colors.green.shade50,
-                      iconColor: Colors.green,
-                      title: 'Income',
-                      amount: '\$284.56',
-                      change: '8.2% vs Last Quoter',
+                    Expanded(
+                      child: _buildSummaryItem(
+                        icon: Icons.trending_up,
+                        iconBg: isDark ? const Color(0xFF1B382B) : Colors.green.shade50,
+                        iconColor: Colors.green,
+                        title: 'Income',
+                        amount: '\$284.56',
+                        change: '8.2% vs Last Quoter',
+                      ),
                     ),
                     Container(
                       height: 50,
                       width: 1,
-                      color: Colors.grey.shade100,
+                      color: colors.divider,
                     ),
-                    _buildSummaryItem(
-                      icon: Icons.trending_down,
-                      iconBg: Colors.red.shade50,
-                      iconColor: Colors.red,
-                      title: 'Expense',
-                      amount: '\$50.00',
-                      change: '8.2% vs Last Quoter',
+                    Expanded(
+                      child: _buildSummaryItem(
+                        icon: Icons.trending_down,
+                        iconBg: isDark ? const Color(0xFF3E1F24) : Colors.red.shade50,
+                        iconColor: Colors.red,
+                        title: 'Expense',
+                        amount: '\$50.00',
+                        change: '8.2% vs Last Quoter',
+                      ),
                     ),
                     Container(
                       height: 50,
                       width: 1,
-                      color: Colors.grey.shade100,
+                      color: colors.divider,
                     ),
-                    _buildSummaryItem(
-                      icon: Icons.savings_outlined,
-                      iconBg: Colors.blue.shade50,
-                      iconColor: AppColors.primary,
-                      title: 'Savings',
-                      amount: '\$70.00',
-                      change: '8.2% vs Last Quoter',
+                    Expanded(
+                      child: _buildSummaryItem(
+                        icon: Icons.savings_outlined,
+                        iconBg: isDark ? const Color(0xFF1E2E4A) : Colors.blue.shade50,
+                        iconColor: AppColors.primary,
+                        title: 'Savings',
+                        amount: '\$70.00',
+                        change: '8.2% vs Last Quoter',
+                      ),
                     ),
                   ],
                 ),
@@ -231,11 +244,12 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colors.cardSurface,
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: colors.border),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.06),
+                      color: isDark ? Colors.black.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -247,14 +261,18 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Overview Trends',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                        Expanded(
+                          child: Text(
+                            'Overview Trends',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: colors.primaryText,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        const SizedBox(width: 8),
                         Row(
                           children: [
                             _buildDropdownFilter(
@@ -312,11 +330,12 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colors.cardSurface,
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: colors.border),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.06),
+                      color: isDark ? Colors.black.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -328,14 +347,18 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Sort by Categories',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                        Expanded(
+                          child: Text(
+                            'Sort by Categories',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: colors.primaryText,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        const SizedBox(width: 8),
                         Row(
                           children: [
                             _buildDropdownFilter(
@@ -376,7 +399,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                               CircularProgressIndicator(
                                 value: 0.75,
                                 strokeWidth: 12,
-                                backgroundColor: Colors.grey.shade200,
+                                backgroundColor: colors.inputSurface,
                                 valueColor: const AlwaysStoppedAnimation<Color>(
                                   Colors.orange,
                                 ),
@@ -384,19 +407,19 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                               Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Income',
                                     style: TextStyle(
                                       fontSize: 9,
-                                      color: Colors.grey,
+                                      color: colors.secondaryText,
                                     ),
                                   ),
-                                  const Text(
+                                  Text(
                                     '\$ 284.56',
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
+                                      color: colors.primaryText,
                                     ),
                                   ),
                                 ],
@@ -463,6 +486,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
     required String amount,
     required String change,
   }) {
+    final colors = context.lifeSyncColors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -474,12 +498,16 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
               child: Icon(icon, size: 12, color: iconColor),
             ),
             const SizedBox(width: 4),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey.shade600,
-                fontWeight: FontWeight.w500,
+            Expanded(
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: colors.secondaryText,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],
@@ -487,10 +515,12 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
         const SizedBox(height: 4),
         Text(
           amount,
-          style: const TextStyle(
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.bold,
-            color: Colors.black87,
+            color: colors.primaryText,
           ),
         ),
         const SizedBox(height: 2),
@@ -498,12 +528,16 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
           children: [
             const Icon(Icons.arrow_downward, size: 9, color: Colors.red),
             const SizedBox(width: 2),
-            Text(
-              change,
-              style: const TextStyle(
-                fontSize: 9,
-                color: Colors.red,
-                fontWeight: FontWeight.w500,
+            Expanded(
+              child: Text(
+                change,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 9,
+                  color: Colors.red,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],
@@ -517,28 +551,30 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
     List<String> items,
     ValueChanged<String?>? onChanged,
   ) {
+    final colors = context.lifeSyncColors;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: colors.inputSurface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: colors.border),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
+          dropdownColor: colors.elevatedSurface,
           isDense: true,
-          icon: const Icon(
+          icon: Icon(
             Icons.keyboard_arrow_down,
             size: 14,
-            color: Colors.black54,
+            color: colors.secondaryText,
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(
               value: item,
               child: Text(
                 item,
-                style: const TextStyle(fontSize: 11, color: Colors.black87),
+                style: TextStyle(fontSize: 11, color: colors.primaryText),
               ),
             );
           }).toList(),
@@ -599,7 +635,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                if (day == 1 ||
+                 if (day == 1 ||
                     day == 5 ||
                     day == 10 ||
                     day == 15 ||
@@ -608,7 +644,10 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                     day == 31)
                   Text(
                     day < 10 ? '0$day' : '$day',
-                    style: const TextStyle(fontSize: 9, color: Colors.grey),
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: context.lifeSyncColors.secondaryText,
+                    ),
                   )
                 else
                   const Text('', style: TextStyle(fontSize: 9)),
@@ -626,6 +665,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
     double expenseFactor,
     double savingFactor,
   ) {
+    final colors = context.lifeSyncColors;
     bool showIncome = _overviewFilter == 'All' || _overviewFilter == 'Income';
     bool showExpense = _overviewFilter == 'All' || _overviewFilter == 'Expense';
     bool showSaving = _overviewFilter == 'All' || _overviewFilter == 'Saving';
@@ -661,12 +701,16 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
           ],
         ),
         const SizedBox(height: 6),
-        Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+        Text(
+          label,
+          style: TextStyle(fontSize: 10, color: colors.secondaryText),
+        ),
       ],
     );
   }
 
   Widget _buildLegendItem(Color color, String label) {
+    final colors = context.lifeSyncColors;
     return Row(
       children: [
         Container(
@@ -675,7 +719,10 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 4),
-        Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+        Text(
+          label,
+          style: TextStyle(fontSize: 10, color: colors.secondaryText),
+        ),
       ],
     );
   }
@@ -687,6 +734,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
     String amount,
     double progress,
   ) {
+    final colors = context.lifeSyncColors;
     return Row(
       children: [
         Container(
@@ -707,15 +755,15 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: colors.primaryText,
                     ),
                   ),
                   Text(
                     amount,
-                    style: const TextStyle(fontSize: 9, color: Colors.grey),
+                    style: TextStyle(fontSize: 9, color: colors.secondaryText),
                   ),
                 ],
               ),
@@ -727,7 +775,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                       borderRadius: BorderRadius.circular(2),
                       child: LinearProgressIndicator(
                         value: progress,
-                        backgroundColor: Colors.grey.shade100,
+                        backgroundColor: colors.inputSurface,
                         valueColor: AlwaysStoppedAnimation<Color>(color),
                         minHeight: 2.5,
                       ),

@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ViewByScreen extends StatefulWidget {
@@ -18,8 +19,11 @@ class _ViewByScreenState extends State<ViewByScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFE0E0E0),
+      backgroundColor: colors.pageBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
@@ -31,11 +35,14 @@ class _ViewByScreenState extends State<ViewByScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colors.cardSurface,
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: colors.border),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
+                      color: isDark
+                          ? Colors.black.withValues(alpha: 0.2)
+                          : Colors.black.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -51,19 +58,19 @@ class _ViewByScreenState extends State<ViewByScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'View By',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                          color: colors.primaryText,
                         ),
                       ),
                       const SizedBox(height: 12),
                       _buildRadioOption('Month'),
-                      const Divider(height: 1, color: Color(0xFFEEEEEE)),
+                      Divider(height: 1, color: colors.divider),
                       _buildRadioOption('Quarter'),
-                      const Divider(height: 1, color: Color(0xFFEEEEEE)),
+                      Divider(height: 1, color: colors.divider),
                       _buildRadioOption('Year'),
                     ],
                   ),
@@ -80,9 +87,9 @@ class _ViewByScreenState extends State<ViewByScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Component 69',
-                        style: TextStyle(color: Colors.black54, fontSize: 12),
+                        style: TextStyle(color: colors.secondaryText, fontSize: 12),
                       ),
                       const SizedBox(height: 6),
                       _buildCustomDropdown(
@@ -98,9 +105,9 @@ class _ViewByScreenState extends State<ViewByScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Component 70',
-                        style: TextStyle(color: Colors.black54, fontSize: 12),
+                        style: TextStyle(color: colors.secondaryText, fontSize: 12),
                       ),
                       const SizedBox(height: 6),
                       _buildCustomDropdown(
@@ -116,9 +123,9 @@ class _ViewByScreenState extends State<ViewByScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Component 71',
-                        style: TextStyle(color: Colors.black54, fontSize: 12),
+                        style: TextStyle(color: colors.secondaryText, fontSize: 12),
                       ),
                       const SizedBox(height: 6),
                       _buildFilterDropdown(
@@ -140,6 +147,7 @@ class _ViewByScreenState extends State<ViewByScreen> {
 
   // Helper builder for Radio List Option
   Widget _buildRadioOption(String title) {
+    final colors = context.lifeSyncColors;
     return InkWell(
       onTap: () => setState(() => _selectedViewBy = title),
       child: Padding(
@@ -149,10 +157,10 @@ class _ViewByScreenState extends State<ViewByScreen> {
           children: [
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
-                color: Colors.black87,
+                color: colors.primaryText,
               ),
             ),
             Icon(
@@ -173,14 +181,20 @@ class _ViewByScreenState extends State<ViewByScreen> {
     required List<String> items,
     required ValueChanged<String?> onChanged,
   }) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.cardSurface,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: colors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.15)
+                : Colors.black.withValues(alpha: 0.04),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -189,18 +203,19 @@ class _ViewByScreenState extends State<ViewByScreen> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
+          dropdownColor: colors.elevatedSurface,
           isDense: true,
-          icon: const Icon(
+          icon: Icon(
             Icons.keyboard_arrow_down,
             size: 18,
-            color: Colors.black87,
+            color: colors.secondaryText,
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(
               value: item,
               child: Text(
                 item,
-                style: const TextStyle(fontSize: 13, color: Colors.black87),
+                style: TextStyle(fontSize: 13, color: colors.primaryText),
               ),
             );
           }).toList(),
@@ -216,6 +231,9 @@ class _ViewByScreenState extends State<ViewByScreen> {
     required List<String> items,
     required ValueChanged<String?> onChanged,
   }) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     Color getIndicatorColor(String item) {
       if (item == 'Expense') return Colors.red;
       if (item == 'Income') return Colors.green;
@@ -225,11 +243,14 @@ class _ViewByScreenState extends State<ViewByScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.cardSurface,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: colors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.15)
+                : Colors.black.withValues(alpha: 0.04),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -238,11 +259,12 @@ class _ViewByScreenState extends State<ViewByScreen> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
+          dropdownColor: colors.elevatedSurface,
           isDense: true,
-          icon: const Icon(
+          icon: Icon(
             Icons.keyboard_arrow_down,
             size: 18,
-            color: Colors.black87,
+            color: colors.secondaryText,
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(
@@ -261,7 +283,7 @@ class _ViewByScreenState extends State<ViewByScreen> {
                   const SizedBox(width: 8),
                   Text(
                     item,
-                    style: const TextStyle(fontSize: 13, color: Colors.black87),
+                    style: TextStyle(fontSize: 13, color: colors.primaryText),
                   ),
                 ],
               ),

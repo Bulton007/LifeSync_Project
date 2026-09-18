@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/features/habits/presentation/models/habit_item_model.dart';
 import 'package:life_sync_app/features/habits/presentation/widgets/habit_sub_item.dart';
 
@@ -18,15 +19,13 @@ class HabitItem extends StatelessWidget {
   final VoidCallback? onToggleExpand;
   final ValueChanged<HabitSubItem>? onSubItemToggle;
 
-  static const Color primaryBlue = Color(0xFF4F8DF7);
-  static const Color darkText = Color(0xFF222222);
-  static const Color secondaryText = Color(0xFF777B87);
   static const Color fireColor = Color(0xFFFF6D00);
-  static const Color progressTrackColor = Color(0xFFE5E7EB);
-  static const Color pillBackground = Color(0xFFEBF3FF);
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -49,7 +48,9 @@ class HabitItem extends StatelessWidget {
                   height: 44,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: habit.iconBgColor,
+                    color: isDark
+                        ? habit.iconColor.withValues(alpha: 0.15)
+                        : habit.iconBgColor,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(habit.icon, color: habit.iconColor, size: 22),
@@ -64,10 +65,10 @@ class HabitItem extends StatelessWidget {
                     children: [
                       Text(
                         habit.title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: darkText,
+                          color: colors.primaryText,
                         ),
                       ),
                       const SizedBox(height: 3),
@@ -82,9 +83,9 @@ class HabitItem extends StatelessWidget {
                           const SizedBox(width: 3),
                           Text(
                             habit.streakText,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
-                              color: secondaryText,
+                              color: colors.secondaryText,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -95,7 +96,7 @@ class HabitItem extends StatelessWidget {
                 ),
 
                 // Right Status Area
-                _buildRightStatus(),
+                _buildRightStatus(context),
               ],
             ),
           ),
@@ -122,7 +123,10 @@ class HabitItem extends StatelessWidget {
     );
   }
 
-  Widget _buildRightStatus() {
+  Widget _buildRightStatus(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     switch (habit.statusType) {
       case HabitStatusType.progress:
         final total = habit.subHabits.length;
@@ -134,10 +138,10 @@ class HabitItem extends StatelessWidget {
           children: [
             Text(
               '$completed/$total',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
-                color: secondaryText,
+                color: colors.secondaryText,
               ),
             ),
             const SizedBox(width: 8),
@@ -147,8 +151,8 @@ class HabitItem extends StatelessWidget {
               child: CircularProgressIndicator(
                 value: fraction,
                 strokeWidth: 2.5,
-                backgroundColor: progressTrackColor,
-                valueColor: const AlwaysStoppedAnimation<Color>(primaryBlue),
+                backgroundColor: colors.inputSurface,
+                valueColor: AlwaysStoppedAnimation<Color>(colors.primaryBlue),
               ),
             ),
             const SizedBox(width: 6),
@@ -156,7 +160,7 @@ class HabitItem extends StatelessWidget {
               habit.isExpanded
                   ? Icons.keyboard_arrow_up_rounded
                   : Icons.keyboard_arrow_down_rounded,
-              color: secondaryText,
+              color: colors.secondaryText,
               size: 20,
             ),
           ],
@@ -169,18 +173,20 @@ class HabitItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
-                color: pillBackground,
+                color: isDark
+                    ? colors.primaryBlue.withValues(alpha: 0.15)
+                    : const Color(0xFFEBF3FF),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_rounded, size: 14, color: primaryBlue),
-                  SizedBox(width: 4),
+                  Icon(Icons.check_rounded, size: 14, color: colors.primaryBlue),
+                  const SizedBox(width: 4),
                   Text(
                     'Completed',
                     style: TextStyle(
-                      color: primaryBlue,
+                      color: colors.primaryBlue,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -189,9 +195,9 @@ class HabitItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 4),
-            const Icon(
+            Icon(
               Icons.chevron_right_rounded,
-              color: secondaryText,
+              color: colors.secondaryText,
               size: 20,
             ),
           ],
@@ -209,17 +215,17 @@ class HabitItem extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: primaryBlue, width: 1.2),
+                border: Border.all(color: colors.primaryBlue, width: 1.2),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_rounded, size: 14, color: primaryBlue),
-                  SizedBox(width: 4),
+                  Icon(Icons.check_rounded, size: 14, color: colors.primaryBlue),
+                  const SizedBox(width: 4),
                   Text(
                     'Done',
                     style: TextStyle(
-                      color: primaryBlue,
+                      color: colors.primaryBlue,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -228,9 +234,9 @@ class HabitItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 4),
-            const Icon(
+            Icon(
               Icons.chevron_right_rounded,
-              color: secondaryText,
+              color: colors.secondaryText,
               size: 20,
             ),
           ],

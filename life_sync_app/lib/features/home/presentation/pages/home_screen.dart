@@ -175,6 +175,7 @@ final class _HomeScreenState extends State<HomeScreen> {
     final today = DateTime.now();
     final monday = today.subtract(Duration(days: today.weekday - 1));
     return Scaffold(
+      backgroundColor: colors.pageBackground,
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: _refresh,
@@ -231,9 +232,10 @@ final class _HomeScreenState extends State<HomeScreen> {
                   const Spacer(),
                   Text(
                     '${_months[today.month - 1]} ${today.year}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
+                      color: colors.primaryText,
                     ),
                   ),
                   const SizedBox(width: 4),
@@ -322,15 +324,20 @@ final class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Today’s Progress',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
+                              color: colors.primaryText,
                             ),
                           ),
                           Text(
                             'Keep going! You’re doing great.',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: colors.secondaryText,
                               fontSize: 11,
@@ -584,7 +591,7 @@ final class _SectionCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: colors.pageBackground,
+        color: colors.cardSurface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: colors.border),
       ),
@@ -614,13 +621,18 @@ final class _SectionHeader extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
+                  color: colors.primaryText,
                 ),
               ),
               Text(
                 subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(color: colors.secondaryText, fontSize: 10),
               ),
             ],
@@ -662,7 +674,14 @@ final class _ProgressCount extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(value, style: const TextStyle(fontSize: 11)),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: colors.primaryText,
+              ),
+            ),
             Text(
               label,
               style: TextStyle(color: colors.secondaryText, fontSize: 9),

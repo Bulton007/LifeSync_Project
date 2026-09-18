@@ -108,16 +108,18 @@ final class _AssistantScreenState extends State<AssistantScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: colors.pageBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: colors.cardSurface,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: Colors.black87,
+            color: colors.primaryText,
             size: 20,
           ),
           onPressed: () => Navigator.maybePop(context),
@@ -134,7 +136,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                border: Border.all(color: Colors.white, width: 1.5),
+                border: Border.all(color: colors.border, width: 1.5),
               ),
               child: ClipOval(
                 child: Lottie.asset(
@@ -152,12 +154,12 @@ final class _AssistantScreenState extends State<AssistantScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'LifeSync AI',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: colors.primaryText,
                   ),
                 ),
                 Row(
@@ -175,7 +177,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                       'Active Assistant',
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.grey.shade600,
+                        color: colors.secondaryText,
                       ),
                     ),
                   ],
@@ -219,15 +221,15 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                   return ActionChip(
                     label: Text(
                       suggestion,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.primary,
+                        color: colors.primaryBlue,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    backgroundColor: Colors.white,
+                    backgroundColor: colors.cardSurface,
                     side: BorderSide(
-                      color: AppColors.primary.withValues(alpha: 0.2),
+                      color: colors.primaryBlue.withValues(alpha: 0.2),
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -243,7 +245,10 @@ final class _AssistantScreenState extends State<AssistantScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: colors.cardSurface,
+                border: Border(
+                  top: BorderSide(color: colors.border),
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -257,17 +262,20 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5F9),
+                        color: colors.inputSurface,
                         borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: colors.border),
                       ),
                       child: TextField(
                         controller: _messageController,
+                        style: TextStyle(color: colors.primaryText, fontSize: 14),
+                        cursorColor: colors.primaryBlue,
                         textInputAction: TextInputAction.send,
                         onSubmitted: (_) => _sendMessage(),
                         decoration: InputDecoration(
                           hintText: 'Ask LifeSync AI anything...',
                           hintStyle: TextStyle(
-                            color: Colors.grey.shade400,
+                            color: colors.secondaryText,
                             fontSize: 14,
                           ),
                           contentPadding: const EdgeInsets.symmetric(
@@ -281,7 +289,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                   ),
                   const SizedBox(width: 10),
                   Material(
-                    color: AppColors.primary,
+                    color: colors.primaryBlue,
                     shape: const CircleBorder(),
                     elevation: 2,
                     child: InkWell(
@@ -307,6 +315,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
   }
 
   Widget _buildMessageBubble(_ChatMessage msg) {
+    final colors = context.lifeSyncColors;
     return Align(
       alignment: msg.isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
@@ -316,13 +325,14 @@ final class _AssistantScreenState extends State<AssistantScreen> {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: msg.isUser ? AppColors.primary : Colors.white,
+          color: msg.isUser ? colors.primaryBlue : colors.cardSurface,
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(20),
             topRight: const Radius.circular(20),
             bottomLeft: Radius.circular(msg.isUser ? 20 : 4),
             bottomRight: Radius.circular(msg.isUser ? 4 : 20),
           ),
+          border: msg.isUser ? null : Border.all(color: colors.border),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.04),
@@ -341,7 +351,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
               style: TextStyle(
                 fontSize: 14,
                 height: 1.4,
-                color: msg.isUser ? Colors.white : const Color(0xFF1E293B),
+                color: msg.isUser ? Colors.white : colors.primaryText,
               ),
             ),
             const SizedBox(height: 4),
@@ -351,7 +361,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                 fontSize: 10,
                 color: msg.isUser
                     ? Colors.white.withValues(alpha: 0.7)
-                    : Colors.grey.shade400,
+                    : colors.secondaryText,
               ),
             ),
           ],

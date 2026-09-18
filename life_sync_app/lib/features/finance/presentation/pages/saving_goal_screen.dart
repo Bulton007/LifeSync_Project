@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SavingGoalScreen extends StatelessWidget {
@@ -5,8 +6,11 @@ class SavingGoalScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: colors.pageBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
@@ -16,18 +20,21 @@ class SavingGoalScreen extends StatelessWidget {
               // Back Button
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colors.cardSurface,
                   shape: BoxShape.circle,
+                  border: Border.all(color: colors.border),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.08),
+                      color: isDark
+                          ? Colors.black.withValues(alpha: 0.2)
+                          : Colors.grey.withValues(alpha: 0.08),
                       blurRadius: 8,
                       offset: const Offset(0, 3),
                     ),
                   ],
                 ),
                 child: IconButton(
-                  icon: const Icon(Icons.chevron_left, color: Colors.black87),
+                  icon: Icon(Icons.chevron_left, color: colors.primaryText),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
@@ -37,14 +44,18 @@ class SavingGoalScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colors.cardSurface,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: const Color(0xFF2979FF).withValues(alpha: 0.4),
+                    color: isDark
+                        ? const Color(0xFF2979FF).withValues(alpha: 0.6)
+                        : const Color(0xFF2979FF).withValues(alpha: 0.4),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.05),
+                      color: isDark
+                          ? Colors.black.withValues(alpha: 0.2)
+                          : Colors.grey.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -56,19 +67,19 @@ class SavingGoalScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Total Saved',
                           style: TextStyle(
                             fontSize: 13,
-                            color: Colors.grey,
+                            color: colors.secondaryText,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const Text(
+                        Text(
                           '5 Goals Active',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey,
+                            color: colors.secondaryText,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -79,12 +90,12 @@ class SavingGoalScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       textBaseline: TextBaseline.alphabetic,
                       children: [
-                        const Text(
+                        Text(
                           '\$3,110.00',
                           style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: colors.primaryText,
                           ),
                         ),
                         const SizedBox(width: 6),
@@ -92,7 +103,7 @@ class SavingGoalScreen extends StatelessWidget {
                           'of \$6,130.00',
                           style: TextStyle(
                             fontSize: 13,
-                            color: Colors.grey.shade600,
+                            color: colors.secondaryText,
                           ),
                         ),
                       ],
@@ -116,7 +127,7 @@ class SavingGoalScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
                         value: 0.507,
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor: colors.inputSurface,
                         valueColor: const AlwaysStoppedAnimation<Color>(
                           Color(0xFF2979FF),
                         ),
@@ -129,18 +140,19 @@ class SavingGoalScreen extends StatelessWidget {
               const SizedBox(height: 24),
 
               // Saving Goals Header
-              const Text(
+              Text(
                 'Saving Goals',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: colors.primaryText,
                 ),
               ),
               const SizedBox(height: 12),
 
               // Goal Items List
               _buildGoalItem(
+                context: context,
                 icon: Icons.beach_access,
                 iconBg: const Color(0xFFE0F7FA),
                 iconColor: const Color(0xFF00ACC1),
@@ -154,6 +166,7 @@ class SavingGoalScreen extends StatelessWidget {
               const SizedBox(height: 12),
 
               _buildGoalItem(
+                context: context,
                 icon: Icons.school,
                 iconBg: const Color(0xFFE8F5E9),
                 iconColor: Colors.green,
@@ -167,6 +180,7 @@ class SavingGoalScreen extends StatelessWidget {
               const SizedBox(height: 12),
 
               _buildGoalItem(
+                context: context,
                 icon: Icons.shield_outlined,
                 iconBg: const Color(0xFFEDE7F6),
                 iconColor: Colors.deepPurple,
@@ -195,6 +209,7 @@ class SavingGoalScreen extends StatelessWidget {
 
   // Reusable builder for individual goal list cards
   Widget _buildGoalItem({
+    required BuildContext context,
     required IconData icon,
     required Color iconBg,
     required Color iconColor,
@@ -205,14 +220,20 @@ class SavingGoalScreen extends StatelessWidget {
     required double progress,
     required Color progressColor,
   }) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.cardSurface,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.05),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.grey.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -229,7 +250,7 @@ class SavingGoalScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: iconBg,
+                      color: isDark ? progressColor.withValues(alpha: 0.15) : iconBg,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(icon, color: iconColor, size: 22),
@@ -240,10 +261,10 @@ class SavingGoalScreen extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
-                          color: Colors.black87,
+                          color: colors.primaryText,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -251,14 +272,14 @@ class SavingGoalScreen extends StatelessWidget {
                         date,
                         style: TextStyle(
                           fontSize: 11,
-                          color: Colors.grey.shade600,
+                          color: colors.secondaryText,
                         ),
                       ),
                     ],
                   ),
                 ],
               ),
-              const Icon(Icons.more_horiz, color: Colors.grey),
+              Icon(Icons.more_horiz, color: colors.secondaryText),
             ],
           ),
           const SizedBox(height: 16),
@@ -275,9 +296,9 @@ class SavingGoalScreen extends StatelessWidget {
               ),
               Text(
                 totalAmount,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey,
+                  color: colors.secondaryText,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -288,7 +309,7 @@ class SavingGoalScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: progress,
-              backgroundColor: Colors.grey[200],
+              backgroundColor: colors.inputSurface,
               valueColor: AlwaysStoppedAnimation<Color>(progressColor),
               minHeight: 5,
             ),

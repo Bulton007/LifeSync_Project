@@ -505,12 +505,21 @@ class _Metric extends StatelessWidget {
         Text(
           label,
           style: TextStyle(fontSize: 10, color: colors.secondaryText),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 4),
-        Text(
-          value,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            value,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: colors.primaryText,
+            ),
+          ),
         ),
       ],
     );
@@ -527,20 +536,32 @@ class _SectionHeader extends StatelessWidget {
   final String action;
   final VoidCallback onTap;
   @override
-  Widget build(BuildContext context) => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(
-        title,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-      OutlinedButton.icon(
-        onPressed: onTap,
-        icon: const Icon(Icons.add, size: 14),
-        label: Text(action, style: const TextStyle(fontSize: 11)),
-      ),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: colors.primaryText,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: 8),
+        OutlinedButton.icon(
+          onPressed: onTap,
+          icon: const Icon(Icons.add, size: 14),
+          label: Text(action, style: const TextStyle(fontSize: 11)),
+        ),
+      ],
+    );
+  }
 }
 
 class _InlineEmpty extends StatelessWidget {

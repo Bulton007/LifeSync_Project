@@ -408,9 +408,15 @@ class GoalDetailsPage extends StatelessWidget {
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _GoalMetric(label: 'Milestones', value: '1/4'),
-                      _GoalMetric(label: 'Tasks', value: '8/24'),
-                      _GoalMetric(label: 'Health', value: 'On Track'),
+                      Expanded(
+                        child: _GoalMetric(label: 'Milestones', value: '1/4'),
+                      ),
+                      Expanded(
+                        child: _GoalMetric(label: 'Tasks', value: '8/24'),
+                      ),
+                      Expanded(
+                        child: _GoalMetric(label: 'Health', value: 'On Track'),
+                      ),
                     ],
                   ),
                 ],
@@ -461,9 +467,17 @@ class _GoalMetric extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(value, style: AppTextStyles.button),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(value, style: AppTextStyles.button),
+        ),
         const SizedBox(height: AppSpacing.xs),
-        Text(label, style: AppTextStyles.micro),
+        Text(
+          label,
+          style: AppTextStyles.micro,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ],
     );
   }
@@ -543,6 +557,7 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
         const SizedBox(height: AppSpacing.xl),
         TextFormField(
           controller: goalController,
+          style: TextStyle(color: context.lifeSyncColors.primaryText),
           decoration: const InputDecoration(
             labelText: 'Goal',
             prefixIcon: Icon(Icons.flag_outlined),
@@ -551,6 +566,7 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
         const SizedBox(height: AppSpacing.lg),
         TextFormField(
           controller: outcomeController,
+          style: TextStyle(color: context.lifeSyncColors.primaryText),
           maxLines: 2,
           decoration: const InputDecoration(
             labelText: 'What does success look like?',
@@ -702,9 +718,9 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
   Widget _buildBottomButtons() {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(top: BorderSide(color: AppColors.border)),
+      decoration: BoxDecoration(
+        color: context.lifeSyncColors.cardSurface,
+        border: Border(top: BorderSide(color: context.lifeSyncColors.border)),
       ),
       child: Row(
         children: [

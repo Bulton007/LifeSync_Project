@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:life_sync_app/core/theme/app_colors.dart';
 
 class CreateGoalSecondStepScreen extends StatefulWidget {
   const CreateGoalSecondStepScreen({super.key});
@@ -15,8 +16,11 @@ class _CreateGoalSecondStepScreenState
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colors.pageBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
@@ -28,32 +32,32 @@ class _CreateGoalSecondStepScreenState
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colors.cardSurface,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withValues(alpha: 0.08),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
                       ],
-                      border: Border.all(color: Colors.grey.shade100),
+                      border: Border.all(color: colors.border),
                     ),
                     child: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.chevron_left,
-                        color: Colors.black87,
+                        color: colors.primaryText,
                       ),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
                   const SizedBox(width: 16),
-                  const Text(
+                  Text(
                     'Create Goal',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: colors.primaryText,
                     ),
                   ),
                 ],
@@ -66,12 +70,12 @@ class _CreateGoalSecondStepScreenState
                   // Step 1: Define (Completed)
                   _buildStepIndicator('1', 'Define', false, isCompleted: true),
                   Expanded(
-                    child: Container(height: 2, color: const Color(0xFF2979FF)),
+                    child: Container(height: 2, color: colors.primaryBlue),
                   ),
                   // Step 2: Plan (Active)
                   _buildStepIndicator('2', 'Plan', true),
                   Expanded(
-                    child: Container(height: 2, color: Colors.grey.shade200),
+                    child: Container(height: 2, color: colors.border),
                   ),
                   // Step 3: Review (Inactive)
                   _buildStepIndicator('3', 'Review', false),
@@ -86,12 +90,12 @@ class _CreateGoalSecondStepScreenState
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Milestones',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                          color: colors.primaryText,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -99,7 +103,7 @@ class _CreateGoalSecondStepScreenState
                         'Set Milestones for Goal Progression',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey.shade500,
+                          color: colors.secondaryText,
                         ),
                       ),
                     ],
@@ -112,7 +116,9 @@ class _CreateGoalSecondStepScreenState
                       });
                     },
                     style: OutlinedButton.styleFrom(
-                      backgroundColor: const Color(0xFFE8F1FC),
+                      backgroundColor: isDark
+                          ? colors.elevatedSurface
+                          : const Color(0xFFE8F1FC),
                       side: BorderSide.none,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -147,8 +153,9 @@ class _CreateGoalSecondStepScreenState
                   height: 300,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF7F9FC),
+                    color: colors.cardSurface,
                     borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: colors.border),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -157,18 +164,19 @@ class _CreateGoalSecondStepScreenState
                         width: 120,
                         height: 90,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: colors.inputSurface,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey.shade300),
+                          border: Border.all(color: colors.border),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
+                            Text(
                               'MY GOALS!',
                               style: TextStyle(
                                 fontSize: 9,
                                 fontWeight: FontWeight.bold,
+                                color: colors.primaryText,
                               ),
                             ),
                             const SizedBox(height: 6),
@@ -178,7 +186,7 @@ class _CreateGoalSecondStepScreenState
                                 width: 60,
                                 height: 4,
                                 margin: const EdgeInsets.symmetric(vertical: 2),
-                                color: Colors.grey.shade300,
+                                color: colors.border,
                               ),
                             ),
                           ],
@@ -192,7 +200,7 @@ class _CreateGoalSecondStepScreenState
                             "You don't have any Milestones yet, ",
                             style: TextStyle(
                               fontSize: 12,
-                              color: Colors.grey.shade600,
+                              color: colors.secondaryText,
                             ),
                           ),
                           GestureDetector(
@@ -222,12 +230,12 @@ class _CreateGoalSecondStepScreenState
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: colors.cardSurface,
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: Colors.grey.shade200),
+                    border: Border.all(color: colors.border),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withValues(alpha: 0.04),
+                        color: Colors.black.withValues(alpha: 0.04),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -236,24 +244,28 @@ class _CreateGoalSecondStepScreenState
                   child: Column(
                     children: [
                       _buildMilestoneItem(
+                        context,
                         '01',
                         'Build Strong Study Routine',
                         isExpanded: true,
                       ),
                       const SizedBox(height: 12),
                       _buildMilestoneItem(
+                        context,
                         '02',
                         'Build Strong Study Routine',
                         isExpanded: false,
                       ),
                       const SizedBox(height: 12),
                       _buildMilestoneItem(
+                        context,
                         '03',
                         'Build Strong Study Routine',
                         isExpanded: false,
                       ),
                       const SizedBox(height: 12),
                       _buildMilestoneItem(
+                        context,
                         '04',
                         'Build Strong Study Routine',
                         isExpanded: false,
@@ -294,7 +306,9 @@ class _CreateGoalSecondStepScreenState
                       onPressed: _hasMilestones ? () {} : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2979FF),
-                        disabledBackgroundColor: const Color(0xFFEFEFF1),
+                        disabledBackgroundColor: isDark
+                            ? colors.elevatedSurface
+                            : const Color(0xFFEFEFF1),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -306,7 +320,9 @@ class _CreateGoalSecondStepScreenState
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: _hasMilestones ? Colors.white : Colors.black45,
+                          color: _hasMilestones
+                              ? Colors.white
+                              : colors.disabledText,
                         ),
                       ),
                     ),
@@ -327,6 +343,7 @@ class _CreateGoalSecondStepScreenState
     bool isActive, {
     bool isCompleted = false,
   }) {
+    final colors = context.lifeSyncColors;
     return Column(
       children: [
         Container(
@@ -335,12 +352,12 @@ class _CreateGoalSecondStepScreenState
           decoration: BoxDecoration(
             color: isActive || isCompleted
                 ? const Color(0xFF2979FF)
-                : Colors.white,
+                : colors.cardSurface,
             shape: BoxShape.circle,
             border: Border.all(
               color: isActive || isCompleted
                   ? Colors.transparent
-                  : Colors.grey.shade300,
+                  : colors.border,
             ),
           ),
           alignment: Alignment.center,
@@ -351,7 +368,7 @@ class _CreateGoalSecondStepScreenState
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
-                    color: isActive ? Colors.white : Colors.grey.shade500,
+                    color: isActive ? Colors.white : colors.secondaryText,
                   ),
                 ),
         ),
@@ -363,7 +380,7 @@ class _CreateGoalSecondStepScreenState
             fontWeight: FontWeight.w600,
             color: isActive || isCompleted
                 ? const Color(0xFF2979FF)
-                : Colors.grey.shade500,
+                : colors.secondaryText,
           ),
         ),
       ],
@@ -372,28 +389,31 @@ class _CreateGoalSecondStepScreenState
 
   // Milestone Item Builder for Filled-in State
   Widget _buildMilestoneItem(
+    BuildContext context,
     String number,
     String title, {
     bool isExpanded = false,
   }) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F9FC),
+        color: colors.inputSurface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: colors.border),
       ),
       child: Column(
         children: [
           Row(
             children: [
-              Icon(Icons.drag_indicator, size: 18, color: Colors.grey.shade400),
+              Icon(Icons.drag_indicator, size: 18, color: colors.secondaryText),
               const SizedBox(width: 8),
               Container(
                 width: 30,
                 height: 30,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE8F1FC),
+                  color: isDark ? colors.elevatedSurface : const Color(0xFFE8F1FC),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 alignment: Alignment.center,
@@ -413,10 +433,10 @@ class _CreateGoalSecondStepScreenState
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: colors.primaryText,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -424,7 +444,7 @@ class _CreateGoalSecondStepScreenState
                       '4 Tasks',
                       style: TextStyle(
                         fontSize: 10,
-                        color: Colors.grey.shade500,
+                        color: colors.secondaryText,
                       ),
                     ),
                   ],
@@ -470,15 +490,15 @@ class _CreateGoalSecondStepScreenState
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: Colors.grey.shade400,
+                          color: colors.secondaryText,
                           width: 1.5,
                         ),
                       ),
                     ),
                     const SizedBox(width: 10),
-                    const Text(
+                    Text(
                       'Blahh Blahh Blahh',
-                      style: TextStyle(fontSize: 12, color: Colors.black87),
+                      style: TextStyle(fontSize: 12, color: colors.primaryText),
                     ),
                   ],
                 ),

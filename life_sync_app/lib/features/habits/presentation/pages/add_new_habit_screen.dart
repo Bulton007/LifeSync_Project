@@ -183,8 +183,9 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: colors.pageBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -201,19 +202,19 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: colors.cardSurface,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withValues(alpha: 0.08),
+                            color: Colors.black.withValues(alpha: 0.08),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
                         ],
-                        border: Border.all(color: Colors.grey.shade100),
+                        border: Border.all(color: colors.border),
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.close, color: Colors.black87),
+                        icon: Icon(Icons.close, color: colors.primaryText),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ),
@@ -223,7 +224,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: colors.primaryText,
                       ),
                     ),
 
@@ -234,7 +235,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                             : _saveHabit,
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.primary,
-                          side: BorderSide(color: Colors.grey.shade300),
+                          side: BorderSide(color: colors.border),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -258,10 +259,10 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                               ),
                         label: Text(
                           _editing == null ? 'Save' : 'Update',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
-                            color: Colors.black87,
+                            color: colors.primaryText,
                           ),
                         ),
                       ),
@@ -276,6 +277,11 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 // =========================
                 TextFormField(
                   controller: _habitNameController,
+                  style: TextStyle(
+                    color: colors.primaryText,
+                    fontSize: 14,
+                  ),
+                  cursorColor: colors.primaryBlue,
                   textInputAction: TextInputAction.done,
                   validator: (value) => value == null || value.trim().isEmpty
                       ? 'Habit name is required'
@@ -283,14 +289,14 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                   decoration: InputDecoration(
                     hintText: 'Habit Name',
                     hintStyle: TextStyle(
-                      color: Colors.grey.shade400,
+                      color: colors.secondaryText,
                       fontSize: 14,
                     ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: colors.inputSurface,
                     prefixIcon: Icon(
                       Icons.edit_outlined,
-                      color: Colors.grey.shade600,
+                      color: colors.secondaryText,
                       size: 20,
                     ),
                     contentPadding: const EdgeInsets.symmetric(
@@ -299,15 +305,15 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: Colors.grey.shade200),
+                      borderSide: BorderSide(color: colors.border),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: Colors.grey.shade200),
+                      borderSide: BorderSide(color: colors.border),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.primary),
+                      borderSide: BorderSide(color: colors.primaryBlue),
                     ),
                   ),
                 ),
@@ -331,7 +337,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(7, (index) {
-                    final colors = [
+                    final palette = [
                       null,
                       const Color(0xFF0077B6),
                       const Color(0xFF6A0DAD),
@@ -354,7 +360,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                         height: 32,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: colors[index],
+                          color: palette[index],
                           gradient: index == 0
                               ? const LinearGradient(
                                   colors: [
@@ -367,7 +373,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                                 )
                               : null,
                           border: isSelected
-                              ? Border.all(color: Colors.black87, width: 2)
+                              ? Border.all(color: colors.primaryText, width: 2)
                               : null,
                         ),
                       ),
@@ -380,12 +386,12 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 // =========================
                 // SCHEDULE & REPEAT
                 // =========================
-                const Text(
+                Text(
                   'Schedule',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: colors.primaryText,
                   ),
                 ),
 
@@ -394,12 +400,12 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Repeat',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: Colors.grey,
+                        color: colors.secondaryText,
                       ),
                     ),
 
@@ -409,13 +415,18 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: colors.cardSurface,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.grey.shade200),
+                        border: Border.all(color: colors.border),
                       ),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: _repeatFrequency,
+                          dropdownColor: colors.cardSurface,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: colors.primaryText,
+                          ),
                           isDense: true,
                           items: const [
                             DropdownMenuItem(
@@ -478,12 +489,12 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                                 decoration: BoxDecoration(
                                   color: isSelected
                                       ? const Color(0xFF2979FF)
-                                      : Colors.white,
+                                      : colors.cardSurface,
                                   shape: BoxShape.circle,
                                   border: Border.all(
                                     color: isSelected
                                         ? Colors.transparent
-                                        : Colors.grey.shade200,
+                                        : colors.border,
                                   ),
                                 ),
                                 alignment: Alignment.center,
@@ -494,7 +505,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                                     fontWeight: FontWeight.bold,
                                     color: isSelected
                                         ? Colors.white
-                                        : Colors.grey.shade400,
+                                        : colors.secondaryText,
                                   ),
                                 ),
                               ),
@@ -508,7 +519,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                                 fontSize: 10,
                                 color: isSelected
                                     ? const Color(0xFF2979FF)
-                                    : Colors.grey,
+                                    : colors.secondaryText,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -523,12 +534,12 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 // =========================
                 // CHECKLIST
                 // =========================
-                const Text(
+                Text(
                   'Checklist',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey,
+                    color: colors.secondaryText,
                   ),
                 ),
 
@@ -545,9 +556,9 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                       vertical: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colors.cardSurface,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: Colors.grey.shade200),
+                      border: Border.all(color: colors.border),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -555,10 +566,10 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                         Expanded(
                           child: Text(
                             '${index + 1}.  $task',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
-                              color: Colors.black87,
+                              color: colors.primaryText,
                             ),
                           ),
                         ),
@@ -601,12 +612,12 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Reminder',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: Colors.grey,
+                        color: colors.secondaryText,
                       ),
                     ),
 
@@ -629,19 +640,24 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                           ),
                           decoration: BoxDecoration(
                             color: _reminderEnabled
-                                ? Colors.white
-                                : Colors.grey.shade100,
+                                ? colors.cardSurface
+                                : colors.inputSurface,
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.grey.shade200),
+                            border: Border.all(color: colors.border),
                           ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               value: _reminderTime,
+                              dropdownColor: colors.cardSurface,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: colors.primaryText,
+                              ),
                               isDense: true,
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.keyboard_arrow_down,
                                 size: 16,
-                                color: Colors.black54,
+                                color: colors.secondaryText,
                               ),
                               items: const [
                                 DropdownMenuItem(
@@ -714,15 +730,16 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
     required String value,
     required VoidCallback onTap,
   }) {
+    final colors = context.lifeSyncColors;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colors.cardSurface,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(color: colors.border),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -739,10 +756,10 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
 
                 Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black87,
+                    color: colors.primaryText,
                   ),
                 ),
               ],
@@ -751,26 +768,27 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100,
+                color: colors.inputSurface,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: colors.border),
               ),
               child: Row(
                 children: [
                   Text(
                     value,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: colors.primaryText,
                     ),
                   ),
 
                   const SizedBox(width: 4),
 
-                  const Icon(
+                  Icon(
                     Icons.keyboard_arrow_down,
                     size: 14,
-                    color: Colors.black54,
+                    color: colors.secondaryText,
                   ),
                 ],
               ),

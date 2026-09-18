@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:life_sync_app/features/habits/presentation/models/habit_item_model.dart';
 import 'package:life_sync_app/features/habits/presentation/widgets/habit_item.dart';
@@ -26,26 +27,25 @@ class HabitsCard extends StatelessWidget {
   final ValueChanged<Habit>? onToggleExpand;
   final void Function(Habit habit, HabitSubItem subItem)? onSubItemToggle;
 
-  static const Color darkText = Color(0xFF222222);
-  static const Color secondaryText = Color(0xFF777B87);
-  static const Color primaryBlue = Color(0xFF4F8DF7);
-  static const Color borderColor = Color(0xFFE5E7EB);
-
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isEmpty = habits.isEmpty;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.cardSurface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: borderColor, width: 1),
-        boxShadow: const [
+        border: Border.all(color: colors.border, width: 1),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x08000000),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : const Color(0x08000000),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -57,27 +57,34 @@ class HabitsCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Habits',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: darkText,
-                    ),
-                  ),
-                  if (isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 2),
-                      child: Text(
-                        'No habits scheduled today.',
-                        style: TextStyle(color: secondaryText, fontSize: 11),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Habits',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: colors.primaryText,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                ],
+                    if (isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(
+                          'No habits scheduled today.',
+                          style: TextStyle(color: colors.secondaryText, fontSize: 11),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -88,11 +95,11 @@ class HabitsCard extends StatelessWidget {
                         visualDensity: VisualDensity.compact,
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                       ),
-                      icon: const Icon(Icons.add, size: 16, color: primaryBlue),
-                      label: const Text(
+                      icon: Icon(Icons.add, size: 16, color: colors.primaryBlue),
+                      label: Text(
                         'Add Schedule',
                         style: TextStyle(
-                          color: primaryBlue,
+                          color: colors.primaryBlue,
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
                         ),
@@ -106,10 +113,10 @@ class HabitsCard extends StatelessWidget {
                       visualDensity: VisualDensity.compact,
                       padding: EdgeInsets.zero,
                     ),
-                    child: const Text(
+                    child: Text(
                       'View All',
                       style: TextStyle(
-                        color: primaryBlue,
+                        color: colors.primaryBlue,
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),
@@ -141,8 +148,8 @@ class HabitsCard extends StatelessWidget {
                   child: Text.rich(
                     TextSpan(
                       text: 'Alright, what habit are we starting? ',
-                      style: const TextStyle(
-                        color: secondaryText,
+                      style: TextStyle(
+                        color: colors.secondaryText,
                         fontSize: 13,
                       ),
                       children: [
@@ -151,10 +158,10 @@ class HabitsCard extends StatelessWidget {
                           baseline: TextBaseline.alphabetic,
                           child: GestureDetector(
                             onTap: onAddSchedule,
-                            child: const Text(
+                            child: Text(
                               'Create one',
                               style: TextStyle(
-                                color: primaryBlue,
+                                color: colors.primaryBlue,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 13,
                               ),

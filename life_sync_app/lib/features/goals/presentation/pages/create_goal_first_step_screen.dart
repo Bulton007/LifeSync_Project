@@ -114,9 +114,10 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
                     const SizedBox(width: 16),
                     Text(
                       _editing == null ? 'Create Goal' : 'Edit Goal',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        color: colors.primaryText,
                       ),
                     ),
                   ],
@@ -138,6 +139,11 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
                 const SizedBox(height: 36),
                 TextFormField(
                   controller: _goalController,
+                  style: TextStyle(
+                    color: colors.primaryText,
+                    fontSize: 14,
+                  ),
+                  cursorColor: colors.primaryBlue,
                   textInputAction: TextInputAction.next,
                   validator: (value) => value == null || value.trim().isEmpty
                       ? 'Goal title is required'
@@ -145,13 +151,22 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
                   decoration: _input('Goal', icon: Icons.edit_outlined),
                 ),
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   'What Success Will Look Like?',
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: colors.primaryText,
+                  ),
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _outcomeController,
+                  style: TextStyle(
+                    color: colors.primaryText,
+                    fontSize: 14,
+                  ),
+                  cursorColor: colors.primaryBlue,
                   maxLines: 2,
                   decoration: _input('Outcome'),
                 ),
@@ -161,6 +176,11 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
                     Expanded(
                       child: TextFormField(
                         controller: _targetController,
+                        style: TextStyle(
+                          color: colors.primaryText,
+                          fontSize: 14,
+                        ),
+                        cursorColor: colors.primaryBlue,
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
@@ -173,6 +193,11 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
                     Expanded(
                       child: TextFormField(
                         controller: _currentController,
+                        style: TextStyle(
+                          color: colors.primaryText,
+                          fontSize: 14,
+                        ),
+                        cursorColor: colors.primaryBlue,
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
@@ -184,9 +209,13 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
                   ],
                 ),
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   'Deadline',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: colors.primaryText,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 InkWell(
@@ -217,21 +246,22 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.calendar_today_outlined, size: 16),
+                            Icon(Icons.calendar_today_outlined, size: 16, color: colors.secondaryText),
                             const SizedBox(width: 8),
                             Text(
                               _date(_deadline),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
+                                color: colors.primaryText,
                               ),
                             ),
                           ],
                         ),
-                        const Icon(
+                        Icon(
                           Icons.unfold_more,
                           size: 16,
-                          color: Colors.grey,
+                          color: colors.secondaryText,
                         ),
                       ],
                     ),
@@ -318,33 +348,46 @@ class _CreateGoalScreen1State extends State<CreateGoalFirstStepScreen> {
     ],
   );
 
-  InputDecoration _input(String hint, {IconData? icon, String? prefix}) =>
-      InputDecoration(
-        hintText: hint,
-        prefixText: prefix,
-        prefixIcon: icon == null ? null : Icon(icon, size: 20),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
+  InputDecoration _input(String hint, {IconData? icon, String? prefix}) {
+    final colors = context.lifeSyncColors;
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(
+        color: colors.secondaryText,
+        fontSize: 14,
+      ),
+      prefixText: prefix,
+      prefixStyle: TextStyle(
+        color: colors.primaryText,
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ),
+      prefixIcon: icon == null
+          ? null
+          : Icon(icon, size: 20, color: colors.secondaryText),
+      filled: true,
+      fillColor: colors.inputSurface,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 16,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: colors.border),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: colors.border),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(
+          color: colors.primaryBlue,
+          width: 1.5,
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: context.lifeSyncColors.border),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: context.lifeSyncColors.border),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
-            color: context.lifeSyncColors.primaryBlue,
-            width: 1.5,
-          ),
-        ),
-      );
+      ),
+    );
+  }
 
   String? _positiveMoney(String? value) {
     try {

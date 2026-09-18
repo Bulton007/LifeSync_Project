@@ -30,8 +30,11 @@ class _SavingScreenState extends State<SavingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: colors.pageBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
@@ -45,20 +48,23 @@ class _SavingScreenState extends State<SavingScreen> {
                   // Back Button
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colors.cardSurface,
                       shape: BoxShape.circle,
+                      border: Border.all(color: colors.border),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withValues(alpha: 0.08),
+                          color: isDark
+                              ? Colors.black.withValues(alpha: 0.2)
+                              : Colors.grey.withValues(alpha: 0.08),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
                       ],
                     ),
                     child: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.chevron_left,
-                        color: Colors.black87,
+                        color: colors.primaryText,
                       ),
                       onPressed: () => Navigator.pop(context),
                     ),
@@ -71,7 +77,7 @@ class _SavingScreenState extends State<SavingScreen> {
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.primary,
-                      side: BorderSide(color: Colors.grey.shade300),
+                      side: BorderSide(color: colors.border),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -85,11 +91,11 @@ class _SavingScreenState extends State<SavingScreen> {
                       size: 18,
                       color: AppColors.primary,
                     ),
-                    label: const Text(
+                    label: Text(
                       'Save',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: colors.primaryText,
                       ),
                     ),
                   ),
@@ -101,11 +107,14 @@ class _SavingScreenState extends State<SavingScreen> {
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colors.cardSurface,
                   borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: colors.border),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.05),
+                      color: isDark
+                          ? Colors.black.withValues(alpha: 0.2)
+                          : Colors.grey.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -122,24 +131,25 @@ class _SavingScreenState extends State<SavingScreen> {
               const SizedBox(height: 24),
 
               // Date Field
-              const Text(
+              Text(
                 'Date',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey,
+                  color: colors.secondaryText,
                 ),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: _dateController,
                 readOnly: true,
+                style: TextStyle(color: colors.primaryText),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.white,
-                  suffixIcon: const Icon(
+                  fillColor: colors.inputSurface,
+                  suffixIcon: Icon(
                     Icons.calendar_today_outlined,
-                    color: Colors.black54,
+                    color: colors.secondaryText,
                     size: 20,
                   ),
                   contentPadding: const EdgeInsets.symmetric(
@@ -148,11 +158,11 @@ class _SavingScreenState extends State<SavingScreen> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -163,24 +173,25 @@ class _SavingScreenState extends State<SavingScreen> {
               const SizedBox(height: 16),
 
               // Amount Field
-              const Text(
+              Text(
                 'Amount',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey,
+                  color: colors.secondaryText,
                 ),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
+                style: TextStyle(color: colors.primaryText),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.white,
-                  suffixIcon: const Icon(
+                  fillColor: colors.inputSurface,
+                  suffixIcon: Icon(
                     Icons.monetization_on_outlined,
-                    color: Colors.black54,
+                    color: colors.secondaryText,
                     size: 20,
                   ),
                   contentPadding: const EdgeInsets.symmetric(
@@ -189,11 +200,11 @@ class _SavingScreenState extends State<SavingScreen> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -204,29 +215,30 @@ class _SavingScreenState extends State<SavingScreen> {
               const SizedBox(height: 16),
 
               // Category Dropdown/Selector
-              const Text(
+              Text(
                 'Category',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey,
+                  color: colors.secondaryText,
                 ),
               ),
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colors.inputSurface,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.grey.shade200),
+                  border: Border.all(color: colors.border),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: _selectedCategory,
+                    dropdownColor: colors.elevatedSurface,
                     isExpanded: true,
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.keyboard_arrow_down,
-                      color: Colors.black54,
+                      color: colors.secondaryText,
                     ),
                     items:
                         <String>[
@@ -243,8 +255,8 @@ class _SavingScreenState extends State<SavingScreen> {
                               value,
                               style: TextStyle(
                                 color: value == 'Choose Category'
-                                    ? Colors.grey
-                                    : Colors.black87,
+                                    ? colors.secondaryText
+                                    : colors.primaryText,
                                 fontSize: 14,
                               ),
                             ),
@@ -261,32 +273,33 @@ class _SavingScreenState extends State<SavingScreen> {
               const SizedBox(height: 16),
 
               // Note Field
-              const Text(
+              Text(
                 'Note',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey,
+                  color: colors.secondaryText,
                 ),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: _noteController,
                 maxLines: 3,
+                style: TextStyle(color: colors.primaryText),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: colors.inputSurface,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 16,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -304,10 +317,12 @@ class _SavingScreenState extends State<SavingScreen> {
 
   // Helper widget for Income / Expense / Transfer buttons
   Widget _buildTypeButton(String title, int index) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     bool isSelected = _selectedTypeIndex == index;
 
     // Dynamic styling based on selection state
-    Color textColor = Colors.grey.shade600;
+    Color textColor = colors.secondaryText;
     Color? backgroundColor = Colors.transparent;
     Border? border;
 
@@ -315,13 +330,13 @@ class _SavingScreenState extends State<SavingScreen> {
       if (index == 1) {
         // Expense active state (Red theme matching design)
         textColor = Colors.red;
-        backgroundColor = Colors.white;
+        backgroundColor = isDark ? Colors.red.withValues(alpha: 0.15) : Colors.white;
         border = Border.all(color: Colors.red.shade300, width: 1.2);
       } else {
         // Income or Transfer active state
-        textColor = Colors.black87;
-        backgroundColor = Colors.white;
-        border = Border.all(color: Colors.grey.shade300, width: 1.2);
+        textColor = colors.primaryText;
+        backgroundColor = colors.elevatedSurface;
+        border = Border.all(color: colors.border, width: 1.2);
       }
     }
 

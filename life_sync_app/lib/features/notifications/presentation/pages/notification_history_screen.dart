@@ -12,9 +12,10 @@ final class NotificationHistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     final controller = Get.find<NotificationController>();
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: colors.pageBackground,
       appBar: AppBar(
         title: const Text('Notifications'),
         actions: [
@@ -101,100 +102,107 @@ final class _NotificationCard extends StatelessWidget {
   final NotificationController controller;
 
   @override
-  Widget build(BuildContext context) => Card(
-    margin: const EdgeInsets.only(bottom: 10),
-    color: notification.isRead ? Colors.white : const Color(0xFFEAF5FF),
-    child: InkWell(
-      borderRadius: BorderRadius.circular(14),
-      onTap: notification.isRead
-          ? null
-          : () async {
-              final saved = await controller.markAsRead(notification);
-              if (!saved && context.mounted) {
-                _showError(context, controller);
-              }
-            },
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 14, 6, 14),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CircleAvatar(
-              backgroundColor: notification.isRead
-                  ? Colors.grey.shade100
-                  : Colors.white,
-              child: Icon(
-                _typeIcon(notification.type),
-                color: notification.isRead ? Colors.grey : AppColors.primary,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          notification.title,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: notification.isRead
-                                ? FontWeight.w600
-                                : FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      if (!notification.isRead)
-                        const Padding(
-                          padding: EdgeInsets.only(left: 8),
-                          child: CircleAvatar(
-                            radius: 4,
-                            backgroundColor: AppColors.primary,
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    notification.message,
-                    style: const TextStyle(color: Colors.black54, height: 1.35),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _dateTime(notification.createdAt),
-                    style: const TextStyle(fontSize: 11, color: Colors.grey),
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuButton<String>(
-              onSelected: (value) {
-                if (value == 'read') {
-                  controller.markAsRead(notification).then((saved) {
-                    if (!saved && context.mounted) {
-                      _showError(context, controller);
-                    }
-                  });
-                } else {
-                  _delete(context, controller, notification);
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Card(
+      margin: const EdgeInsets.only(bottom: 10),
+      color: notification.isRead
+          ? colors.cardSurface
+          : (isDark ? colors.elevatedSurface : const Color(0xFFEAF5FF)),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: notification.isRead
+            ? null
+            : () async {
+                final saved = await controller.markAsRead(notification);
+                if (!saved && context.mounted) {
+                  _showError(context, controller);
                 }
               },
-              itemBuilder: (_) => [
-                if (!notification.isRead)
-                  const PopupMenuItem(
-                    value: 'read',
-                    child: Text('Mark as read'),
-                  ),
-                const PopupMenuItem(value: 'delete', child: Text('Delete')),
-              ],
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 14, 6, 14),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                backgroundColor: notification.isRead
+                    ? colors.inputSurface
+                    : (isDark ? colors.inputSurface : Colors.white),
+                child: Icon(
+                  _typeIcon(notification.type),
+                  color: notification.isRead ? colors.secondaryText : AppColors.primary,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            notification.title,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: notification.isRead
+                                  ? FontWeight.w600
+                                  : FontWeight.bold,
+                              color: colors.primaryText,
+                            ),
+                          ),
+                        ),
+                        if (!notification.isRead)
+                          const Padding(
+                            padding: EdgeInsets.only(left: 8),
+                            child: CircleAvatar(
+                              radius: 4,
+                              backgroundColor: AppColors.primary,
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      notification.message,
+                      style: TextStyle(color: colors.secondaryText, height: 1.35),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      _dateTime(notification.createdAt),
+                      style: TextStyle(fontSize: 11, color: colors.disabledText),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuButton<String>(
+                onSelected: (value) {
+                  if (value == 'read') {
+                    controller.markAsRead(notification).then((saved) {
+                      if (!saved && context.mounted) {
+                        _showError(context, controller);
+                      }
+                    });
+                  } else {
+                    _delete(context, controller, notification);
+                  }
+                },
+                itemBuilder: (_) => [
+                  if (!notification.isRead)
+                    const PopupMenuItem(
+                      value: 'read',
+                      child: Text('Mark as read'),
+                    ),
+                  const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 final class _NotificationEmpty extends StatelessWidget {
@@ -203,38 +211,45 @@ final class _NotificationEmpty extends StatelessWidget {
   final bool unreadOnly;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(vertical: 56, horizontal: 24),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(18),
-      border: Border.all(color: Colors.grey.shade200),
-    ),
-    child: Column(
-      children: [
-        Icon(
-          unreadOnly
-              ? Icons.mark_email_read_outlined
-              : Icons.notifications_none_rounded,
-          size: 50,
-          color: Colors.grey.shade400,
-        ),
-        const SizedBox(height: 12),
-        Text(
-          unreadOnly ? 'You are all caught up' : 'No notification history yet',
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          unreadOnly
-              ? 'There are no unread notifications.'
-              : 'New LifeSync updates will appear here.',
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.grey),
-        ),
-      ],
-    ),
-  );
+  Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 56, horizontal: 24),
+      decoration: BoxDecoration(
+        color: colors.cardSurface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: colors.border),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            unreadOnly
+                ? Icons.mark_email_read_outlined
+                : Icons.notifications_none_rounded,
+            size: 50,
+            color: colors.disabledText,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            unreadOnly ? 'You are all caught up' : 'No notification history yet',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: colors.primaryText,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            unreadOnly
+                ? 'There are no unread notifications.'
+                : 'New LifeSync updates will appear here.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: colors.secondaryText),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 final class _InlineError extends StatelessWidget {

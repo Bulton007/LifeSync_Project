@@ -21,31 +21,43 @@ class GoalBottomActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(top: BorderSide(color: AppColors.border)),
-      ),
-      child: Row(
-        children: [
-          if (secondaryLabel != null) ...[
+    final colors = context.lifeSyncColors;
+    return SafeArea(
+      top: false,
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: colors.cardSurface,
+          border: Border(top: BorderSide(color: colors.border)),
+        ),
+        child: Row(
+          children: [
+            if (secondaryLabel != null) ...[
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: onSecondaryPressed ?? () {},
+                  child: Text(
+                    secondaryLabel!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+            ],
             Expanded(
-              child: OutlinedButton(
-                onPressed: onSecondaryPressed ?? () {},
-                child: Text(secondaryLabel!),
+              flex: secondaryLabel == null ? 1 : 2,
+              child: ElevatedButton(
+                onPressed: primaryEnabled ? onPrimaryPressed ?? () {} : null,
+                child: Text(
+                  primaryLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
-            const SizedBox(width: AppSpacing.md),
           ],
-          Expanded(
-            flex: secondaryLabel == null ? 1 : 2,
-            child: ElevatedButton(
-              onPressed: primaryEnabled ? onPrimaryPressed ?? () {} : null,
-              child: Text(primaryLabel),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:life_sync_app/core/theme/app_colors.dart';
 
 class CreateGoalThirdStepScreen extends StatelessWidget {
   const CreateGoalThirdStepScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colors.pageBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
@@ -18,32 +22,32 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colors.cardSurface,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withValues(alpha: 0.08),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
                       ],
-                      border: Border.all(color: Colors.grey.shade100),
+                      border: Border.all(color: colors.border),
                     ),
                     child: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.chevron_left,
-                        color: Colors.black87,
+                        color: colors.primaryText,
                       ),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
                   const SizedBox(width: 16),
-                  const Text(
+                  Text(
                     'Create Goal',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: colors.primaryText,
                     ),
                   ),
                 ],
@@ -53,15 +57,15 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
               // Multi-step Progress Tracker Indicator (Define -> Plan -> Review all active)
               Row(
                 children: [
-                  _buildStepIndicator('1', 'Define', true),
+                  _buildStepIndicator(context, '1', 'Define', true),
                   Expanded(
-                    child: Container(height: 2, color: const Color(0xFF2979FF)),
+                    child: Container(height: 2, color: colors.primaryBlue),
                   ),
-                  _buildStepIndicator('2', 'Plan', true),
+                  _buildStepIndicator(context, '2', 'Plan', true),
                   Expanded(
-                    child: Container(height: 2, color: const Color(0xFF2979FF)),
+                    child: Container(height: 2, color: colors.primaryBlue),
                   ),
-                  _buildStepIndicator('3', 'Review', true),
+                  _buildStepIndicator(context, '3', 'Review', true),
                 ],
               ),
               const SizedBox(height: 24),
@@ -70,9 +74,9 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF7F9FC),
+                  color: colors.cardSurface,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.grey.shade200),
+                  border: Border.all(color: colors.border),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +87,7 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE8F1FC),
+                            color: isDark ? colors.elevatedSurface : const Color(0xFFE8F1FC),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(
@@ -110,7 +114,7 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                                 'Outcome: Get 4.0 GPA on this Semester',
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: Colors.grey.shade600,
+                                  color: colors.secondaryText,
                                 ),
                               ),
                             ],
@@ -126,14 +130,14 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                             Icon(
                               Icons.calendar_today_outlined,
                               size: 13,
-                              color: Colors.grey.shade500,
+                              color: colors.secondaryText,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               'Started on 1 June 2026',
                               style: TextStyle(
                                 fontSize: 10,
-                                color: Colors.grey.shade600,
+                                color: colors.secondaryText,
                               ),
                             ),
                           ],
@@ -165,12 +169,12 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Milestones Section Header
-              const Text(
+              Text(
                 'Milestones',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: colors.primaryText,
                 ),
               ),
               const SizedBox(height: 12),
@@ -179,12 +183,12 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colors.cardSurface,
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: Colors.grey.shade200),
+                  border: Border.all(color: colors.border),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.04),
+                      color: Colors.black.withValues(alpha: 0.04),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -193,18 +197,22 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     _buildMilestonePreviewItem(
+                      context,
                       '01',
                       'Build Strong Study Routine',
                     ),
                     _buildMilestonePreviewItem(
+                      context,
                       '02',
                       'Build Strong Study Routine',
                     ),
                     _buildMilestonePreviewItem(
+                      context,
                       '03',
                       'Build Strong Study Routine',
                     ),
                     _buildMilestonePreviewItem(
+                      context,
                       '04',
                       'Build Strong Study Routine',
                       isLast: true,
@@ -272,15 +280,24 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
   }
 
   // Step Indicator Builder
-  Widget _buildStepIndicator(String stepNum, String label, bool isActive) {
+  Widget _buildStepIndicator(
+    BuildContext context,
+    String stepNum,
+    String label,
+    bool isActive,
+  ) {
+    final colors = context.lifeSyncColors;
     return Column(
       children: [
         Container(
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: isActive ? const Color(0xFF2979FF) : Colors.white,
+            color: isActive ? const Color(0xFF2979FF) : colors.cardSurface,
             shape: BoxShape.circle,
+            border: Border.all(
+              color: isActive ? Colors.transparent : colors.border,
+            ),
           ),
           alignment: Alignment.center,
           child: Text(
@@ -307,10 +324,13 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
 
   // Milestone Preview List Item
   Widget _buildMilestonePreviewItem(
+    BuildContext context,
     String number,
     String title, {
     bool isLast = false,
   }) {
+    final colors = context.lifeSyncColors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [
         Padding(
@@ -321,7 +341,7 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                 width: 30,
                 height: 30,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE8F1FC),
+                  color: isDark ? colors.elevatedSurface : const Color(0xFFE8F1FC),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 alignment: Alignment.center,
@@ -341,10 +361,10 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: colors.primaryText,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -352,7 +372,7 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                       '4 Tasks',
                       style: TextStyle(
                         fontSize: 10,
-                        color: Colors.grey.shade500,
+                        color: colors.secondaryText,
                       ),
                     ),
                   ],
@@ -361,12 +381,12 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
               Icon(
                 Icons.keyboard_arrow_down,
                 size: 20,
-                color: Colors.grey.shade500,
+                color: colors.secondaryText,
               ),
             ],
           ),
         ),
-        if (!isLast) Divider(color: Colors.grey.shade100, height: 1),
+        if (!isLast) Divider(color: colors.divider, height: 1),
       ],
     );
   }

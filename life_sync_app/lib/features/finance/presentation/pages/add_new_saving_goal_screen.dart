@@ -38,8 +38,9 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FC),
+      backgroundColor: colors.pageBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
@@ -53,18 +54,19 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                   // Close Button
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colors.cardSurface,
                       shape: BoxShape.circle,
+                      border: Border.all(color: colors.border),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withValues(alpha: 0.08),
+                          color: colors.shadow,
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
                       ],
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.black87),
+                      icon: Icon(Icons.close, color: colors.primaryText),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
@@ -75,8 +77,8 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                       // Handle save action here
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
-                      side: BorderSide(color: Colors.grey.shade300),
+                      foregroundColor: colors.primaryBlue,
+                      side: BorderSide(color: colors.border),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -85,16 +87,16 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                         vertical: 8,
                       ),
                     ),
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.check,
                       size: 18,
-                      color: AppColors.primary,
+                      color: colors.primaryBlue,
                     ),
-                    label: const Text(
+                    label: Text(
                       'Save',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: colors.primaryText,
                       ),
                     ),
                   ),
@@ -105,17 +107,22 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
               // Purpose Field
               TextField(
                 controller: _purposeController,
+                style: TextStyle(
+                  color: colors.primaryText,
+                  fontSize: 14,
+                ),
+                cursorColor: colors.primaryBlue,
                 decoration: InputDecoration(
                   hintText: 'Purpose',
                   hintStyle: TextStyle(
-                    color: Colors.grey.shade400,
+                    color: colors.secondaryText,
                     fontSize: 14,
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: colors.inputSurface,
                   prefixIcon: Icon(
                     Icons.edit_outlined,
-                    color: Colors.grey.shade600,
+                    color: colors.secondaryText,
                     size: 20,
                   ),
                   contentPadding: const EdgeInsets.symmetric(
@@ -124,15 +131,15 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: AppColors.primary),
+                    borderSide: BorderSide(color: colors.primaryBlue),
                   ),
                 ),
               ),
@@ -200,65 +207,74 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
               const SizedBox(height: 24),
 
               // Target Amount Field
-              const Text(
+              Text(
                 'Target Amount',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey,
+                  color: colors.secondaryText,
                 ),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: _amountController,
+                style: TextStyle(
+                  color: colors.primaryText,
+                  fontSize: 14,
+                ),
+                cursorColor: colors.primaryBlue,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: 'e.g. \$168',
                   hintStyle: TextStyle(
-                    color: Colors.grey.shade400,
+                    color: colors.secondaryText,
                     fontSize: 14,
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: colors.inputSurface,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 16,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: AppColors.primary),
+                    borderSide: BorderSide(color: colors.primaryBlue),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
 
               // Estimated Complete Date Field
-              const Text(
+              Text(
                 'Est. Complete Date',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey,
+                  color: colors.secondaryText,
                 ),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: _dateController,
                 readOnly: true,
+                style: TextStyle(
+                  color: colors.primaryText,
+                  fontSize: 14,
+                ),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.white,
-                  suffixIcon: const Icon(
+                  fillColor: colors.inputSurface,
+                  suffixIcon: Icon(
                     Icons.calendar_today_outlined,
-                    color: Colors.black54,
+                    color: colors.secondaryText,
                     size: 20,
                   ),
                   contentPadding: const EdgeInsets.symmetric(
@@ -267,15 +283,15 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                    borderSide: BorderSide(color: colors.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: AppColors.primary),
+                    borderSide: BorderSide(color: colors.primaryBlue),
                   ),
                 ),
               ),

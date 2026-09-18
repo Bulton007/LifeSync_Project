@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/features/habits/presentation/models/habit_item_model.dart';
 
 /// Renders a single sub-habit item with a circular checkbox, label,
@@ -17,13 +18,10 @@ class HabitSubItemWidget extends StatelessWidget {
   final bool isLast;
   final VoidCallback onToggle;
 
-  static const Color primaryBlue = Color(0xFF4F8DF7);
-  static const Color darkText = Color(0xFF222222);
-  static const Color secondaryText = Color(0xFF777B87);
-  static const Color connectorColor = Color(0xFFE5E7EB);
-
   @override
   Widget build(BuildContext context) {
+    final colors = context.lifeSyncColors;
+
     return InkWell(
       onTap: onToggle,
       borderRadius: BorderRadius.circular(8),
@@ -44,7 +42,7 @@ class HabitSubItemWidget extends StatelessWidget {
                     painter: _SubItemConnectorPainter(
                       isFirst: isFirst,
                       isLast: isLast,
-                      color: connectorColor,
+                      color: colors.border,
                     ),
                   ),
 
@@ -55,11 +53,11 @@ class HabitSubItemWidget extends StatelessWidget {
                     height: 20,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: item.isCompleted ? primaryBlue : Colors.white,
+                      color: item.isCompleted ? colors.primaryBlue : colors.inputSurface,
                       border: Border.all(
                         color: item.isCompleted
-                            ? primaryBlue
-                            : const Color(0xFFD1D5DB),
+                            ? colors.primaryBlue
+                            : colors.border,
                         width: 1.8,
                       ),
                     ),
@@ -83,11 +81,11 @@ class HabitSubItemWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: item.isCompleted ? secondaryText : darkText,
+                  color: item.isCompleted ? colors.secondaryText : colors.primaryText,
                   decoration: item.isCompleted
                       ? TextDecoration.lineThrough
                       : null,
-                  decorationColor: secondaryText,
+                  decorationColor: colors.secondaryText,
                 ),
               ),
             ),

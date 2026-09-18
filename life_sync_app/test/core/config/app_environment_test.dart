@@ -25,13 +25,13 @@ void main() {
       expect(uri.scheme, anyOf('http', 'https'));
     });
 
-    test('uses the hosted API for Android development builds', () {
+    test('uses the local host alias for Android development builds', () {
       debugDefaultTargetPlatformOverride = TargetPlatform.android;
       addTearDown(() => debugDefaultTargetPlatformOverride = null);
 
       expect(
         AppEnvironment.current().apiBaseUrl,
-        'https://lifesync-backend-bultoncr7-dev.apps.rm3.7wse.p1.openshiftapps.com',
+        'http://10.0.2.2:8085',
       );
     });
   });

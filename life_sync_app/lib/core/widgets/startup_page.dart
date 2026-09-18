@@ -85,7 +85,7 @@ final class _StartupPageState extends State<StartupPage>
     const double logoSize = 320.0;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colors.pageBackground,
       body: Center(
         child: FadeTransition(
           opacity: CurvedAnimation(parent: _animation, curve: Curves.easeOut),
