@@ -5,7 +5,14 @@ import 'package:flutter/foundation.dart';
 /// Override the development default with:
 /// `--dart-define=API_BASE_URL=https://api.example.com`.
 ///
-/// The legacy `LIFE_SYNC_API_BASE_URL` key is still accepted.
+/// Builds default to the deployed HTTPS origin on every platform.
+/// Explicit API_BASE_URL overrides must use HTTPS for release builds.
+/// Do NOT include `/api` in the base URL — feature data sources already
+/// prefix request paths with `/api/...`.
+///
+/// Android emulators can opt into the `10.0.2.2` host alias with
+/// `--dart-define=ANDROID_USE_EMULATOR_ALIAS=true`. Physical devices must use
+/// a reachable LAN or HTTPS origin instead.
 final class AppEnvironment {
   AppEnvironment({
     required String apiBaseUrl,
@@ -25,10 +32,6 @@ final class AppEnvironment {
     final selectedBaseUrl = configuredBaseUrl.trim().isNotEmpty
         ? configuredBaseUrl
         : legacyConfiguredBaseUrl;
-
-    if (selectedBaseUrl.trim().isEmpty && kReleaseMode) {
-      throw StateError('API_BASE_URL must be provided for release builds.');
-    }
 
     const connectTimeoutSec = int.fromEnvironment(
       'API_CONNECT_TIMEOUT_SECONDS',
@@ -55,9 +58,24 @@ final class AppEnvironment {
 
     String effectiveBaseUrl = selectedBaseUrl.trim().isNotEmpty
         ? selectedBaseUrl
-        : _developmentBaseUrl;
+        : defaultApiBaseUrl;
 
-    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+    if (kReleaseMode && !_isHttpsOrigin(effectiveBaseUrl)) {
+      throw ArgumentError.value(
+        effectiveBaseUrl,
+        'API_BASE_URL',
+        'Release builds must use an absolute HTTPS origin without a path.',
+      );
+    }
+
+    const useAndroidEmulatorAlias = bool.fromEnvironment(
+      'ANDROID_USE_EMULATOR_ALIAS',
+    );
+
+    if (!kIsWeb &&
+        !kReleaseMode &&
+        useAndroidEmulatorAlias &&
+        defaultTargetPlatform == TargetPlatform.android) {
       final parsed = Uri.tryParse(effectiveBaseUrl.trim());
       if (parsed != null &&
           (parsed.host == 'localhost' || parsed.host == '127.0.0.1')) {
@@ -84,14 +102,15 @@ final class AppEnvironment {
   final String geminiApiBaseUrl;
   final String geminiModel;
 
-  static const _androidDevelopmentBaseUrl = 'http://10.0.2.2:8085';
+  static const defaultApiBaseUrl =
+      'https://lifesync-backend-bultoncr7-dev.apps.rm3.7wse.p1.openshiftapps.com';
 
-  static String get _developmentBaseUrl {
-    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-      return _androidDevelopmentBaseUrl;
-    }
-
-    return 'http://localhost:8085';
+  static bool _isHttpsOrigin(String value) {
+    final uri = Uri.tryParse(value.trim());
+    return uri != null &&
+        uri.hasAuthority &&
+        uri.scheme == 'https' &&
+        _hasOriginOnlyPath(uri);
   }
 
   static String _normalizeAndValidate(String value) {
@@ -100,14 +119,22 @@ final class AppEnvironment {
 
     if (uri == null ||
         !uri.hasAuthority ||
-        (uri.scheme != 'http' && uri.scheme != 'https')) {
+        (uri.scheme != 'http' && uri.scheme != 'https') ||
+        !_hasOriginOnlyPath(uri)) {
       throw ArgumentError.value(
         value,
         'apiBaseUrl',
-        'Must be an absolute HTTP or HTTPS URL.',
+        'Must be an absolute HTTP or HTTPS origin without a path.',
       );
     }
 
     return normalized;
+  }
+
+  static bool _hasOriginOnlyPath(Uri uri) {
+    return uri.userInfo.isEmpty &&
+        (uri.path.isEmpty || uri.path == '/') &&
+        !uri.hasQuery &&
+        !uri.hasFragment;
   }
 }

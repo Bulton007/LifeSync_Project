@@ -8,7 +8,7 @@
       "type": "dart",
       "program": "lib/main.dart",
       "toolArgs": [
-        "--dart-define-from-file=.env"
+        "--dart-define=API_DIAGNOSTICS=true"
       ]
     },
     {
@@ -19,7 +19,7 @@
       "flutterMode": "profile",
       "program": "lib/main.dart",
       "toolArgs": [
-        "--dart-define-from-file=.env"
+        "--dart-define=API_DIAGNOSTICS=true"
       ]
     },
     {
@@ -30,7 +30,7 @@
       "flutterMode": "release",
       "program": "lib/main.dart",
       "toolArgs": [
-        "--dart-define-from-file=.env"
+        "--dart-define=API_DIAGNOSTICS=false"
       ]
     }
   ]

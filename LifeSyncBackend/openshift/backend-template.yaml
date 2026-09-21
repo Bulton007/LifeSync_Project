@@ -1,0 +1,185 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: lifesync-backend
+  annotations:
+    description: LifeSync backend deployment, service, and HTTPS route
+    tags: lifesync,backend
+parameters:
+  - name: APP_NAME
+    description: Stable application name used by the workload and Service
+    value: lifesync-backend
+    required: true
+  - name: IMAGE
+    description: Fully qualified backend image reference, preferably by digest
+    required: true
+  - name: REDIS_HOST
+    description: Resolvable Redis service hostname
+    required: true
+  - name: REDIS_PORT
+    value: "6379"
+    required: true
+  - name: REDIS_PASSWORD_SECRET_KEY
+    description: Existing Secret key containing the Redis password
+    value: REDIS_PASSWORD
+    required: true
+  - name: ROUTE_HOST
+    description: Optional public host; leave empty for an OpenShift-assigned host
+    value: ""
+  - name: REPLICAS
+    value: "1"
+    required: true
+objects:
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: ${APP_NAME}
+      labels:
+        app: ${APP_NAME}
+    spec:
+      replicas: ${{REPLICAS}}
+      strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
+      selector:
+        matchLabels:
+          app: ${APP_NAME}
+      template:
+        metadata:
+          labels:
+            app: ${APP_NAME}
+        spec:
+          containers:
+            - name: backend
+              image: ${IMAGE}
+              imagePullPolicy: IfNotPresent
+              ports:
+                - name: http
+                  containerPort: 8085
+                  protocol: TCP
+              env:
+                - name: SERVER_PORT
+                  value: "8085"
+                - name: REDIS_HOST
+                  value: ${REDIS_HOST}
+                - name: REDIS_PORT
+                  value: ${REDIS_PORT}
+                - name: REDIS_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: lifesync-secrets
+                      key: ${REDIS_PASSWORD_SECRET_KEY}
+                      optional: true
+                - name: DB_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: lifesync-secrets
+                      key: DATABASE_URL
+                - name: DB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: lifesync-secrets
+                      key: DATABASE_USERNAME
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: lifesync-secrets
+                      key: DATABASE_PASSWORD
+                - name: LIFESYNC_TELEGRAM_BOT_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: lifesync-secrets
+                      key: TELEGRAM_BOT_TOKEN
+                      optional: true
+                - name: JWT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: lifesync-secrets
+                      key: JWT_SECRET
+                - name: JWT_EXPIRATION_MS
+                  valueFrom:
+                    secretKeyRef:
+                      name: lifesync-secrets
+                      key: JWT_EXPIRATION_MS
+                      optional: true
+                - name: GMAIL_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: lifesync-secrets
+                      key: GMAIL_USERNAME
+                      optional: true
+                - name: GMAIL_APP_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: lifesync-secrets
+                      key: GMAIL_APP_PASSWORD
+                      optional: true
+                - name: LOGGING_FILE_NAME
+                  value: /tmp/lifesync/app.log
+                - name: SERVER_TOMCAT_BASEDIR
+                  value: /tmp/lifesync-tomcat
+                - name: UPLOAD_DIR
+                  value: /tmp/lifesync/uploads/profile-images
+                - name: LOGGING_LOGBACK_ROLLINGPOLICY_TOTAL_SIZE_CAP
+                  value: 100MB
+                - name: LOGGING_LOGBACK_ROLLINGPOLICY_MAX_HISTORY
+                  value: "7"
+              readinessProbe:
+                httpGet:
+                  path: /actuator/health/readiness
+                  port: http
+                initialDelaySeconds: 20
+                periodSeconds: 10
+                timeoutSeconds: 5
+                failureThreshold: 6
+              livenessProbe:
+                httpGet:
+                  path: /actuator/health/liveness
+                  port: http
+                initialDelaySeconds: 40
+                periodSeconds: 20
+                timeoutSeconds: 5
+                failureThreshold: 3
+              startupProbe:
+                httpGet:
+                  path: /actuator/health/liveness
+                  port: http
+                periodSeconds: 10
+                timeoutSeconds: 5
+                failureThreshold: 18
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: ${APP_NAME}
+      labels:
+        app: ${APP_NAME}
+    spec:
+      selector:
+        app: ${APP_NAME}
+      ports:
+        - name: http
+          port: 8085
+          targetPort: http
+          protocol: TCP
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      name: ${APP_NAME}
+      labels:
+        app: ${APP_NAME}
+      annotations:
+        haproxy.router.openshift.io/timeout: 60s
+    spec:
+      host: ${ROUTE_HOST}
+      to:
+        kind: Service
+        name: ${APP_NAME}
+        weight: 100
+      port:
+        targetPort: http
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: Redirect
+      wildcardPolicy: None

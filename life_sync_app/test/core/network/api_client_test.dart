@@ -45,6 +45,10 @@ void main() {
 
       expect(result, isA<ApiSuccess<Map<String, Object?>>>());
       expect(
+        adapter.lastRequest?.uri.toString(),
+        'https://api.example.com/api/tasks',
+      );
+      expect(
         adapter.lastRequest?.headers['Authorization'],
         'Bearer test-token',
       );

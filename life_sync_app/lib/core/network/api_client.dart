@@ -8,6 +8,43 @@ import 'package:life_sync_app/core/storage/token_storage.dart';
 
 typedef ApiDecoder<T> = T Function(Object? data);
 
+final _diagnosticsEnabled =
+    kDebugMode || const bool.fromEnvironment('API_DIAGNOSTICS');
+
+final class _SafeApiDiagnosticsInterceptor extends Interceptor {
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    debugPrint('[LifeSync API] ${options.method} ${_safeUri(options.uri)}');
+    handler.next(options);
+  }
+
+  @override
+  void onResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) {
+    final options = response.requestOptions;
+    debugPrint(
+      '[LifeSync API] ${options.method} ${_safeUri(options.uri)} '
+      '-> ${response.statusCode ?? 'no-status'}',
+    );
+    handler.next(response);
+  }
+
+  @override
+  void onError(DioException error, ErrorInterceptorHandler handler) {
+    final options = error.requestOptions;
+    debugPrint(
+      '[LifeSync API] ${options.method} ${_safeUri(options.uri)} '
+      '-> ${error.response?.statusCode ?? 'no-status'} '
+      '(${error.type.name})',
+    );
+    handler.next(error);
+  }
+
+  static String _safeUri(Uri uri) => uri.replace(query: null).toString();
+}
+
 /// The only low-level HTTP dependency exposed to feature data sources.
 final class ApiClient {
   ApiClient({
@@ -30,19 +67,9 @@ final class ApiClient {
 
     _dio.interceptors.add(AuthInterceptor(tokenStorage, onUnauthorized));
 
-    if (kDebugMode) {
+    if (_diagnosticsEnabled) {
       debugPrint('LifeSync API base URL: ${environment.apiBaseUrl}');
-      _dio.interceptors.add(
-        LogInterceptor(
-          request: false,
-          requestHeader: false,
-          requestBody: false,
-          responseHeader: false,
-          responseBody: false,
-          error: true,
-          logPrint: (message) => debugPrint(message.toString()),
-        ),
-      );
+      _dio.interceptors.add(_SafeApiDiagnosticsInterceptor());
     }
   }
 
