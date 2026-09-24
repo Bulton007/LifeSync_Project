@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -22,12 +23,12 @@ class GoalSuccessPage extends StatelessWidget {
               const Spacer(flex: 2),
 
               // Replace with your own illustration asset later.
-              const _SuccessIllustration(),
+              _SuccessIllustration(),
 
               const SizedBox(height: AppSpacing.xxl),
 
               Text(
-                'The journey starts now!',
+                'The journey starts now!'.tr,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.titleXL.copyWith(color: AppColors.primary),
               ),
@@ -45,28 +46,28 @@ class GoalSuccessPage extends StatelessWidget {
 
               const SizedBox(height: AppSpacing.xxl),
 
-              const Row(
+              Row(
                 children: [
                   Expanded(
                     child: _SuccessSummaryItem(
                       icon: Icons.flag_outlined,
-                      label: 'Milestones',
+                      label: 'Milestones'.tr,
                       value: '4',
                     ),
                   ),
-                  SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: _SuccessSummaryItem(
                       icon: Icons.task_alt_outlined,
-                      label: 'Tasks',
+                      label: 'Tasks'.tr,
                       value: '24',
                     ),
                   ),
-                  SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: _SuccessSummaryItem(
                       icon: Icons.calendar_today_outlined,
-                      label: 'Due Date',
+                      label: 'Due Date'.tr,
                       value: '10th Oct',
                       secondaryValue: '2026',
                     ),
@@ -76,7 +77,7 @@ class GoalSuccessPage extends StatelessWidget {
 
               const Spacer(flex: 3),
 
-              const _BottomActions(),
+              _BottomActions(),
             ],
           ),
         ),
@@ -174,7 +175,7 @@ class _BottomActions extends StatelessWidget {
           child: OutlinedButton(
             // Static UI only.
             onPressed: () {},
-            child: const Text('View Goal'),
+            child: Text('View Goal'.tr),
           ),
         ),
         const SizedBox(width: AppSpacing.md),
@@ -183,7 +184,7 @@ class _BottomActions extends StatelessWidget {
           child: ElevatedButton(
             // Static UI only.
             onPressed: () {},
-            child: const Text('Done'),
+            child: Text('Done'.tr),
           ),
         ),
       ],

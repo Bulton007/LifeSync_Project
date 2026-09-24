@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -33,7 +34,7 @@ class AiAssistantBadge extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.xs),
               Text(
-                'AI Assistant',
+                'AI Assistant'.tr,
                 style: AppTextStyles.micro.copyWith(
                   color: AppColors.primary,
                   fontWeight: FontWeight.w600,

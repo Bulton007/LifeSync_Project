@@ -48,7 +48,7 @@ final class FocusTimeDataScreen extends StatelessWidget {
           onPressed: Get.back<void>,
           icon: const Icon(Icons.chevron_left_rounded),
         ),
-        title: const Text('Focus Statistics'),
+        title: Text('Focus Statistics'.tr),
         actions: [
           Obx(
             () => DropdownButtonHideUnderline(
@@ -83,14 +83,14 @@ final class FocusTimeDataScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _StatCard(
-                      label: 'Total Pomodoro',
+                      label: 'Total Pomodoro'.tr,
                       value: '${controller.totalPomodoros}',
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: _StatCard(
-                      label: 'Total Focus Time',
+                      label: 'Total Focus Time'.tr,
                       value: _duration(controller.totalFocusSeconds),
                     ),
                   ),
@@ -108,16 +108,19 @@ final class FocusTimeDataScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Overview Trends',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                  Text(
+                    'Overview Trends'.tr,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Obx(
                     () => Row(
                       children: [
                         IconButton(
-                          tooltip: 'Previous period',
+                          tooltip: 'Previous period'.tr,
                           onPressed: controller.previousPeriod,
                           icon: const Icon(Icons.chevron_left, size: 20),
                         ),
@@ -132,7 +135,7 @@ final class FocusTimeDataScreen extends StatelessWidget {
                           ),
                         ),
                         IconButton(
-                          tooltip: 'Next period',
+                          tooltip: 'Next period'.tr,
                           onPressed: controller.nextPeriod,
                           icon: const Icon(Icons.chevron_right, size: 20),
                         ),
@@ -145,7 +148,9 @@ final class FocusTimeDataScreen extends StatelessWidget {
                     if (controller.isLoading.value && values.isEmpty) {
                       return const SizedBox(
                         height: 180,
-                        child: Center(child: CircularProgressIndicator()),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       );
                     }
                     if (values.isEmpty) {
@@ -153,7 +158,7 @@ final class FocusTimeDataScreen extends StatelessWidget {
                         height: 180,
                         child: Center(
                           child: Text(
-                            'Complete a focus session to see your trend.',
+                            'Complete a focus session to see your trend.'.tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(color: colors.secondaryText),
                           ),

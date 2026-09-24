@@ -68,7 +68,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     if (_repeatFrequency == 'Weekly' && !_selectedDays.contains(true)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Select at least one scheduled day.')),
+        SnackBar(content: Text('Select at least one scheduled day.'.tr)),
       );
       return;
     }
@@ -123,18 +123,18 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add Task'),
+          title: Text('Add Task'.tr),
           content: TextField(
             controller: controller,
             autofocus: true,
-            decoration: const InputDecoration(hintText: 'Enter task name'),
+            decoration: InputDecoration(hintText: 'Enter task name'.tr),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel'),
+              child: Text('Cancel'.tr),
             ),
             ElevatedButton(
               onPressed: () {
@@ -148,7 +148,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
 
                 Navigator.pop(context);
               },
-              child: const Text('Add'),
+              child: Text('Add'.tr),
             ),
           ],
         );
@@ -277,17 +277,14 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 // =========================
                 TextFormField(
                   controller: _habitNameController,
-                  style: TextStyle(
-                    color: colors.primaryText,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: colors.primaryText, fontSize: 14),
                   cursorColor: colors.primaryBlue,
                   textInputAction: TextInputAction.done,
                   validator: (value) => value == null || value.trim().isEmpty
                       ? 'Habit name is required'
                       : null,
                   decoration: InputDecoration(
-                    hintText: 'Habit Name',
+                    hintText: 'Habit Name'.tr,
                     hintStyle: TextStyle(
                       color: colors.secondaryText,
                       fontSize: 14,
@@ -323,9 +320,9 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 // =========================
                 // COLOR
                 // =========================
-                const Text(
-                  'Color',
-                  style: TextStyle(
+                Text(
+                  'Color'.tr,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.grey,
@@ -387,7 +384,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 // SCHEDULE & REPEAT
                 // =========================
                 Text(
-                  'Schedule',
+                  'Schedule'.tr,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -401,7 +398,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Repeat',
+                      'Repeat'.tr,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -428,18 +425,18 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                             color: colors.primaryText,
                           ),
                           isDense: true,
-                          items: const [
+                          items: [
                             DropdownMenuItem(
                               value: 'Weekly',
-                              child: Text('Weekly'),
+                              child: Text('Weekly'.tr),
                             ),
                             DropdownMenuItem(
                               value: 'Daily',
-                              child: Text('Daily'),
+                              child: Text('Daily'.tr),
                             ),
                             DropdownMenuItem(
                               value: 'Monthly',
-                              child: Text('Monthly'),
+                              child: Text('Monthly'.tr),
                             ),
                           ],
                           onChanged: (value) {
@@ -598,9 +595,12 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                     size: 16,
                     color: AppColors.primary,
                   ),
-                  label: const Text(
-                    'Add Task',
-                    style: TextStyle(fontSize: 13, color: AppColors.primary),
+                  label: Text(
+                    'Add Task'.tr,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
 
@@ -613,7 +613,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Reminder',
+                      'Reminder'.tr,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -696,7 +696,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 // START DATE
                 // =========================
                 _buildDateRow(
-                  label: 'Start Date',
+                  label: 'Start Date'.tr,
                   value: _formatDate(_startDate),
                   onTap: () => _selectDate(isStartDate: true),
                 ),
@@ -707,7 +707,7 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
                 // END DATE
                 // =========================
                 _buildDateRow(
-                  label: 'End Date',
+                  label: 'End Date'.tr,
                   value: _endDate == null ? 'Never' : _formatDate(_endDate!),
                   onTap: () => _selectDate(isStartDate: false),
                 ),

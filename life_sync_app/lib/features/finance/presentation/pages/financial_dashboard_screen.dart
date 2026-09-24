@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -76,7 +77,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        'Financial Analysis',
+                        'Financial Analysis'.tr,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -198,39 +199,37 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                     Expanded(
                       child: _buildSummaryItem(
                         icon: Icons.trending_up,
-                        iconBg: isDark ? const Color(0xFF1B382B) : Colors.green.shade50,
+                        iconBg: isDark
+                            ? const Color(0xFF1B382B)
+                            : Colors.green.shade50,
                         iconColor: Colors.green,
-                        title: 'Income',
+                        title: 'Income'.tr,
                         amount: '\$284.56',
                         change: '8.2% vs Last Quoter',
                       ),
                     ),
-                    Container(
-                      height: 50,
-                      width: 1,
-                      color: colors.divider,
-                    ),
+                    Container(height: 50, width: 1, color: colors.divider),
                     Expanded(
                       child: _buildSummaryItem(
                         icon: Icons.trending_down,
-                        iconBg: isDark ? const Color(0xFF3E1F24) : Colors.red.shade50,
+                        iconBg: isDark
+                            ? const Color(0xFF3E1F24)
+                            : Colors.red.shade50,
                         iconColor: Colors.red,
-                        title: 'Expense',
+                        title: 'Expense'.tr,
                         amount: '\$50.00',
                         change: '8.2% vs Last Quoter',
                       ),
                     ),
-                    Container(
-                      height: 50,
-                      width: 1,
-                      color: colors.divider,
-                    ),
+                    Container(height: 50, width: 1, color: colors.divider),
                     Expanded(
                       child: _buildSummaryItem(
                         icon: Icons.savings_outlined,
-                        iconBg: isDark ? const Color(0xFF1E2E4A) : Colors.blue.shade50,
+                        iconBg: isDark
+                            ? const Color(0xFF1E2E4A)
+                            : Colors.blue.shade50,
                         iconColor: AppColors.primary,
-                        title: 'Savings',
+                        title: 'Savings'.tr,
                         amount: '\$70.00',
                         change: '8.2% vs Last Quoter',
                       ),
@@ -249,7 +248,9 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                   border: Border.all(color: colors.border),
                   boxShadow: [
                     BoxShadow(
-                      color: isDark ? Colors.black.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.06),
+                      color: isDark
+                          ? Colors.black.withValues(alpha: 0.2)
+                          : Colors.grey.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -263,7 +264,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                       children: [
                         Expanded(
                           child: Text(
-                            'Overview Trends',
+                            'Overview Trends'.tr,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -335,7 +336,9 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                   border: Border.all(color: colors.border),
                   boxShadow: [
                     BoxShadow(
-                      color: isDark ? Colors.black.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.06),
+                      color: isDark
+                          ? Colors.black.withValues(alpha: 0.2)
+                          : Colors.grey.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -349,7 +352,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                       children: [
                         Expanded(
                           child: Text(
-                            'Sort by Categories',
+                            'Sort by Categories'.tr,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -375,9 +378,9 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                                 padding: EdgeInsets.zero,
                                 minimumSize: const Size(40, 30),
                               ),
-                              child: const Text(
-                                'View All',
-                                style: TextStyle(
+                              child: Text(
+                                'View All'.tr,
+                                style: const TextStyle(
                                   fontSize: 11,
                                   color: AppColors.primary,
                                 ),
@@ -408,7 +411,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    'Income',
+                                    'Income'.tr,
                                     style: TextStyle(
                                       fontSize: 9,
                                       color: colors.secondaryText,
@@ -635,7 +638,7 @@ class _FinancialDashboardScreenState extends State<FinancialDashboardScreen> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                 if (day == 1 ||
+                if (day == 1 ||
                     day == 5 ||
                     day == 10 ||
                     day == 15 ||

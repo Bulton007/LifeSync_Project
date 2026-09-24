@@ -11,6 +11,7 @@ abstract final class AppTextStyles {
   // ============================================================
 
   static TextStyle get hero => GoogleFonts.poppins(
+    textStyle: const TextStyle(fontFamilyFallback: ['NotoSansKhmer']),
     fontSize: 32,
     fontWeight: FontWeight.w300,
     height: 1.25,
@@ -21,18 +22,21 @@ abstract final class AppTextStyles {
   // ============================================================
 
   static TextStyle get titleXL => GoogleFonts.poppins(
+    textStyle: const TextStyle(fontFamilyFallback: ['NotoSansKhmer']),
     fontSize: 24,
     fontWeight: FontWeight.w700,
     height: 1.30,
   );
 
   static TextStyle get titleL => GoogleFonts.poppins(
+    textStyle: const TextStyle(fontFamilyFallback: ['NotoSansKhmer']),
     fontSize: 20,
     fontWeight: FontWeight.w600,
     height: 1.35,
   );
 
   static TextStyle get titleM => GoogleFonts.poppins(
+    textStyle: const TextStyle(fontFamilyFallback: ['NotoSansKhmer']),
     fontSize: 18,
     fontWeight: FontWeight.w500,
     height: 1.40,
@@ -43,12 +47,14 @@ abstract final class AppTextStyles {
   // ============================================================
 
   static TextStyle get bodyL => GoogleFonts.poppins(
+    textStyle: const TextStyle(fontFamilyFallback: ['NotoSansKhmer']),
     fontSize: 17,
     fontWeight: FontWeight.w400,
     height: 1.50,
   );
 
   static TextStyle get bodyPrimary => GoogleFonts.poppins(
+    textStyle: const TextStyle(fontFamilyFallback: ['NotoSansKhmer']),
     fontSize: 15,
     fontWeight: FontWeight.w400,
     height: 1.50,
@@ -59,6 +65,7 @@ abstract final class AppTextStyles {
   // ============================================================
 
   static TextStyle get button => GoogleFonts.poppins(
+    textStyle: const TextStyle(fontFamilyFallback: ['NotoSansKhmer']),
     fontSize: 14,
     fontWeight: FontWeight.w600,
     height: 1.40,
@@ -69,6 +76,7 @@ abstract final class AppTextStyles {
   // ============================================================
 
   static TextStyle get caption => GoogleFonts.poppins(
+    textStyle: const TextStyle(fontFamilyFallback: ['NotoSansKhmer']),
     fontSize: 12,
     fontWeight: FontWeight.w400,
     height: 1.45,
@@ -79,6 +87,7 @@ abstract final class AppTextStyles {
   // ============================================================
 
   static TextStyle get micro => GoogleFonts.poppins(
+    textStyle: const TextStyle(fontFamilyFallback: ['NotoSansKhmer']),
     fontSize: 10,
     fontWeight: FontWeight.w500,
     height: 1.40,

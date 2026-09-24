@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
@@ -164,7 +165,7 @@ class SettingsHeader extends StatelessWidget {
         ),
         if (profile)
           IconButton.filledTonal(
-            tooltip: 'Save profile',
+            tooltip: 'Save profile'.tr,
             onPressed: onSave,
             style: IconButton.styleFrom(
               backgroundColor: SettingsStyle.surface(context),
@@ -216,7 +217,7 @@ class SettingsLayout extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
         children: [
-          SettingsHeader(title: 'Setting', onBack: onBack),
+          SettingsHeader(title: 'Setting'.tr, onBack: onBack),
           const SizedBox(height: 16),
           SettingsGroup(
             children: [
@@ -304,27 +305,27 @@ class SettingsLayout extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Settings & Personalization',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          Text(
+            'Settings & Personalization'.tr,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 14),
           SettingsGroup(
             children: [
               SettingsRow(
-                title: 'Appearance',
+                title: 'Appearance'.tr,
                 value: appearance,
                 icon: Icons.format_paint_outlined,
                 onTap: onAppearance,
               ),
               SettingsRow(
-                title: 'First Day of the Week',
+                title: 'First Day of the Week'.tr,
                 value: firstDay,
                 icon: Icons.calendar_today_outlined,
                 onTap: onFirstDay,
               ),
               SettingsRow(
-                title: 'Language',
+                title: 'Language'.tr,
                 value: 'English',
                 icon: Icons.language,
                 onTap: onLanguage,
@@ -335,7 +336,7 @@ class SettingsLayout extends StatelessWidget {
                 onTap: onPasscode,
               ),
               SettingsRow(
-                title: 'Reminder',
+                title: 'Reminder'.tr,
                 icon: Icons.notifications_none,
                 onTap: onReminder,
               ),
@@ -345,7 +346,7 @@ class SettingsLayout extends StatelessWidget {
           SettingsGroup(
             children: [
               SettingsRow(
-                title: 'Log out',
+                title: 'Log out'.tr,
                 icon: Icons.logout,
                 danger: true,
                 onTap: onLogout,
@@ -398,7 +399,7 @@ class ProfileLayout extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SettingsHeader(
-                      title: 'Profile',
+                      title: 'Profile'.tr,
                       profile: true,
                       onBack: onClose,
                       onSave: onSave,
@@ -407,18 +408,22 @@ class ProfileLayout extends StatelessWidget {
                     SettingsGroup(
                       children: [
                         SettingsRow(
-                          title: 'Avatar',
+                          title: 'Avatar'.tr,
                           trailing: SettingsAvatar(bytes: avatar, radius: 15),
                           onTap: onAvatar,
                         ),
-                        SettingsRow(title: 'Name', value: name, onTap: onName),
                         SettingsRow(
-                          title: 'Email',
+                          title: 'Name'.tr,
+                          value: name,
+                          onTap: onName,
+                        ),
+                        SettingsRow(
+                          title: 'Email'.tr,
                           value: email,
                           onTap: onEmail,
                         ),
                         SettingsRow(
-                          title: 'Change Password',
+                          title: 'Change Password'.tr,
                           onTap: onPassword,
                         ),
                       ],
@@ -432,9 +437,9 @@ class ProfileLayout extends StatelessWidget {
                         ),
                       ),
                     const SizedBox(height: 26),
-                    const Text(
-                      'Third Party Connection',
-                      style: TextStyle(
+                    Text(
+                      'Third Party Connection'.tr,
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -464,7 +469,7 @@ class ProfileLayout extends StatelessWidget {
                   child: SettingsGroup(
                     children: [
                       SettingsRow(
-                        title: 'Delete Account',
+                        title: 'Delete Account'.tr,
                         icon: Icons.delete_outline,
                         danger: true,
                         onTap: onDelete,

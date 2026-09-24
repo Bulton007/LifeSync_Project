@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
@@ -62,7 +63,7 @@ class HabitsCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Habits',
+                      'Habits'.tr,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -75,8 +76,11 @@ class HabitsCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 2),
                         child: Text(
-                          'No habits scheduled today.',
-                          style: TextStyle(color: colors.secondaryText, fontSize: 11),
+                          'No habits scheduled today.'.tr,
+                          style: TextStyle(
+                            color: colors.secondaryText,
+                            fontSize: 11,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -95,9 +99,13 @@ class HabitsCard extends StatelessWidget {
                         visualDensity: VisualDensity.compact,
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                       ),
-                      icon: Icon(Icons.add, size: 16, color: colors.primaryBlue),
+                      icon: Icon(
+                        Icons.add,
+                        size: 16,
+                        color: colors.primaryBlue,
+                      ),
                       label: Text(
-                        'Add Schedule',
+                        'Add Schedule'.tr,
                         style: TextStyle(
                           color: colors.primaryBlue,
                           fontSize: 13,
@@ -114,7 +122,7 @@ class HabitsCard extends StatelessWidget {
                       padding: EdgeInsets.zero,
                     ),
                     child: Text(
-                      'View All',
+                      'View All'.tr,
                       style: TextStyle(
                         color: colors.primaryBlue,
                         fontSize: 13,
@@ -159,7 +167,7 @@ class HabitsCard extends StatelessWidget {
                           child: GestureDetector(
                             onTap: onAddSchedule,
                             child: Text(
-                              'Create one',
+                              'Create one'.tr,
                               style: TextStyle(
                                 color: colors.primaryBlue,
                                 fontWeight: FontWeight.w600,

@@ -22,7 +22,7 @@ final class _JournalScreenState extends State<JournalScreen> {
   final _searchController = TextEditingController();
   bool _searching = false;
 
-  static const _months = [
+  static final _months = [
     'January',
     'February',
     'March',
@@ -36,7 +36,7 @@ final class _JournalScreenState extends State<JournalScreen> {
     'November',
     'December',
   ];
-  static const _weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  static final _weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   @override
   void initState() {
@@ -129,9 +129,9 @@ final class _JournalScreenState extends State<JournalScreen> {
                                   controller: _searchController,
                                   autofocus: true,
                                   textInputAction: TextInputAction.search,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Search title, notes, or tags',
-                                    prefixIcon: Icon(Icons.search),
+                                  decoration: InputDecoration(
+                                    hintText: 'Search title, notes, or tags'.tr,
+                                    prefixIcon: const Icon(Icons.search),
                                   ),
                                 ),
                               )
@@ -148,7 +148,7 @@ final class _JournalScreenState extends State<JournalScreen> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Journal',
+                          'Journal'.tr,
                           style: TextStyle(
                             color: colors.primaryBlue,
                             fontSize: 17,
@@ -165,7 +165,9 @@ final class _JournalScreenState extends State<JournalScreen> {
                     _controller.entries.isEmpty) {
                   return const SliverFillRemaining(
                     hasScrollBody: false,
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 }
                 final error = _controller.errorMessage.value;
@@ -181,7 +183,7 @@ final class _JournalScreenState extends State<JournalScreen> {
                             Text(error, textAlign: TextAlign.center),
                             TextButton(
                               onPressed: _controller.load,
-                              child: const Text('Try again'),
+                              child: Text('Try again'.tr),
                             ),
                           ],
                         ),
@@ -218,7 +220,7 @@ final class _JournalScreenState extends State<JournalScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        tooltip: 'Write journal entry',
+        tooltip: 'Write journal entry'.tr,
         onPressed: () => Get.toNamed<void>(AppRoutes.journalEditor),
         child: SvgPicture.asset(
           LifeSyncSvgAssets.taskEdit,

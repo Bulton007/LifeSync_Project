@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +60,7 @@ class _ViewByScreenState extends State<ViewByScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'View By',
+                        'View By'.tr,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -89,7 +90,10 @@ class _ViewByScreenState extends State<ViewByScreen> {
                     children: [
                       Text(
                         'Component 69',
-                        style: TextStyle(color: colors.secondaryText, fontSize: 12),
+                        style: TextStyle(
+                          color: colors.secondaryText,
+                          fontSize: 12,
+                        ),
                       ),
                       const SizedBox(height: 6),
                       _buildCustomDropdown(
@@ -107,7 +111,10 @@ class _ViewByScreenState extends State<ViewByScreen> {
                     children: [
                       Text(
                         'Component 70',
-                        style: TextStyle(color: colors.secondaryText, fontSize: 12),
+                        style: TextStyle(
+                          color: colors.secondaryText,
+                          fontSize: 12,
+                        ),
                       ),
                       const SizedBox(height: 6),
                       _buildCustomDropdown(
@@ -125,7 +132,10 @@ class _ViewByScreenState extends State<ViewByScreen> {
                     children: [
                       Text(
                         'Component 71',
-                        style: TextStyle(color: colors.secondaryText, fontSize: 12),
+                        style: TextStyle(
+                          color: colors.secondaryText,
+                          fontSize: 12,
+                        ),
                       ),
                       const SizedBox(height: 6),
                       _buildFilterDropdown(

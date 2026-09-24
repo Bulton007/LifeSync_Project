@@ -104,9 +104,9 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                 const SizedBox(height: 24),
 
                 // Header Title & Subtitle
-                const Text(
-                  'Create Password',
-                  style: TextStyle(
+                Text(
+                  'Create Password'.tr,
+                  style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF2979FF),
@@ -114,15 +114,15 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Password must contain at least 8 characters',
+                  'Password must contain at least 8 characters'.tr,
                   style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                 ),
                 const SizedBox(height: 32),
 
                 // Password Field Label
-                const Text(
-                  'Password',
-                  style: TextStyle(
+                Text(
+                  'Password'.tr,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
@@ -135,7 +135,7 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                   textInputAction: TextInputAction.next,
                   validator: AuthValidators.password,
                   decoration: InputDecoration(
-                    hintText: 'Password',
+                    hintText: 'Password'.tr,
                     hintStyle: TextStyle(
                       color: Colors.grey.shade400,
                       fontSize: 14,
@@ -175,16 +175,18 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(color: Color(0xFF2979FF)),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF2979FF),
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
 
                 // Confirm Password Field Label
-                const Text(
-                  'Confirm Password',
-                  style: TextStyle(
+                Text(
+                  'Confirm Password'.tr,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
@@ -200,7 +202,7 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                     _passwordController.text,
                   ),
                   decoration: InputDecoration(
-                    hintText: 'Password',
+                    hintText: 'Password'.tr,
                     hintStyle: TextStyle(
                       color: Colors.grey.shade400,
                       fontSize: 14,
@@ -240,7 +242,9 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(color: Color(0xFF2979FF)),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF2979FF),
+                      ),
                     ),
                   ),
                 ),

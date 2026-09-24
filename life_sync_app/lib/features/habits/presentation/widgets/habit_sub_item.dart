@@ -53,7 +53,9 @@ class HabitSubItemWidget extends StatelessWidget {
                     height: 20,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: item.isCompleted ? colors.primaryBlue : colors.inputSurface,
+                      color: item.isCompleted
+                          ? colors.primaryBlue
+                          : colors.inputSurface,
                       border: Border.all(
                         color: item.isCompleted
                             ? colors.primaryBlue
@@ -81,7 +83,9 @@ class HabitSubItemWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: item.isCompleted ? colors.secondaryText : colors.primaryText,
+                  color: item.isCompleted
+                      ? colors.secondaryText
+                      : colors.primaryText,
                   decoration: item.isCompleted
                       ? TextDecoration.lineThrough
                       : null,

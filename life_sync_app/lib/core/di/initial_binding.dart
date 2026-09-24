@@ -16,7 +16,7 @@ final class InitialBinding extends Bindings {
   void dependencies() {
     if (!Get.isRegistered<SecureKeyValueStore>()) {
       Get.put<SecureKeyValueStore>(
-        FlutterSecureKeyValueStore(const FlutterSecureStorage()),
+        const FlutterSecureKeyValueStore(FlutterSecureStorage()),
         permanent: true,
       );
     }

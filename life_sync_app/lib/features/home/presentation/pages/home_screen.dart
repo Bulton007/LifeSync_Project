@@ -28,7 +28,7 @@ final class _HomeScreenState extends State<HomeScreen> {
   final Set<String> _expandedHabitIds = {'1'};
   final Map<String, bool> _subItemCompleted = {};
 
-  static const _months = [
+  static final _months = [
     'January',
     'February',
     'March',
@@ -42,7 +42,7 @@ final class _HomeScreenState extends State<HomeScreen> {
     'November',
     'December',
   ];
-  static const _weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  static final _weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   @override
   void initState() {
@@ -241,7 +241,7 @@ final class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(width: 4),
                   Obx(
                     () => IconButton(
-                      tooltip: 'Notifications',
+                      tooltip: 'Notifications'.tr,
                       onPressed: () =>
                           Get.toNamed<void>(AppRoutes.notifications),
                       icon: Badge(
@@ -317,7 +317,10 @@ final class _HomeScreenState extends State<HomeScreen> {
                         color: colors.elevatedSurface,
                         border: Border.all(color: colors.border, width: 7),
                       ),
-                      child: const Text('🤭', style: TextStyle(fontSize: 30)),
+                      child: const Text(
+                        '🤭',
+                        style: TextStyle(fontSize: 30),
+                      ),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -325,7 +328,7 @@ final class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Today’s Progress',
+                            'Today’s Progress'.tr,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -335,7 +338,7 @@ final class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           Text(
-                            'Keep going! You’re doing great.',
+                            'Keep going! You’re doing great.'.tr,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -357,14 +360,14 @@ final class _HomeScreenState extends State<HomeScreen> {
                           _ProgressCount(
                             svgAsset: LifeSyncSvgAssets.taskEdit,
                             value: '$completedTasks/${todayTasks.length}',
-                            label: 'Tasks',
+                            label: 'Tasks'.tr,
                           ),
                           const SizedBox(height: 8),
                           _ProgressCount(
                             icon: Icons.autorenew,
                             value:
                                 '${_habits.todayCompletedCount}/${_habits.todayHabits.length}',
-                            label: 'Habits',
+                            label: 'Habits'.tr,
                           ),
                         ],
                       );
@@ -377,25 +380,25 @@ final class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   _HomeQuickAction(
                     icon: Icons.timer_outlined,
-                    label: 'Focus',
+                    label: 'Focus'.tr,
                     onTap: () => Get.toNamed<void>(AppRoutes.focusTimer),
                   ),
                   const SizedBox(width: 8),
                   _HomeQuickAction(
                     icon: Icons.edit_note_rounded,
-                    label: 'Journal',
+                    label: 'Journal'.tr,
                     onTap: () => Get.toNamed<void>(AppRoutes.journal),
                   ),
                   const SizedBox(width: 8),
                   _HomeQuickAction(
                     icon: Icons.calendar_month_rounded,
-                    label: 'Calendar',
+                    label: 'Calendar'.tr,
                     onTap: () => Get.toNamed<void>(AppRoutes.calendar),
                   ),
                   const SizedBox(width: 8),
                   _HomeQuickAction(
                     icon: Icons.emoji_events_outlined,
-                    label: 'Progress',
+                    label: 'Progress'.tr,
                     onTap: () => Get.toNamed<void>(AppRoutes.personalProgress),
                   ),
                 ],
@@ -411,7 +414,7 @@ final class _HomeScreenState extends State<HomeScreen> {
                   return Column(
                     children: [
                       _SectionHeader(
-                        title: 'Today’s Tasks',
+                        title: 'Today’s Tasks'.tr,
                         subtitle: isEmpty
                             ? 'No tasks assigned for today.'
                             : '$remaining remaining',
@@ -419,7 +422,7 @@ final class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () =>
                               Get.toNamed<void>(AppRoutes.taskEditor),
                           icon: const Icon(Icons.add, size: 17),
-                          label: const Text('Add Task'),
+                          label: Text('Add Task'.tr),
                         ),
                       ),
                       if (isEmpty)
@@ -440,7 +443,7 @@ final class _HomeScreenState extends State<HomeScreen> {
                         alignment: Alignment.centerLeft,
                         child: TextButton(
                           onPressed: () => Get.toNamed<void>(AppRoutes.tasks),
-                          child: const Text('View All'),
+                          child: Text('View All'.tr),
                         ),
                       ),
                     ],
@@ -455,12 +458,12 @@ final class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: [
                         _SectionHeader(
-                          title: 'Habits',
+                          title: 'Habits'.tr,
                           subtitle: 'No habits scheduled today.',
                           action: TextButton(
                             onPressed: () =>
                                 Get.toNamed<void>(AppRoutes.habits),
-                            child: const Text('View All'),
+                            child: Text('View All'.tr),
                           ),
                         ),
                         Padding(
@@ -493,7 +496,7 @@ final class _HomeScreenState extends State<HomeScreen> {
                                         AppRoutes.habitEditor,
                                       ),
                                       child: Text(
-                                        'Create one',
+                                        'Create one'.tr,
                                         style: TextStyle(
                                           color: context
                                               .lifeSyncColors

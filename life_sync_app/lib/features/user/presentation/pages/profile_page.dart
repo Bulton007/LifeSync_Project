@@ -70,7 +70,7 @@ final class _ProfilePageState extends State<ProfilePage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
+            child: Text('Cancel'.tr),
           ),
           FilledButton(
             onPressed: () {
@@ -78,7 +78,7 @@ final class _ProfilePageState extends State<ProfilePage> {
                 Navigator.pop(dialogContext, value);
               }
             },
-            child: const Text('Done'),
+            child: Text('Done'.tr),
           ),
         ],
       ),
@@ -117,13 +117,13 @@ final class _ProfilePageState extends State<ProfilePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('Choose photo'),
+              title: Text('Choose photo'.tr),
               leading: const Icon(Icons.photo_library_outlined),
               onTap: () => Navigator.pop(context, 'choose'),
             ),
             if (_controller.imageBytes.value != null)
               ListTile(
-                title: const Text('Remove photo'),
+                title: Text('Remove photo'.tr),
                 leading: const Icon(Icons.delete_outline),
                 onTap: () => Navigator.pop(context, 'remove'),
               ),
@@ -143,7 +143,7 @@ final class _ProfilePageState extends State<ProfilePage> {
     final profile = state.data;
     if (profile == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Profile')),
+        appBar: AppBar(title: Text('Profile'.tr)),
         body: state.isBusy
             ? const AppLoadingView(message: 'Loading your profile…')
             : AppErrorView(
@@ -184,7 +184,7 @@ final class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 Text(
-                  'Profile',
+                  'Profile'.tr,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -206,7 +206,9 @@ final class _ProfilePageState extends State<ProfilePage> {
                             child: SizedBox(
                               width: 18,
                               height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
                             ),
                           )
                         : Icon(
@@ -245,7 +247,7 @@ final class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           Expanded(
                             child: Text(
-                              'Avatar',
+                              'Avatar'.tr,
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
@@ -272,17 +274,17 @@ final class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   _ProfileOptionRow(
-                    title: 'Name',
+                    title: 'Name'.tr,
                     value: _name ?? profile.fullName,
                     onTap: () => _edit('Name', _name ?? profile.fullName),
                   ),
                   _ProfileOptionRow(
-                    title: 'Email',
+                    title: 'Email'.tr,
                     value: _email ?? profile.email,
                     onTap: () => _edit('Email', _email ?? profile.email),
                   ),
                   _ProfileOptionRow(
-                    title: 'Change Password',
+                    title: 'Change Password'.tr,
                     isLast: true,
                     onTap: () => Get.toNamed<void>(AppRoutes.changePassword),
                   ),
@@ -293,7 +295,7 @@ final class _ProfilePageState extends State<ProfilePage> {
 
             // Third Party Connection Header
             Text(
-              'Third Party Connection',
+              'Third Party Connection'.tr,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
@@ -323,7 +325,7 @@ final class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   _ConnectedAccountRow(
-                    iconWidget: const _GoogleIcon(),
+                    iconWidget: _GoogleIcon(),
                     title: 'Google',
                     status: 'Not Linked',
                     onTap: () =>
@@ -361,17 +363,17 @@ final class _ProfilePageState extends State<ProfilePage> {
                   color: cardBgColor,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.delete_outline_rounded,
                       color: Color(0xFFEF4444),
                       size: 22,
                     ),
-                    SizedBox(width: 14),
+                    const SizedBox(width: 14),
                     Text(
-                      'Delete Account',
-                      style: TextStyle(
+                      'Delete Account'.tr,
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFFEF4444),
@@ -386,7 +388,7 @@ final class _ProfilePageState extends State<ProfilePage> {
             // More account options
             ExpansionTile(
               title: Text(
-                'More account options',
+                'More account options'.tr,
                 style: TextStyle(fontSize: 13, color: colors.primaryText),
               ),
               iconColor: colors.primaryBlue,
@@ -394,7 +396,7 @@ final class _ProfilePageState extends State<ProfilePage> {
               children: [
                 ListTile(
                   title: Text(
-                    'Phone number',
+                    'Phone number'.tr,
                     style: TextStyle(color: colors.primaryText),
                   ),
                   subtitle: Text(
@@ -406,7 +408,7 @@ final class _ProfilePageState extends State<ProfilePage> {
                 ),
                 ListTile(
                   title: Text(
-                    'Link Telegram',
+                    'Link Telegram'.tr,
                     style: TextStyle(color: colors.primaryText),
                   ),
                   trailing: Icon(
@@ -414,14 +416,12 @@ final class _ProfilePageState extends State<ProfilePage> {
                     color: colors.secondaryText,
                   ),
                   onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const TelegramLinkPage(),
-                    ),
+                    MaterialPageRoute<void>(builder: (_) => TelegramLinkPage()),
                   ),
                 ),
                 ListTile(
                   title: Text(
-                    'Personal progress',
+                    'Personal progress'.tr,
                     style: TextStyle(color: colors.primaryText),
                   ),
                   trailing: Icon(

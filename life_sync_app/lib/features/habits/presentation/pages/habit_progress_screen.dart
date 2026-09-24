@@ -169,7 +169,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                             '🔥',
                             style: TextStyle(fontSize: 14),
                           ),
-                          label: 'Current streak',
+                          label: 'Current streak'.tr,
                           value: '${habit.streak}',
                           suffix: 'Days',
                         ),
@@ -182,7 +182,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                             size: 16,
                             color: AppColors.primary,
                           ),
-                          label: 'Total completed',
+                          label: 'Total completed'.tr,
                           value: '${history.length}',
                           suffix: 'Days',
                         ),
@@ -199,7 +199,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                             size: 16,
                             color: AppColors.primary,
                           ),
-                          label: 'This month',
+                          label: 'This month'.tr,
                           value: '$completedInMonth',
                           suffix: 'Days',
                         ),
@@ -212,7 +212,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                             size: 16,
                             color: AppColors.primary,
                           ),
-                          label: 'Skipped',
+                          label: 'Skipped'.tr,
                           value: '$skipped',
                           suffix: 'Days',
                         ),
@@ -285,7 +285,7 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Completion history',
+                    'Completion history'.tr,
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -295,8 +295,11 @@ class _HabitProgressScreenState extends State<HabitProgressScreen> {
                   const SizedBox(height: 10),
                   if (history.isEmpty)
                     Text(
-                      'No completions recorded yet.',
-                      style: TextStyle(fontSize: 12, color: colors.secondaryText),
+                      'No completions recorded yet.'.tr,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colors.secondaryText,
+                      ),
                     )
                   else
                     for (final log in history.take(12))
@@ -461,7 +464,7 @@ class _CalendarGrid extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: const ['m', 't', 'w', 't', 'f', 's', 's']
+            children: ['m', 't', 'w', 't', 'f', 's', 's']
                 .map(
                   (day) => Text(
                     day,
@@ -543,7 +546,7 @@ DateTime _today() {
 }
 
 String _dateKey(DateTime date) => '${date.year}-${date.month}-${date.day}';
-String _monthName(int month) => const [
+String _monthName(int month) => [
   'January',
   'February',
   'March',

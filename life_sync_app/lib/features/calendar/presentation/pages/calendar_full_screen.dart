@@ -19,7 +19,7 @@ final class _CalendarFullScreenState extends State<CalendarFullScreen> {
   late final TaskController _taskController;
   late DateTime _displayedMonth;
 
-  static const _months = [
+  static final _months = [
     'January',
     'February',
     'March',
@@ -103,9 +103,7 @@ final class _CalendarFullScreenState extends State<CalendarFullScreen> {
                 ),
                 const SizedBox(height: 12),
                 if (_taskController.selectedDateTasks.isEmpty)
-                  const _CalendarEmpty(
-                    message: 'No tasks are due on this date.',
-                  )
+                  _CalendarEmpty(message: 'No tasks are due on this date.')
                 else
                   ..._taskController.selectedDateTasks.map(
                     (task) => _TaskTimelineItem(
@@ -143,7 +141,7 @@ final class _CalendarHeader extends StatelessWidget {
           border: Border.all(color: Colors.grey.shade100),
         ),
         child: IconButton(
-          tooltip: 'Back',
+          tooltip: 'Back'.tr,
           icon: const Icon(Icons.chevron_left, color: Colors.black87),
           onPressed: () => Navigator.maybePop(context),
         ),
@@ -159,7 +157,7 @@ final class _CalendarHeader extends StatelessWidget {
       ),
       const SizedBox(width: 8),
       IconButton(
-        tooltip: 'Previous month',
+        tooltip: 'Previous month'.tr,
         icon: const Icon(Icons.chevron_left, color: AppColors.primary),
         onPressed: onPrevious,
         constraints: const BoxConstraints(),
@@ -167,7 +165,7 @@ final class _CalendarHeader extends StatelessWidget {
       ),
       const SizedBox(width: 4),
       IconButton(
-        tooltip: 'Next month',
+        tooltip: 'Next month'.tr,
         icon: const Icon(Icons.chevron_right, color: AppColors.primary),
         onPressed: onNext,
         constraints: const BoxConstraints(),
@@ -360,9 +358,9 @@ final class _TaskHeader extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'To-dos List',
-              style: TextStyle(
+            Text(
+              'To-dos List'.tr,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: AppColors.primary,
@@ -373,13 +371,13 @@ final class _TaskHeader extends StatelessWidget {
         ),
       ),
       IconButton(
-        tooltip: 'Add task',
+        tooltip: 'Add task'.tr,
         onPressed: onAdd,
         icon: const Icon(Icons.add_circle_outline),
         color: AppColors.primary,
       ),
       IconButton(
-        tooltip: 'Open all tasks',
+        tooltip: 'Open all tasks'.tr,
         onPressed: onOpenAll,
         icon: const Icon(Icons.open_in_full, size: 18),
       ),
@@ -432,9 +430,9 @@ final class _TaskTimelineItem extends StatelessWidget {
             _deleteTask(context, controller, task);
           }
         },
-        itemBuilder: (_) => const [
-          PopupMenuItem(value: 'edit', child: Text('Edit')),
-          PopupMenuItem(value: 'delete', child: Text('Delete')),
+        itemBuilder: (_) => [
+          PopupMenuItem(value: 'edit', child: Text('Edit'.tr)),
+          PopupMenuItem(value: 'delete', child: Text('Delete'.tr)),
         ],
       ),
     ),
@@ -489,16 +487,16 @@ Future<void> _deleteTask(
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      title: const Text('Delete task?'),
+      title: Text('Delete task?'.tr),
       content: Text('Delete “${task.title}” and its subtasks?'),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(dialogContext, false),
-          child: const Text('Cancel'),
+          child: Text('Cancel'.tr),
         ),
         FilledButton(
           onPressed: () => Navigator.pop(dialogContext, true),
-          child: const Text('Delete'),
+          child: Text('Delete'.tr),
         ),
       ],
     ),

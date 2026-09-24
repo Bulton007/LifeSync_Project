@@ -1,3 +1,4 @@
+import 'package:life_sync_app/core/localization/language_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
@@ -16,6 +17,47 @@ final class SettingsScreen extends StatelessWidget {
 
   final VoidCallback? onBackPressed;
 
+  Future<void> _selectLanguage(BuildContext context) async {
+    final controller = Get.find<LanguageController>();
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Obx(
+          () => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Language'.tr, style: const TextStyle(fontSize: 18)),
+              for (final entry in const {
+                'en': 'English',
+                'km': 'ខ្មែរ',
+              }.entries)
+                ListTile(
+                  title: Text(entry.value),
+                  selected: controller.languageCode.value == entry.key,
+                  trailing: controller.languageCode.value == entry.key
+                      ? const Icon(Icons.check)
+                      : null,
+                  onTap: () async {
+                    try {
+                      await controller.select(entry.key);
+                      if (context.mounted) Navigator.pop(context);
+                    } catch (_) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text('Try again'.tr)));
+                      }
+                    }
+                  },
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _selectTheme(BuildContext context) async {
     final controller = Get.find<ThemeController>();
     await showModalBottomSheet<void>(
@@ -29,12 +71,12 @@ final class SettingsScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Appearance', style: TextStyle(fontSize: 18)),
+                Text('Appearance'.tr, style: const TextStyle(fontSize: 18)),
                 const SizedBox(height: 8),
                 ...ThemePreference.values.map(
                   (value) => ListTile(
                     selected: controller.preference.value == value,
-                    title: Text(value.name.capitalizeFirst!),
+                    title: Text(value.name.capitalizeFirst!.tr),
                     leading: Icon(switch (value) {
                       ThemePreference.light => Icons.light_mode_outlined,
                       ThemePreference.dark => Icons.dark_mode_outlined,
@@ -70,15 +112,15 @@ final class SettingsScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'First day of the week',
-                  style: TextStyle(fontSize: 18),
+                Text(
+                  'First day of the week'.tr,
+                  style: const TextStyle(fontSize: 18),
                 ),
                 const SizedBox(height: 8),
                 ...FirstDayOfWeek.values.map(
                   (value) => ListTile(
                     selected: controller.firstDayOfWeek.value == value,
-                    title: Text(value.name.capitalizeFirst!),
+                    title: Text(value.name.capitalizeFirst!.tr),
                     trailing: Icon(
                       controller.firstDayOfWeek.value == value
                           ? Icons.radio_button_checked
@@ -99,18 +141,18 @@ final class SettingsScreen extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Log out?'),
-        content: const Text(
-          'Local journals and focus history stay on this device.',
+        title: Text('Log out?'.tr),
+        content: Text(
+          'Local journals and focus history stay on this device.'.tr,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text('Cancel'.tr),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Log out'),
+            child: Text('Log out'.tr),
           ),
         ],
       ),
@@ -149,9 +191,9 @@ final class SettingsScreen extends StatelessWidget {
           final userEmail =
               profile.state.value.data?.email ?? 'Profile unavailable';
           final avatarBytes = profile.imageBytes.value;
-          final appearance = theme.preference.value.name.capitalizeFirst!;
+          final appearance = theme.preference.value.name.capitalizeFirst!.tr.tr;
           final firstDay =
-              preferences.firstDayOfWeek.value.name.capitalizeFirst!;
+              preferences.firstDayOfWeek.value.name.capitalizeFirst!.tr.tr;
 
           return ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -187,7 +229,7 @@ final class SettingsScreen extends StatelessWidget {
                   Expanded(
                     child: Center(
                       child: Text(
-                        'Setting',
+                        'Setting'.tr,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -268,7 +310,7 @@ final class SettingsScreen extends StatelessWidget {
                 children: [
                   _StatCard(
                     icon: Icons.assignment_outlined,
-                    label: 'Tasks',
+                    label: 'Tasks'.tr,
                     count: tasks.tasks.length,
                     color: primaryBlue,
                     onTap: () => Get.toNamed<void>(AppRoutes.tasks),
@@ -276,7 +318,7 @@ final class SettingsScreen extends StatelessWidget {
                   const SizedBox(width: 10),
                   _StatCard(
                     icon: Icons.track_changes_outlined,
-                    label: 'Goals',
+                    label: 'Goals'.tr,
                     count: goals.goals.length,
                     color: primaryBlue,
                     onTap: () => Get.toNamed<void>(AppRoutes.goalEditor),
@@ -284,7 +326,7 @@ final class SettingsScreen extends StatelessWidget {
                   const SizedBox(width: 10),
                   _StatCard(
                     icon: Icons.event_repeat_rounded,
-                    label: 'Habit',
+                    label: 'Habit'.tr,
                     count: habits.habits.length,
                     color: primaryBlue,
                     onTap: () => Get.toNamed<void>(AppRoutes.habits),
@@ -292,7 +334,7 @@ final class SettingsScreen extends StatelessWidget {
                   const SizedBox(width: 10),
                   _StatCard(
                     icon: Icons.edit_note_rounded,
-                    label: 'Journal',
+                    label: 'Journal'.tr,
                     count: journals.entries.length,
                     color: primaryBlue,
                     onTap: () => Get.toNamed<void>(AppRoutes.journal),
@@ -303,7 +345,7 @@ final class SettingsScreen extends StatelessWidget {
 
               // Settings Header
               Text(
-                'Settings & Personalization',
+                'Settings & Personalization'.tr,
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
@@ -322,24 +364,21 @@ final class SettingsScreen extends StatelessWidget {
                   children: [
                     _SettingRow(
                       icon: Icons.brush_outlined,
-                      title: 'Appearance',
+                      title: 'Appearance'.tr,
                       value: appearance,
                       onTap: () => _selectTheme(context),
                     ),
                     _SettingRow(
                       icon: Icons.calendar_today_outlined,
-                      title: 'First Day of the Week',
+                      title: 'First Day of the Week'.tr,
                       value: firstDay,
                       onTap: () => _selectFirstDay(context),
                     ),
                     _SettingRow(
                       icon: Icons.language_rounded,
-                      title: 'Language',
-                      value: 'English',
-                      onTap: () => _unavailable(
-                        context,
-                        'English is the only supported language currently.',
-                      ),
+                      title: 'Language'.tr,
+                      value: Get.find<LanguageController>().displayName,
+                      onTap: () => _selectLanguage(context),
                     ),
                     _SettingRow(
                       icon: Icons.lock_outline_rounded,
@@ -351,7 +390,7 @@ final class SettingsScreen extends StatelessWidget {
                     ),
                     _SettingRow(
                       icon: Icons.notifications_none_rounded,
-                      title: 'Reminder',
+                      title: 'Reminder'.tr,
                       onTap: () => Get.toNamed<void>(AppRoutes.notifications),
                     ),
                   ],
@@ -372,17 +411,17 @@ final class SettingsScreen extends StatelessWidget {
                     color: cardBgColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.logout_rounded,
                         color: Color(0xFFEF4444),
                         size: 22,
                       ),
-                      SizedBox(width: 14),
+                      const SizedBox(width: 14),
                       Text(
-                        'Log out',
-                        style: TextStyle(
+                        'Log out'.tr,
+                        style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFFEF4444),
@@ -396,7 +435,7 @@ final class SettingsScreen extends StatelessWidget {
 
               // Productivity & More Tools Group
               Text(
-                'Productivity & More Tools',
+                'Productivity & More Tools'.tr,
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
@@ -413,28 +452,28 @@ final class SettingsScreen extends StatelessWidget {
                   children: [
                     _SettingRow(
                       icon: Icons.edit_note_rounded,
-                      title: 'Journal',
+                      title: 'Journal'.tr,
                       value: '${journals.entries.length} entries',
                       onTap: () => Get.toNamed<void>(AppRoutes.journal),
                     ),
                     _SettingRow(
                       icon: Icons.timer_outlined,
-                      title: 'Pomodoro & Stopwatch',
+                      title: 'Pomodoro & Stopwatch'.tr,
                       onTap: () => Get.toNamed<void>(AppRoutes.focusTimer),
                     ),
                     _SettingRow(
                       icon: Icons.insights_rounded,
-                      title: 'Focus Statistics',
+                      title: 'Focus Statistics'.tr,
                       onTap: () => Get.toNamed<void>(AppRoutes.focusStatistics),
                     ),
                     _SettingRow(
                       icon: Icons.calendar_month_rounded,
-                      title: 'Calendar',
+                      title: 'Calendar'.tr,
                       onTap: () => Get.toNamed<void>(AppRoutes.calendar),
                     ),
                     _SettingRow(
                       icon: Icons.emoji_events_outlined,
-                      title: 'Personal Progress & Wins',
+                      title: 'Personal Progress & Wins'.tr,
                       onTap: () =>
                           Get.toNamed<void>(AppRoutes.personalProgress),
                     ),

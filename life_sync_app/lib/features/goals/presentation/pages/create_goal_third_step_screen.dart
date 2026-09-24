@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 
@@ -34,16 +35,13 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                       border: Border.all(color: colors.border),
                     ),
                     child: IconButton(
-                      icon: Icon(
-                        Icons.chevron_left,
-                        color: colors.primaryText,
-                      ),
+                      icon: Icon(Icons.chevron_left, color: colors.primaryText),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
                   const SizedBox(width: 16),
                   Text(
-                    'Create Goal',
+                    'Create Goal'.tr,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -87,7 +85,9 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: isDark ? colors.elevatedSurface : const Color(0xFFE8F1FC),
+                            color: isDark
+                                ? colors.elevatedSurface
+                                : const Color(0xFFE8F1FC),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(
@@ -143,15 +143,15 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(width: 16),
-                        Row(
+                        const Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.calendar_today_outlined,
                               size: 13,
                               color: Color(0xFF2979FF),
                             ),
-                            const SizedBox(width: 4),
-                            const Text(
+                            SizedBox(width: 4),
+                            Text(
                               'Due 10 Oct 2026',
                               style: TextStyle(
                                 fontSize: 10,
@@ -170,7 +170,7 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
 
               // Milestones Section Header
               Text(
-                'Milestones',
+                'Milestones'.tr,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -236,9 +236,9 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: const Text(
-                        'Back & Edit',
-                        style: TextStyle(
+                      child: Text(
+                        'Back & Edit'.tr,
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF2979FF),
@@ -260,9 +260,9 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                         ),
                         elevation: 2,
                       ),
-                      child: const Text(
-                        'Create Goal',
-                        style: TextStyle(
+                      child: Text(
+                        'Create Goal'.tr,
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -341,7 +341,9 @@ class CreateGoalThirdStepScreen extends StatelessWidget {
                 width: 30,
                 height: 30,
                 decoration: BoxDecoration(
-                  color: isDark ? colors.elevatedSurface : const Color(0xFFE8F1FC),
+                  color: isDark
+                      ? colors.elevatedSurface
+                      : const Color(0xFFE8F1FC),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 alignment: Alignment.center,

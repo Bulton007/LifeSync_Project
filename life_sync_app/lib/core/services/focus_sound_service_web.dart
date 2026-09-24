@@ -25,7 +25,12 @@ void playFocusSoundPlatform(String soundName) {
   } catch (_) {}
 }
 
-void _playTone(web.AudioContext ctx, double freq, double startTime, double duration) {
+void _playTone(
+  web.AudioContext ctx,
+  double freq,
+  double startTime,
+  double duration,
+) {
   try {
     final osc = ctx.createOscillator();
     final gain = ctx.createGain();

@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/core/theme/app_spacing.dart';
@@ -35,7 +36,7 @@ final class AppErrorView extends StatelessWidget {
               FilledButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh_rounded),
-                label: const Text('Try again'),
+                label: Text('Try again'.tr),
               ),
             ],
           ],

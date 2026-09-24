@@ -26,7 +26,7 @@ final class _PomoScreenState extends State<PomoScreen> {
     _completionWorker = ever(_controller.completionSignal, (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pomodoro complete. Great focus!')),
+        SnackBar(content: Text('Pomodoro complete. Great focus!'.tr)),
       );
     });
   }
@@ -66,8 +66,10 @@ final class _PomoScreenState extends State<PomoScreen> {
   void _switchMode(FocusMode mode) {
     if (_controller.switchMode(mode)) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Stop or reset the active timer before changing mode.'),
+      SnackBar(
+        content: Text(
+          'Stop or reset the active timer before changing mode.'.tr,
+        ),
       ),
     );
   }
@@ -76,7 +78,7 @@ final class _PomoScreenState extends State<PomoScreen> {
     final taskController = Get.isRegistered<TaskController>()
         ? Get.find<TaskController>()
         : null;
-    final tasks = taskController?.tasks ?? const [];
+    final tasks = taskController?.tasks ?? [];
     final selected = await showModalBottomSheet<String?>(
       context: context,
       showDragHandle: true,
@@ -85,17 +87,17 @@ final class _PomoScreenState extends State<PomoScreen> {
           shrinkWrap: true,
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
           children: [
-            const Text('Working on', style: TextStyle(fontSize: 18)),
+            Text('Working on'.tr, style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 8),
             ListTile(
               leading: const Icon(Icons.close_rounded),
-              title: const Text('No associated task'),
+              title: Text('No associated task'.tr),
               onTap: () => Navigator.pop(context, ''),
             ),
             if (tasks.isEmpty)
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text('No tasks are currently available.'),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text('No tasks are currently available.'.tr),
               )
             else
               ...tasks.map(
@@ -121,9 +123,9 @@ final class _PomoScreenState extends State<PomoScreen> {
           shrinkWrap: true,
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
           children: [
-            const Text(
-              'Focus Sound & Ambience',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              'Focus Sound & Ambience'.tr,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             ...FocusSoundService.availableSounds.map(
@@ -135,7 +137,7 @@ final class _PomoScreenState extends State<PomoScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        tooltip: 'Preview sound',
+                        tooltip: 'Preview sound'.tr,
                         icon: const Icon(Icons.volume_up_rounded),
                         onPressed: () => FocusSoundService.play(sound),
                       ),
@@ -163,18 +165,18 @@ final class _PomoScreenState extends State<PomoScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Stop this focus session?'),
-        content: const Text(
-          'Elapsed focus time will be saved to your local database.',
+        title: Text('Stop this focus session?'.tr),
+        content: Text(
+          'Elapsed focus time will be saved to your local database.'.tr,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Continue'),
+            child: Text('Continue'.tr),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Stop and Record'),
+            child: Text('Stop and Record'.tr),
           ),
         ],
       ),
@@ -208,14 +210,14 @@ final class _PomoScreenState extends State<PomoScreen> {
                     color: colors.navigationSelected,
                     shape: const CircleBorder(),
                     child: IconButton(
-                      tooltip: 'Back',
+                      tooltip: 'Back'.tr,
                       onPressed: Get.back<void>,
                       icon: const Icon(Icons.chevron_left_rounded),
                     ),
                   ),
                   const Spacer(),
                   IconButton.outlined(
-                    tooltip: 'Focus statistics',
+                    tooltip: 'Focus statistics'.tr,
                     onPressed: () =>
                         Get.toNamed<void>(AppRoutes.focusStatistics),
                     icon: Icon(
@@ -239,13 +241,13 @@ final class _PomoScreenState extends State<PomoScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         _ModeTab(
-                          label: 'Pomodoro',
+                          label: 'Pomodoro'.tr,
                           selected:
                               _controller.mode.value == FocusMode.pomodoro,
                           onTap: () => _switchMode(FocusMode.pomodoro),
                         ),
                         _ModeTab(
-                          label: 'Stopwatch',
+                          label: 'Stopwatch'.tr,
                           selected:
                               _controller.mode.value == FocusMode.stopwatch,
                           onTap: () => _switchMode(FocusMode.stopwatch),
@@ -269,7 +271,9 @@ final class _PomoScreenState extends State<PomoScreen> {
                         _controller.taskName.value ?? 'Choose Task',
                         style: const TextStyle(fontSize: 12),
                       ),
-                      onPressed: _controller.hasActiveSession ? null : _chooseTask,
+                      onPressed: _controller.hasActiveSession
+                          ? null
+                          : _chooseTask,
                     ),
                   ),
                   Obx(
@@ -339,7 +343,7 @@ final class _PomoScreenState extends State<PomoScreen> {
                     child: FilledButton.icon(
                       onPressed: _controller.start,
                       icon: const Icon(Icons.play_arrow_rounded),
-                      label: const Text('Start'),
+                      label: Text('Start'.tr),
                     ),
                   );
                 }
@@ -347,7 +351,7 @@ final class _PomoScreenState extends State<PomoScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton.outlined(
-                      tooltip: 'Reset without saving',
+                      tooltip: 'Reset without saving'.tr,
                       onPressed: _controller.reset,
                       icon: const Icon(Icons.restart_alt_rounded),
                     ),
@@ -365,7 +369,7 @@ final class _PomoScreenState extends State<PomoScreen> {
                     ),
                     const SizedBox(width: 18),
                     IconButton.outlined(
-                      tooltip: 'Stop and record',
+                      tooltip: 'Stop and record'.tr,
                       onPressed: _stop,
                       icon: const Icon(Icons.stop_rounded),
                     ),
@@ -378,15 +382,18 @@ final class _PomoScreenState extends State<PomoScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Recorded Sessions',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Text(
+                    'Recorded Sessions'.tr,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   TextButton.icon(
                     onPressed: () =>
                         Get.toNamed<void>(AppRoutes.focusStatistics),
                     icon: const Icon(Icons.bar_chart_rounded, size: 16),
-                    label: const Text('View Stats'),
+                    label: Text('View Stats'.tr),
                   ),
                 ],
               ),
@@ -414,7 +421,7 @@ final class _PomoScreenState extends State<PomoScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'No recorded sessions yet.',
+                          'No recorded sessions yet.'.tr,
                           style: TextStyle(
                             color: colors.secondaryText,
                             fontWeight: FontWeight.w600,
@@ -422,7 +429,8 @@ final class _PomoScreenState extends State<PomoScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Press Start, then Stop to record your session here.',
+                          'Press Start, then Stop to record your session here.'
+                              .tr,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: colors.disabledText,
@@ -472,8 +480,8 @@ final class _PomoScreenState extends State<PomoScreen> {
                                   session.taskName?.isNotEmpty == true
                                       ? session.taskName!
                                       : (session.mode == FocusMode.pomodoro
-                                          ? 'Pomodoro Focus'
-                                          : 'Stopwatch Session'),
+                                            ? 'Pomodoro Focus'
+                                            : 'Stopwatch Session'),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
@@ -493,7 +501,9 @@ final class _PomoScreenState extends State<PomoScreen> {
                           InkWell(
                             onTap: () {
                               _controller.playSessionSound(session.soundName);
-                              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                              ScaffoldMessenger.of(
+                                context,
+                              ).hideCurrentSnackBar();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   duration: const Duration(seconds: 1),

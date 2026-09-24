@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -93,7 +94,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
                       color: colors.primaryBlue,
                     ),
                     label: Text(
-                      'Save',
+                      'Save'.tr,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: colors.primaryText,
@@ -107,13 +108,10 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
               // Purpose Field
               TextField(
                 controller: _purposeController,
-                style: TextStyle(
-                  color: colors.primaryText,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: colors.primaryText, fontSize: 14),
                 cursorColor: colors.primaryBlue,
                 decoration: InputDecoration(
-                  hintText: 'Purpose',
+                  hintText: 'Purpose'.tr,
                   hintStyle: TextStyle(
                     color: colors.secondaryText,
                     fontSize: 14,
@@ -146,9 +144,9 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
               const SizedBox(height: 20),
 
               // Color Palette Section
-              const Text(
-                'Color',
-                style: TextStyle(
+              Text(
+                'Color'.tr,
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey,
@@ -208,7 +206,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
 
               // Target Amount Field
               Text(
-                'Target Amount',
+                'Target Amount'.tr,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -218,10 +216,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
               const SizedBox(height: 8),
               TextField(
                 controller: _amountController,
-                style: TextStyle(
-                  color: colors.primaryText,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: colors.primaryText, fontSize: 14),
                 cursorColor: colors.primaryBlue,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
@@ -254,7 +249,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
 
               // Estimated Complete Date Field
               Text(
-                'Est. Complete Date',
+                'Est. Complete Date'.tr,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -265,10 +260,7 @@ class _AddSavingGoalScreenState extends State<AddSavingGoalScreen> {
               TextField(
                 controller: _dateController,
                 readOnly: true,
-                style: TextStyle(
-                  color: colors.primaryText,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: colors.primaryText, fontSize: 14),
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: colors.inputSurface,

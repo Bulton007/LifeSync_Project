@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/features/habits/presentation/models/habit_item_model.dart';
@@ -19,7 +20,7 @@ class HabitItem extends StatelessWidget {
   final VoidCallback? onToggleExpand;
   final ValueChanged<HabitSubItem>? onSubItemToggle;
 
-  static const Color fireColor = Color(0xFFFF6D00);
+  static Color fireColor = const Color(0xFFFF6D00);
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +76,7 @@ class HabitItem extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.local_fire_department_rounded,
                             size: 15,
                             color: fireColor,
@@ -181,10 +182,14 @@ class HabitItem extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_rounded, size: 14, color: colors.primaryBlue),
+                  Icon(
+                    Icons.check_rounded,
+                    size: 14,
+                    color: colors.primaryBlue,
+                  ),
                   const SizedBox(width: 4),
                   Text(
-                    'Completed',
+                    'Completed'.tr,
                     style: TextStyle(
                       color: colors.primaryBlue,
                       fontSize: 12,
@@ -220,10 +225,14 @@ class HabitItem extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_rounded, size: 14, color: colors.primaryBlue),
+                  Icon(
+                    Icons.check_rounded,
+                    size: 14,
+                    color: colors.primaryBlue,
+                  ),
                   const SizedBox(width: 4),
                   Text(
-                    'Done',
+                    'Done'.tr,
                     style: TextStyle(
                       color: colors.primaryBlue,
                       fontSize: 12,

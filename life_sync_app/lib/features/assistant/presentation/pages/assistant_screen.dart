@@ -55,11 +55,11 @@ final class _AssistantScreenState extends State<AssistantScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
-          title: const Row(
+          title: Row(
             children: [
-              Icon(Icons.key_rounded, color: Color(0xFF4F7FFF)),
-              SizedBox(width: 8),
-              Text('Gemini API Key', style: TextStyle(fontSize: 18)),
+              const Icon(Icons.key_rounded, color: Color(0xFF4F7FFF)),
+              const SizedBox(width: 8),
+              Text('Gemini API Key'.tr, style: const TextStyle(fontSize: 18)),
             ],
           ),
           content: SingleChildScrollView(
@@ -75,10 +75,10 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                 TextField(
                   controller: textController,
                   obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'API Key',
+                  decoration: InputDecoration(
+                    labelText: 'API Key'.tr,
                     hintText: 'AIzaSy...',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     isDense: true,
                   ),
                 ),
@@ -95,15 +95,18 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                   }
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Gemini API key cleared.')),
+                      SnackBar(content: Text('Gemini API key cleared.'.tr)),
                     );
                   }
                 },
-                child: const Text('Clear', style: TextStyle(color: Colors.red)),
+                child: Text(
+                  'Clear'.tr,
+                  style: const TextStyle(color: Colors.red),
+                ),
               ),
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Cancel'),
+              child: Text('Cancel'.tr),
             ),
             FilledButton(
               onPressed: () async {
@@ -115,14 +118,14 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                   }
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Gemini API key saved successfully!'),
+                      SnackBar(
+                        content: Text('Gemini API key saved successfully!'.tr),
                       ),
                     );
                   }
                 }
               },
-              child: const Text('Save'),
+              child: Text('Save'.tr),
             ),
           ],
         );
@@ -171,9 +174,9 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'LifeSync AI',
-                            style: TextStyle(
+                          Text(
+                            'LifeSync AI'.tr,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
@@ -189,14 +192,14 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                       ),
                       const Spacer(),
                       IconButton(
-                        tooltip: 'Clear Chat',
+                        tooltip: 'Clear Chat'.tr,
                         onPressed: () {
                           _controller.clearConversation();
                         },
                         icon: const Icon(Icons.refresh_rounded),
                       ),
                       IconButton(
-                        tooltip: 'Settings',
+                        tooltip: 'Settings'.tr,
                         onPressed: () => Get.toNamed<void>(AppRoutes.settings),
                         icon: const Icon(Icons.menu_rounded),
                       ),
@@ -271,7 +274,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                             textInputAction: TextInputAction.send,
                             onSubmitted: (_) => _submit(),
                             decoration: InputDecoration(
-                              hintText: 'What can I help you achieve?',
+                              hintText: 'What can I help you achieve?'.tr,
                               hintStyle: TextStyle(
                                 color: colors.secondaryText,
                                 fontSize: 14,
@@ -321,7 +324,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                               shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                              tooltip: 'Send',
+                              tooltip: 'Send'.tr,
                               onPressed: loading ? null : () => _submit(),
                               icon: loading
                                   ? const SizedBox(
@@ -404,7 +407,7 @@ final class _AssistantEmpty extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            'Let’s Get Things Done',
+            'Let’s Get Things Done'.tr,
             style: TextStyle(
               color: colors.primaryBlue,
               fontSize: 22,
@@ -413,7 +416,8 @@ final class _AssistantEmpty extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Ask me to plan your schedule, break down goals, or build healthy habits.',
+            'Ask me to plan your schedule, break down goals, or build healthy habits.'
+                .tr,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: colors.secondaryText,
@@ -423,11 +427,11 @@ final class _AssistantEmpty extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          const Align(
+          Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Quick Prompts',
-              style: TextStyle(
+              'Quick Prompts'.tr,
+              style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF79788C),
@@ -449,14 +453,14 @@ final class _AssistantEmpty extends StatelessWidget {
               ),
               _PromptChip(
                 icon: Icons.track_changes_rounded,
-                label: 'Break down a new goal',
+                label: 'Break down a new goal'.tr,
                 onTap: () => onSuggestion(
                   'How do I break down a major goal into actionable weekly milestones and daily actions?',
                 ),
               ),
               _PromptChip(
                 icon: Icons.eco_outlined,
-                label: 'Build a consistent habit',
+                label: 'Build a consistent habit'.tr,
                 onTap: () => onSuggestion(
                   'What are effective science-backed strategies to stick to a new habit every day?',
                 ),
@@ -693,7 +697,7 @@ final class _ThinkingBubble extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'LifeSync AI is thinking...',
+                  'LifeSync AI is thinking...'.tr,
                   style: TextStyle(color: colors.secondaryText, fontSize: 12.5),
                 ),
               ],

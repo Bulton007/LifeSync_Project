@@ -27,7 +27,7 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
   bool _dirty = false;
   bool _forcePop = false;
 
-  static const _months = [
+  static final _months = [
     'Jan',
     'Feb',
     'Mar',
@@ -41,7 +41,7 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
     'Nov',
     'Dec',
   ];
-  static const _weekdays = [
+  static final _weekdays = [
     'Monday',
     'Tuesday',
     'Wednesday',
@@ -63,8 +63,8 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
         _withCurrentTime(_controller.selectedDate.value);
     _titleController.text = _original?.title ?? '';
     _bodyController.text = _original?.body ?? '';
-    _tags.addAll(_original?.tags ?? const []);
-    _attachments.addAll(_original?.attachments ?? const []);
+    _tags.addAll(_original?.tags ?? []);
+    _attachments.addAll(_original?.attachments ?? []);
     _titleController.addListener(_markDirty);
     _bodyController.addListener(_markDirty);
   }
@@ -90,16 +90,16 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
     return await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Discard changes?'),
-            content: const Text('Your unsaved journal changes will be lost.'),
+            title: Text('Discard changes?'.tr),
+            content: Text('Your unsaved journal changes will be lost.'.tr),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Keep editing'),
+                child: Text('Keep editing'.tr),
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('Discard'),
+                child: Text('Discard'.tr),
               ),
             ],
           ),
@@ -146,16 +146,16 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete journal entry?'),
-        content: const Text('This local journal entry cannot be recovered.'),
+        title: Text('Delete journal entry?'.tr),
+        content: Text('This local journal entry cannot be recovered.'.tr),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text('Cancel'.tr),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
+            child: Text('Delete'.tr),
           ),
         ],
       ),
@@ -194,7 +194,7 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
     final value = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add tag'),
+        title: Text('Add tag'.tr),
         content: TextField(
           controller: input,
           autofocus: true,
@@ -206,11 +206,11 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text('Cancel'.tr),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, input.text),
-            child: const Text('Add'),
+            child: Text('Add'.tr),
           ),
         ],
       ),
@@ -231,7 +231,7 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
   Future<void> _pickImage() async {
     if (_attachments.length >= 3) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You can attach up to three images.')),
+        SnackBar(content: Text('You can attach up to three images.'.tr)),
       );
       return;
     }
@@ -288,7 +288,7 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
                       color: colors.navigationSelected,
                       shape: const CircleBorder(),
                       child: IconButton(
-                        tooltip: 'Back',
+                        tooltip: 'Back'.tr,
                         onPressed: _requestPop,
                         icon: const Icon(Icons.chevron_left_rounded),
                       ),
@@ -296,7 +296,7 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
                     const Spacer(),
                     if (_original != null)
                       IconButton(
-                        tooltip: 'Delete entry',
+                        tooltip: 'Delete entry'.tr,
                         onPressed: _delete,
                         icon: Icon(
                           Icons.delete_outline,
@@ -317,7 +317,7 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
                                 ),
                               )
                             : const Icon(Icons.check, size: 16),
-                        label: const Text('Done'),
+                        label: Text('Done'.tr),
                       ),
                     ),
                   ],
@@ -356,7 +356,7 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
                         size: 15,
                         color: colors.primaryBlue,
                       ),
-                      label: const Text('Add Tag'),
+                      label: Text('Add Tag'.tr),
                       onPressed: _addTag,
                     ),
                   ],
@@ -371,9 +371,9 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
-                  decoration: const InputDecoration(
-                    labelText: 'Title',
-                    hintText: 'Give this memory a title',
+                  decoration: InputDecoration(
+                    labelText: 'Title'.tr,
+                    hintText: 'Give this memory a title'.tr,
                   ),
                   validator: (value) => (value?.trim().isEmpty ?? true)
                       ? 'A title is required.'
@@ -394,9 +394,9 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
                         minLines: 8,
                         maxLines: 16,
                         textCapitalization: TextCapitalization.sentences,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           filled: false,
-                          hintText: 'Write your story here',
+                          hintText: 'Write your story here'.tr,
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -410,23 +410,23 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
                       Row(
                         children: [
                           IconButton(
-                            tooltip: 'Bulleted list',
+                            tooltip: 'Bulleted list'.tr,
                             onPressed: () => _insertPrefix('• '),
                             icon: const Icon(Icons.format_list_bulleted),
                           ),
                           IconButton(
-                            tooltip: 'Numbered list',
+                            tooltip: 'Numbered list'.tr,
                             onPressed: () => _insertPrefix('1. '),
                             icon: const Icon(Icons.format_list_numbered),
                           ),
                           IconButton(
-                            tooltip: 'Insert emphasis markers',
+                            tooltip: 'Insert emphasis markers'.tr,
                             onPressed: () => _insertPrefix('**'),
                             icon: const Icon(Icons.format_bold),
                           ),
                           const Spacer(),
                           IconButton(
-                            tooltip: 'Attach image',
+                            tooltip: 'Attach image'.tr,
                             onPressed: _pickImage,
                             icon: const Icon(Icons.image_outlined),
                           ),
@@ -467,7 +467,7 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
                             right: 2,
                             top: 2,
                             child: IconButton.filledTonal(
-                              tooltip: 'Remove image',
+                              tooltip: 'Remove image'.tr,
                               visualDensity: VisualDensity.compact,
                               onPressed: () => setState(() {
                                 _attachments.removeAt(index);

@@ -22,9 +22,7 @@ class _AppShellState extends State<AppShell> {
     const HomeScreen(),
     const GoalTrackerScreen(),
     const FinancialManagementScreen(),
-    SettingsScreen(
-      onBackPressed: _handleBackToPreviousTab,
-    ),
+    SettingsScreen(onBackPressed: _handleBackToPreviousTab),
   ];
 
   void _selectTab(int index) {

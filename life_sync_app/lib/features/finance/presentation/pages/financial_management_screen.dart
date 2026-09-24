@@ -54,16 +54,16 @@ class FinancialManagementScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Financial Management',
+                              'Financial Management'.tr,
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 color: colors.primaryBlue,
                               ),
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Text(
-                              'Track and manage your money here',
+                              'Track and manage your money here'.tr,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: colors.secondaryText,
@@ -84,14 +84,14 @@ class FinancialManagementScreen extends StatelessWidget {
                             _budgetDialog(context, finance);
                           }
                         },
-                        itemBuilder: (_) => const [
+                        itemBuilder: (_) => [
                           PopupMenuItem(
                             value: 'categories',
-                            child: Text('Manage categories'),
+                            child: Text('Manage categories'.tr),
                           ),
                           PopupMenuItem(
                             value: 'budget',
-                            child: Text('Add budget'),
+                            child: Text('Add budget'.tr),
                           ),
                         ],
                       ),
@@ -125,9 +125,9 @@ class FinancialManagementScreen extends StatelessWidget {
                               BlendMode.srcIn,
                             ),
                           ),
-                          label: const Text(
-                            'Add Income',
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                          label: Text(
+                            'Add Income'.tr,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
                         ),
                       ),
@@ -140,7 +140,7 @@ class FinancialManagementScreen extends StatelessWidget {
                             FinanceEntryType.expense,
                           ),
                           icon: const Icon(Icons.remove, size: 18),
-                          label: const Text('Add Expense'),
+                          label: Text('Add Expense'.tr),
                           style: FilledButton.styleFrom(
                             backgroundColor: colors.negative,
                           ),
@@ -150,7 +150,7 @@ class FinancialManagementScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 28),
                   _SectionTitle(
-                    title: 'Saving Goals',
+                    title: 'Saving Goals'.tr,
                     action: 'View goals',
                     onTap: () => Get.toNamed<void>(AppRoutes.goalEditor),
                   ),
@@ -159,7 +159,7 @@ class FinancialManagementScreen extends StatelessWidget {
                     child: SizedBox(
                       height: 135,
                       child: goals.goals.where((goal) => !goal.archived).isEmpty
-                          ? const _InlineEmpty(message: 'No saving goals yet.')
+                          ? _InlineEmpty(message: 'No saving goals yet.')
                           : ListView.separated(
                               physics: const ClampingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
@@ -181,13 +181,13 @@ class FinancialManagementScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   _SectionTitle(
-                    title: 'Budgets',
+                    title: 'Budgets'.tr,
                     action: 'Add',
                     onTap: () => _budgetDialog(context, finance),
                   ),
                   const SizedBox(height: 10),
                   if (finance.data.budgets.isEmpty)
-                    const _InlineEmpty(message: 'No budgets configured.')
+                    _InlineEmpty(message: 'No budgets configured.')
                   else
                     for (final budget in finance.data.budgets.take(4)) ...[
                       _BudgetRow(budget: budget, finance: finance),
@@ -195,15 +195,13 @@ class FinancialManagementScreen extends StatelessWidget {
                     ],
                   const SizedBox(height: 14),
                   _SectionTitle(
-                    title: 'Recent Transactions',
+                    title: 'Recent Transactions'.tr,
                     action: _filterLabel(finance),
                     onTap: () => _filterDialog(context, finance),
                   ),
                   const SizedBox(height: 8),
                   if (finance.history.isEmpty)
-                    const _InlineEmpty(
-                      message: 'No transactions in this period.',
-                    )
+                    _InlineEmpty(message: 'No transactions in this period.')
                   else
                     for (final entry in finance.history.take(10))
                       _TransactionRow(entry: entry, finance: finance),
@@ -243,7 +241,7 @@ class _BalanceCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Total balance',
+                'Total balance'.tr,
                 style: TextStyle(
                   fontSize: 14,
                   color: colors.secondaryText,
@@ -280,21 +278,21 @@ class _BalanceCard extends StatelessWidget {
               _Summary(
                 icon: Icons.trending_up,
                 color: colors.positive,
-                title: 'Income',
+                title: 'Income'.tr,
                 amount: finance.incomeTotal.format(),
               ),
               Container(height: 30, width: 1, color: colors.divider),
               _Summary(
                 icon: Icons.trending_down,
                 color: colors.negative,
-                title: 'Expense',
+                title: 'Expense'.tr,
                 amount: finance.expenseTotal.format(),
               ),
               Container(height: 30, width: 1, color: colors.divider),
               _Summary(
                 icon: Icons.receipt_long_outlined,
                 color: colors.primaryBlue,
-                title: 'Entries',
+                title: 'Entries'.tr,
                 amount: '${finance.history.length}',
               ),
             ],
@@ -525,9 +523,9 @@ class _BudgetRow extends StatelessWidget {
                     finance.deleteBudget(budget);
                   }
                 },
-                itemBuilder: (_) => const [
-                  PopupMenuItem(value: 'edit', child: Text('Edit')),
-                  PopupMenuItem(value: 'delete', child: Text('Delete')),
+                itemBuilder: (_) => [
+                  PopupMenuItem(value: 'edit', child: Text('Edit'.tr)),
+                  PopupMenuItem(value: 'delete', child: Text('Delete'.tr)),
                 ],
               ),
             ],
@@ -592,9 +590,9 @@ class _TransactionRow extends StatelessWidget {
                 finance.deleteEntry(entry);
               }
             },
-            itemBuilder: (_) => const [
-              PopupMenuItem(value: 'edit', child: Text('Edit')),
-              PopupMenuItem(value: 'delete', child: Text('Delete')),
+            itemBuilder: (_) => [
+              PopupMenuItem(value: 'edit', child: Text('Edit'.tr)),
+              PopupMenuItem(value: 'delete', child: Text('Delete'.tr)),
             ],
           ),
         ],
@@ -612,7 +610,7 @@ Future<void> _entryDialog(
   if (finance.data.categories.isEmpty) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Create a category first.')));
+    ).showSnackBar(SnackBar(content: Text('Create a category first.'.tr)));
     return;
   }
   final title = TextEditingController(text: existing?.title ?? '');
@@ -643,7 +641,7 @@ Future<void> _entryDialog(
               TextField(
                 controller: title,
                 decoration: InputDecoration(
-                  labelText: 'Title',
+                  labelText: 'Title'.tr,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -657,7 +655,7 @@ Future<void> _entryDialog(
                 ),
                 inputFormatters: [_moneyInput],
                 decoration: InputDecoration(
-                  labelText: 'Amount',
+                  labelText: 'Amount'.tr,
                   prefixText: r'$ ',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -668,7 +666,7 @@ Future<void> _entryDialog(
               DropdownButtonFormField<FinanceCategoryModel>(
                 initialValue: category,
                 decoration: InputDecoration(
-                  labelText: 'Category',
+                  labelText: 'Category'.tr,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -687,7 +685,7 @@ Future<void> _entryDialog(
               TextField(
                 controller: description,
                 decoration: InputDecoration(
-                  labelText: 'Description (optional)',
+                  labelText: 'Description (optional)'.tr,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -707,7 +705,7 @@ Future<void> _entryDialog(
                 borderRadius: BorderRadius.circular(12),
                 child: InputDecorator(
                   decoration: InputDecoration(
-                    labelText: 'Date',
+                    labelText: 'Date'.tr,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -735,7 +733,7 @@ Future<void> _entryDialog(
               FocusScope.of(dialogContext).unfocus();
               Navigator.pop(dialogContext, false);
             },
-            child: const Text('Cancel'),
+            child: Text('Cancel'.tr),
           ),
           FilledButton(
             onPressed: () {
@@ -748,11 +746,11 @@ Future<void> _entryDialog(
                 );
               } on FormatException {
                 ScaffoldMessenger.of(dialogContext).showSnackBar(
-                  const SnackBar(content: Text('Enter a valid amount.')),
+                  SnackBar(content: Text('Enter a valid amount.'.tr)),
                 );
               }
             },
-            child: const Text('Save'),
+            child: Text('Save'.tr),
           ),
         ],
       ),
@@ -803,7 +801,7 @@ Future<void> _categoryDialog(
             controller: name,
             maxLength: 60,
             decoration: InputDecoration(
-              labelText: 'Category name',
+              labelText: 'Category name'.tr,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -814,7 +812,7 @@ Future<void> _categoryDialog(
             controller: description,
             maxLength: 160,
             decoration: InputDecoration(
-              labelText: 'Description (optional)',
+              labelText: 'Description (optional)'.tr,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -825,12 +823,12 @@ Future<void> _categoryDialog(
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(dialogContext, false),
-          child: const Text('Cancel'),
+          child: Text('Cancel'.tr),
         ),
         FilledButton(
           onPressed: () =>
               Navigator.pop(dialogContext, name.text.trim().isNotEmpty),
-          child: const Text('Save'),
+          child: Text('Save'.tr),
         ),
       ],
     ),
@@ -864,11 +862,11 @@ Future<void> _manageCategoriesDialog(
     context: context,
     builder: (dialogContext) => Obx(
       () => AlertDialog(
-        title: const Text('Manage categories'),
+        title: Text('Manage categories'.tr),
         content: SizedBox(
           width: 420,
           child: finance.data.categories.isEmpty
-              ? const Text('No categories yet.')
+              ? Text('No categories yet.'.tr)
               : ListView.builder(
                   shrinkWrap: true,
                   itemCount: finance.data.categories.length,
@@ -906,9 +904,12 @@ Future<void> _manageCategoriesDialog(
                             }
                           }
                         },
-                        itemBuilder: (_) => const [
-                          PopupMenuItem(value: 'edit', child: Text('Edit')),
-                          PopupMenuItem(value: 'delete', child: Text('Delete')),
+                        itemBuilder: (_) => [
+                          PopupMenuItem(value: 'edit', child: Text('Edit'.tr)),
+                          PopupMenuItem(
+                            value: 'delete',
+                            child: Text('Delete'.tr),
+                          ),
                         ],
                       ),
                     );
@@ -918,11 +919,11 @@ Future<void> _manageCategoriesDialog(
         actions: [
           TextButton(
             onPressed: () async => _categoryDialog(context, finance),
-            child: const Text('Add category'),
+            child: Text('Add category'.tr),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Done'),
+            child: Text('Done'.tr),
           ),
         ],
       ),
@@ -938,7 +939,7 @@ Future<void> _budgetDialog(
   if (finance.data.categories.isEmpty) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Create a category first.')));
+    ).showSnackBar(SnackBar(content: Text('Create a category first.'.tr)));
     return;
   }
   final amount = TextEditingController(
@@ -959,7 +960,7 @@ Future<void> _budgetDialog(
           children: [
             DropdownButtonFormField<FinanceCategoryModel>(
               initialValue: category,
-              decoration: const InputDecoration(labelText: 'Category'),
+              decoration: InputDecoration(labelText: 'Category'.tr),
               items: finance.data.categories
                   .map(
                     (item) =>
@@ -976,8 +977,8 @@ Future<void> _budgetDialog(
                 decimal: true,
               ),
               inputFormatters: [_moneyInput],
-              decoration: const InputDecoration(
-                labelText: 'Limit',
+              decoration: InputDecoration(
+                labelText: 'Limit'.tr,
                 prefixText: r'$ ',
               ),
             ),
@@ -989,7 +990,7 @@ Future<void> _budgetDialog(
               FocusScope.of(dialogContext).unfocus();
               Navigator.pop(dialogContext, false);
             },
-            child: const Text('Cancel'),
+            child: Text('Cancel'.tr),
           ),
           FilledButton(
             onPressed: () {
@@ -1001,11 +1002,11 @@ Future<void> _budgetDialog(
                 );
               } on FormatException {
                 ScaffoldMessenger.of(dialogContext).showSnackBar(
-                  const SnackBar(content: Text('Enter a valid limit.')),
+                  SnackBar(content: Text('Enter a valid limit.'.tr)),
                 );
               }
             },
-            child: const Text('Save'),
+            child: Text('Save'.tr),
           ),
         ],
       ),
@@ -1044,7 +1045,7 @@ Future<void> _filterDialog(
     context: context,
     builder: (dialogContext) => StatefulBuilder(
       builder: (context, setState) => AlertDialog(
-        title: const Text('Filter by date'),
+        title: Text('Filter by date'.tr),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -1083,13 +1084,13 @@ Future<void> _filterDialog(
               end = null;
               Navigator.pop(dialogContext, true);
             },
-            child: const Text('Clear'),
+            child: Text('Clear'.tr),
           ),
           FilledButton(
             onPressed: start != null && end != null
                 ? () => Navigator.pop(dialogContext, true)
                 : null,
-            child: const Text('Apply'),
+            child: Text('Apply'.tr),
           ),
         ],
       ),

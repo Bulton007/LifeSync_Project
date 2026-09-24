@@ -44,7 +44,7 @@ abstract final class AppTheme {
       bodySmall: AppTextStyles.caption,
       labelLarge: AppTextStyles.button,
       labelSmall: AppTextStyles.micro,
-    ).apply(bodyColor: colors.primaryText, displayColor: colors.primaryText);
+    ).apply(bodyColor: colors.primaryText, displayColor: colors.primaryText, fontFamilyFallback: const ['NotoSansKhmer']);
     final inputBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppRadius.md),
       borderSide: BorderSide(color: colors.border),
@@ -59,6 +59,7 @@ abstract final class AppTheme {
       canvasColor: colors.pageBackground,
       fontFamily: GoogleFonts.poppins().fontFamily,
       fontFamilyFallback: const [
+        'NotoSansKhmer',
         'Segoe UI Emoji',
         'Apple Color Emoji',
         'Noto Color Emoji',

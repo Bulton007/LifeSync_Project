@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -15,9 +16,9 @@ class CreateGoalReviewPage extends StatelessWidget {
       appBar: AppBar(
         // Static UI only.
         leading: const Icon(Icons.arrow_back_ios_new, size: 20),
-        title: const Text('Create Goal'),
+        title: Text('Create Goal'.tr),
       ),
-      body: const SafeArea(
+      body: SafeArea(
         child: Column(
           children: [
             _GoalCreationSteps(),
@@ -39,8 +40,8 @@ class _GoalCreationSteps extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.fromLTRB(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,
         AppSpacing.md,
         AppSpacing.lg,
@@ -48,11 +49,11 @@ class _GoalCreationSteps extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _StepItem(number: '1', label: 'Define', completed: true),
+          _StepItem(number: '1', label: 'Define'.tr, completed: true),
           _StepLine(active: true),
-          _StepItem(number: '2', label: 'Plan', completed: true),
+          _StepItem(number: '2', label: 'Plan'.tr, completed: true),
           _StepLine(active: true),
-          _StepItem(number: '3', label: 'Review', active: true),
+          _StepItem(number: '3', label: 'Review'.tr, active: true),
         ],
       ),
     );
@@ -150,11 +151,11 @@ class _ReviewContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      children: const [
+      children: [
         _GoalSummaryCard(),
-        SizedBox(height: AppSpacing.xl),
+        const SizedBox(height: AppSpacing.xl),
         _MilestoneSectionHeader(),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         _MilestoneList(),
       ],
     );
@@ -219,7 +220,7 @@ class _GoalSummaryCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           const Divider(),
           const SizedBox(height: AppSpacing.sm),
-          const Row(
+          Row(
             children: [
               Expanded(
                 child: _DateItem(
@@ -227,7 +228,7 @@ class _GoalSummaryCard extends StatelessWidget {
                   text: 'Started on 1 June 2026',
                 ),
               ),
-              SizedBox(width: AppSpacing.md),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: _DateItem(
                   icon: Icons.event_outlined,
@@ -277,7 +278,7 @@ class _MilestoneSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: Text('Milestones', style: AppTextStyles.titleM)),
+        Expanded(child: Text('Milestones'.tr, style: AppTextStyles.titleM)),
         Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.sm,
@@ -296,7 +297,7 @@ class _MilestoneSectionHeader extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.xs),
               Text(
-                'Edit',
+                'Edit'.tr,
                 style: AppTextStyles.micro.copyWith(
                   color: AppColors.primary,
                   fontWeight: FontWeight.w600,
@@ -325,33 +326,33 @@ class _MilestoneList extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.border),
       ),
-      child: const Column(
+      child: Column(
         children: [
           _ReviewMilestone(
             number: 1,
             title: 'Build Strong Study Routine',
             taskCount: '4 Tasks',
             expanded: true,
-            tasks: [
+            tasks: const [
               'Create a weekly study schedule',
               'Review lesson notes every evening',
               'Study for one focused hour',
               'Prepare tomorrow’s materials',
             ],
           ),
-          Divider(),
+          const Divider(),
           _ReviewMilestone(
             number: 2,
             title: 'Improve Academic Performance',
             taskCount: '4 Tasks',
           ),
-          Divider(),
+          const Divider(),
           _ReviewMilestone(
             number: 3,
             title: 'Prepare for Mid-Term',
             taskCount: '4 Tasks',
           ),
-          Divider(),
+          const Divider(),
           _ReviewMilestone(
             number: 4,
             title: 'Prepare for Final',
@@ -483,7 +484,7 @@ class _BottomActions extends StatelessWidget {
             child: OutlinedButton(
               // Static UI only.
               onPressed: () {},
-              child: const Text('Back & Edit'),
+              child: Text('Back & Edit'.tr),
             ),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -492,7 +493,7 @@ class _BottomActions extends StatelessWidget {
             child: ElevatedButton(
               // Static UI only.
               onPressed: () {},
-              child: const Text('Create Goal'),
+              child: Text('Create Goal'.tr),
             ),
           ),
         ],

@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 
@@ -44,16 +45,13 @@ class _CreateGoalSecondStepScreenState
                       border: Border.all(color: colors.border),
                     ),
                     child: IconButton(
-                      icon: Icon(
-                        Icons.chevron_left,
-                        color: colors.primaryText,
-                      ),
+                      icon: Icon(Icons.chevron_left, color: colors.primaryText),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
                   const SizedBox(width: 16),
                   Text(
-                    'Create Goal',
+                    'Create Goal'.tr,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -74,9 +72,7 @@ class _CreateGoalSecondStepScreenState
                   ),
                   // Step 2: Plan (Active)
                   _buildStepIndicator('2', 'Plan', true),
-                  Expanded(
-                    child: Container(height: 2, color: colors.border),
-                  ),
+                  Expanded(child: Container(height: 2, color: colors.border)),
                   // Step 3: Review (Inactive)
                   _buildStepIndicator('3', 'Review', false),
                 ],
@@ -91,7 +87,7 @@ class _CreateGoalSecondStepScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Milestones',
+                        'Milestones'.tr,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -100,7 +96,7 @@ class _CreateGoalSecondStepScreenState
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'Set Milestones for Goal Progression',
+                        'Set Milestones for Goal Progression'.tr,
                         style: TextStyle(
                           fontSize: 12,
                           color: colors.secondaryText,
@@ -133,9 +129,9 @@ class _CreateGoalSecondStepScreenState
                       size: 14,
                       color: Color(0xFF2979FF),
                     ),
-                    label: const Text(
-                      'A.I Assistant',
-                      style: TextStyle(
+                    label: Text(
+                      'A.I Assistant'.tr,
+                      style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF2979FF),
@@ -172,7 +168,7 @@ class _CreateGoalSecondStepScreenState
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'MY GOALS!',
+                              'MY GOALS!'.tr,
                               style: TextStyle(
                                 fontSize: 9,
                                 fontWeight: FontWeight.bold,
@@ -210,9 +206,9 @@ class _CreateGoalSecondStepScreenState
                                     true; // Toggles to Filled-in state
                               });
                             },
-                            child: const Text(
-                              'Create one.',
-                              style: TextStyle(
+                            child: Text(
+                              'Create one.'.tr,
+                              style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF2979FF),
@@ -290,9 +286,9 @@ class _CreateGoalSecondStepScreenState
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: const Text(
-                        'Back & Edit',
-                        style: TextStyle(
+                      child: Text(
+                        'Back & Edit'.tr,
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF2979FF),
@@ -316,7 +312,7 @@ class _CreateGoalSecondStepScreenState
                         elevation: _hasMilestones ? 2 : 0,
                       ),
                       child: Text(
-                        'Next : Review Goal',
+                        'Next : Review Goal'.tr,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -413,7 +409,9 @@ class _CreateGoalSecondStepScreenState
                 width: 30,
                 height: 30,
                 decoration: BoxDecoration(
-                  color: isDark ? colors.elevatedSurface : const Color(0xFFE8F1FC),
+                  color: isDark
+                      ? colors.elevatedSurface
+                      : const Color(0xFFE8F1FC),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 alignment: Alignment.center,

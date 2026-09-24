@@ -17,7 +17,7 @@ class SignUpVerifyEmailScreen extends StatefulWidget {
 }
 
 class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
-  static const _fallbackResendCooldown = Duration(seconds: 60);
+  static final _fallbackResendCooldown = const Duration(seconds: 60);
 
   final List<TextEditingController> _controllers = List.generate(
     AuthValidators.otpLength,
@@ -166,7 +166,7 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
       _clearOtp();
       _startResendCooldown();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('A new verification code was sent.')),
+        SnackBar(content: Text('A new verification code was sent.'.tr)),
       );
     }
   }
@@ -213,9 +213,9 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
               const SizedBox(height: 24),
 
               // Header Title
-              const Text(
-                'Verify your Email',
-                style: TextStyle(
+              Text(
+                'Verify your Email'.tr,
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF2979FF),
@@ -339,7 +339,7 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "Didn't receive the Code? ",
+                      "Didn't receive the Code? ".tr,
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey.shade600,
@@ -376,14 +376,15 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
                             _resendSecondsRemaining > 0
                         ? null
                         : () => _resendOtp(channel: 'telegram'),
-                    child: const Text('Try linked Telegram instead'),
+                    child: Text('Try linked Telegram instead'.tr),
                   ),
                 ),
-                const Text('Telegram must already be linked to your account.'),
+                Text('Telegram must already be linked to your account.'.tr),
               ],
               const SizedBox(height: 12),
-              const Text(
-                'Five incorrect codes temporarily block OTP attempts for 15 minutes.',
+              Text(
+                'Five incorrect codes temporarily block OTP attempts for 15 minutes.'
+                    .tr,
               ),
               const SizedBox(height: 28),
 
@@ -413,9 +414,9 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text(
-                            'Verify',
-                            style: TextStyle(
+                        : Text(
+                            'Verify'.tr,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,

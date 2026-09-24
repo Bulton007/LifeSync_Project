@@ -188,9 +188,9 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                                 size: 16,
                                 color: colors.primaryBlue,
                               ),
-                        label: const Text(
-                          'Save',
-                          style: TextStyle(
+                        label: Text(
+                          'Save'.tr,
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
                           ),
@@ -235,7 +235,7 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                     fontWeight: FontWeight.w500,
                   ),
                   decoration: InputDecoration(
-                    hintText: 'What do you need to get done today?',
+                    hintText: 'What do you need to get done today?'.tr,
                     hintStyle: TextStyle(
                       fontSize: 16,
                       color: colors.secondaryText,
@@ -258,7 +258,7 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                   maxLines: 5,
                   style: const TextStyle(fontSize: 14),
                   decoration: InputDecoration(
-                    hintText: 'Add Description',
+                    hintText: 'Add Description'.tr,
                     hintStyle: TextStyle(
                       fontSize: 14,
                       color: colors.secondaryText,

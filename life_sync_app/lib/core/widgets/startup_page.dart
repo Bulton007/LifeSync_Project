@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/network/api_client.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
@@ -82,11 +81,11 @@ final class _StartupPageState extends State<StartupPage>
   @override
   Widget build(BuildContext context) {
     final colors = context.lifeSyncColors;
-    const double logoSize = 320.0;
+    final logoSize = (MediaQuery.sizeOf(context).width * .65).clamp(160.0, 260.0);
 
     return Scaffold(
       backgroundColor: colors.pageBackground,
-      body: Center(
+      body: SafeArea(child: Center(
         child: FadeTransition(
           opacity: CurvedAnimation(parent: _animation, curve: Curves.easeOut),
           child: ScaleTransition(
@@ -101,40 +100,40 @@ final class _StartupPageState extends State<StartupPage>
                   Container(
                     width: logoSize,
                     height: logoSize,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: colors.glow,
-                        blurRadius: 28,
-                        spreadRadius: 4,
-                      ),
-                    ],
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: colors.glow,
+                          blurRadius: 28,
+                          spreadRadius: 4,
+                        ),
+                      ],
+                    ),
+                    child: Image.asset(
+                      AppImages.appLogo,
+                      width: logoSize,
+                      height: logoSize,
+                      fit: BoxFit.contain,
+                      semanticLabel: 'LifeSync',
+                    ),
                   ),
-                  child: SvgPicture.asset(
-                    LifeSyncSvgAssets.group11,
-                    width: logoSize,
-                    height: logoSize,
-                    fit: BoxFit.contain,
-                    semanticsLabel: 'LifeSync',
+                  const SizedBox(height: 28),
+                  const Text(
+                    'LifeSync',
+                    style: TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                      color: Color(0xFF1E88E5),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 28),
-                const Text(
-                  'LifeSync',
-                  style: TextStyle(
-                    fontSize: 34,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                    color: Color(0xFF1E88E5),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    ),
-  );
-}
+      )),
+    );
+  }
 }

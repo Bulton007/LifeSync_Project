@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -117,7 +118,7 @@ class _NavigationBar extends StatelessWidget {
                       selectedSvgAsset: LifeSyncSvgAssets.bottomHomeSelected,
                       icon: Icons.other_houses_outlined,
                       selectedIcon: Icons.other_houses_outlined,
-                      label: 'Home',
+                      label: 'Home'.tr,
                       selected: currentIndex == 0,
                       compact: compact,
                       onTap: () => onTabSelected(0),
@@ -129,7 +130,7 @@ class _NavigationBar extends StatelessWidget {
                       selectedSvgAsset: LifeSyncSvgAssets.bottomGoalSelected,
                       icon: Icons.track_changes_outlined,
                       selectedIcon: Icons.track_changes,
-                      label: 'Goal',
+                      label: 'Goal'.tr,
                       selected: currentIndex == 1,
                       compact: compact,
                       onTap: () => onTabSelected(1),
@@ -141,7 +142,7 @@ class _NavigationBar extends StatelessWidget {
                       selectedSvgAsset: LifeSyncSvgAssets.bottomFinanceSelected,
                       icon: Icons.query_stats_outlined,
                       selectedIcon: Icons.query_stats,
-                      label: 'Finance',
+                      label: 'Finance'.tr,
                       selected: currentIndex == 2,
                       compact: compact,
                       onTap: () => onTabSelected(2),
@@ -153,7 +154,7 @@ class _NavigationBar extends StatelessWidget {
                       selectedSvgAsset: LifeSyncSvgAssets.bottomMoreSelected,
                       icon: Icons.grid_view_outlined,
                       selectedIcon: Icons.grid_view_rounded,
-                      label: 'More',
+                      label: 'More'.tr,
                       selected: currentIndex == 3,
                       compact: compact,
                       onTap: () => onTabSelected(3),

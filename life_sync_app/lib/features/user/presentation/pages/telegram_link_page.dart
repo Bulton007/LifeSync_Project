@@ -65,7 +65,7 @@ class _TelegramLinkPageState extends State<TelegramLinkPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Link Telegram')),
+    appBar: AppBar(title: Text('Link Telegram'.tr)),
     body: ListView(
       padding: const EdgeInsets.all(24),
       children: [

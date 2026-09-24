@@ -52,7 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _showUnavailable() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Social sign-up is not available yet.')),
+      SnackBar(content: Text('Social sign-up is not available yet.'.tr)),
     );
   }
 
@@ -114,9 +114,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 8),
 
                   // Header Title: Progress Starts with US
-                  const Text(
-                    'Progress Starts',
-                    style: TextStyle(
+                  Text(
+                    'Progress Starts'.tr,
+                    style: const TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
@@ -135,9 +135,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 28),
 
                   // Email Field Label
-                  const Text(
-                    'Email',
-                    style: TextStyle(
+                  Text(
+                    'Email'.tr,
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: Colors.black87,
@@ -176,7 +176,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(color: Color(0xFF2979FF)),
+                        borderSide: const BorderSide(
+                          color: Color(0xFF2979FF),
+                        ),
                       ),
                     ),
                   ),
@@ -232,9 +234,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   color: Colors.white,
                                 ),
                               )
-                            : const Text(
-                                'Continue',
-                                style: TextStyle(
+                            : Text(
+                                'Continue'.tr,
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
@@ -257,7 +259,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
-                          'Or',
+                          'Or'.tr,
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey.shade500,
@@ -302,7 +304,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Already have an account? ',
+                        'Already have an account? '.tr,
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.grey.shade600,
@@ -310,9 +312,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       GestureDetector(
                         onTap: () => Get.offNamed<void>(AppRoutes.signIn),
-                        child: const Text(
-                          'Sign in',
-                          style: TextStyle(
+                        child: Text(
+                          'Sign in'.tr,
+                          style: const TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF2979FF),

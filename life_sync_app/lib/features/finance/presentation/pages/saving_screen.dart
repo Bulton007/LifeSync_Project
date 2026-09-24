@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -62,10 +63,7 @@ class _SavingScreenState extends State<SavingScreen> {
                       ],
                     ),
                     child: IconButton(
-                      icon: Icon(
-                        Icons.chevron_left,
-                        color: colors.primaryText,
-                      ),
+                      icon: Icon(Icons.chevron_left, color: colors.primaryText),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
@@ -92,7 +90,7 @@ class _SavingScreenState extends State<SavingScreen> {
                       color: AppColors.primary,
                     ),
                     label: Text(
-                      'Save',
+                      'Save'.tr,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: colors.primaryText,
@@ -132,7 +130,7 @@ class _SavingScreenState extends State<SavingScreen> {
 
               // Date Field
               Text(
-                'Date',
+                'Date'.tr,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -174,7 +172,7 @@ class _SavingScreenState extends State<SavingScreen> {
 
               // Amount Field
               Text(
-                'Amount',
+                'Amount'.tr,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -216,7 +214,7 @@ class _SavingScreenState extends State<SavingScreen> {
 
               // Category Dropdown/Selector
               Text(
-                'Category',
+                'Category'.tr,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -274,7 +272,7 @@ class _SavingScreenState extends State<SavingScreen> {
 
               // Note Field
               Text(
-                'Note',
+                'Note'.tr,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -330,7 +328,9 @@ class _SavingScreenState extends State<SavingScreen> {
       if (index == 1) {
         // Expense active state (Red theme matching design)
         textColor = Colors.red;
-        backgroundColor = isDark ? Colors.red.withValues(alpha: 0.15) : Colors.white;
+        backgroundColor = isDark
+            ? Colors.red.withValues(alpha: 0.15)
+            : Colors.white;
         border = Border.all(color: Colors.red.shade300, width: 1.2);
       } else {
         // Income or Transfer active state

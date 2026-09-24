@@ -29,9 +29,9 @@ class CreatedSuccessScreen extends StatelessWidget {
               const SizedBox(height: 48),
 
               // Success Heading
-              const Text(
-                'You’re all set!',
-                style: TextStyle(
+              Text(
+                'You’re all set!'.tr,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF2979FF),
@@ -41,7 +41,8 @@ class CreatedSuccessScreen extends StatelessWidget {
 
               // Subtitle Text
               Text(
-                'Welcome to LifeSync! Your Account is ready.\nLet’s find out what we have.',
+                'Welcome to LifeSync! Your Account is ready.\nLet’s find out what we have.'
+                    .tr,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
@@ -65,9 +66,9 @@ class CreatedSuccessScreen extends StatelessWidget {
                     ),
                     elevation: 2,
                   ),
-                  child: const Text(
-                    'Get Started',
-                    style: TextStyle(
+                  child: Text(
+                    'Get Started'.tr,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,

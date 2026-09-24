@@ -19,7 +19,7 @@ class ToDoListScreen extends StatefulWidget {
 class _TodoListScreenState extends State<ToDoListScreen> {
   late final TaskController _controller;
 
-  static const _months = <String>[
+  static final _months = <String>[
     'January',
     'February',
     'March',
@@ -33,7 +33,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
     'November',
     'December',
   ];
-  static const _weekdays = <String>['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  static final _weekdays = <String>['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   @override
   void initState() {
@@ -71,14 +71,21 @@ class _TodoListScreenState extends State<ToDoListScreen> {
               children: [
                 const Align(
                   alignment: Alignment.centerRight,
-                  child: Icon(Icons.open_in_full, size: 16, color: Colors.grey),
+                  child: Icon(
+                    Icons.open_in_full,
+                    size: 16,
+                    color: Colors.grey,
+                  ),
                 ),
                 TextFormField(
                   controller: titleController,
                   autofocus: true,
-                  decoration: const InputDecoration(
-                    hintText: 'What do you need to get done today?',
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                  decoration: InputDecoration(
+                    hintText: 'What do you need to get done today?'.tr,
+                    hintStyle: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16,
+                    ),
                     border: InputBorder.none,
                   ),
                   validator: (value) {
@@ -90,9 +97,12 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                 ),
                 TextFormField(
                   controller: descController,
-                  decoration: const InputDecoration(
-                    hintText: 'Description',
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 13),
+                  decoration: InputDecoration(
+                    hintText: 'Description'.tr,
+                    hintStyle: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 13,
+                    ),
                     border: InputBorder.none,
                   ),
                   validator: (value) => (value?.length ?? 0) > 1000
@@ -161,9 +171,9 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                                 color: Colors.white,
                               ),
                             )
-                          : const Text(
-                              'Save Task',
-                              style: TextStyle(
+                          : Text(
+                              'Save Task'.tr,
+                              style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -220,7 +230,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                     ),
                   ),
                   IconButton(
-                    tooltip: 'Edit task',
+                    tooltip: 'Edit task'.tr,
                     onPressed: () {
                       Navigator.pop(sheetContext);
                       Get.toNamed<void>(AppRoutes.taskEditor, arguments: task);
@@ -228,7 +238,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                     icon: const Icon(Icons.edit_outlined),
                   ),
                   IconButton(
-                    tooltip: 'Delete task',
+                    tooltip: 'Delete task'.tr,
                     onPressed: () async {
                       final deleted = await _controller.deleteTask(task.id);
                       if (deleted && sheetContext.mounted) {
@@ -247,25 +257,25 @@ class _TodoListScreenState extends State<ToDoListScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Subtasks',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Text(
+                    'Subtasks'.tr,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextButton.icon(
                     onPressed: () => _addSubTask(sheetContext, task.id),
                     icon: const Icon(Icons.add),
-                    label: const Text('Add'),
+                    label: Text('Add'.tr),
                   ),
                 ],
               ),
               Obx(() {
-                final items = _controller.subTasks[task.id] ?? const [];
+                final items = _controller.subTasks[task.id] ?? [];
                 if (items.isEmpty) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Text(
-                      'No subtasks yet.',
-                      style: TextStyle(color: Colors.grey),
+                      'No subtasks yet.'.tr,
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   );
                 }
@@ -299,11 +309,14 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                               _controller.deleteSubTask(subTask);
                             }
                           },
-                          itemBuilder: (_) => const [
-                            PopupMenuItem(value: 'edit', child: Text('Edit')),
+                          itemBuilder: (_) => [
+                            PopupMenuItem(
+                              value: 'edit',
+                              child: Text('Edit'.tr),
+                            ),
                             PopupMenuItem(
                               value: 'delete',
-                              child: Text('Delete'),
+                              child: Text('Delete'.tr),
                             ),
                           ],
                         ),
@@ -320,14 +333,14 @@ class _TodoListScreenState extends State<ToDoListScreen> {
   }
 
   Future<void> _addSubTask(BuildContext context, int taskId) async {
-    final title = await _subTaskDialog(context, title: 'Add subtask');
+    final title = await _subTaskDialog(context, title: 'Add subtask'.tr);
     if (title != null) await _controller.createSubTask(taskId, title);
   }
 
   Future<void> _editSubTask(BuildContext context, SubTaskModel subTask) async {
     final title = await _subTaskDialog(
       context,
-      title: 'Edit subtask',
+      title: 'Edit subtask'.tr,
       initialValue: subTask.title,
     );
     if (title != null) await _controller.updateSubTask(subTask, title);
@@ -347,19 +360,19 @@ class _TodoListScreenState extends State<ToDoListScreen> {
           controller: textController,
           autofocus: true,
           maxLength: 200,
-          decoration: const InputDecoration(labelText: 'Title'),
+          decoration: InputDecoration(labelText: 'Title'.tr),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text('Cancel'.tr),
           ),
           FilledButton(
             onPressed: () {
               final text = textController.text.trim();
               if (text.isNotEmpty) Navigator.pop(context, text);
             },
-            child: const Text('Save'),
+            child: Text('Save'.tr),
           ),
         ],
       ),
@@ -389,7 +402,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                 RepaintBoundary(child: _buildCalendarStrip()),
                 const SizedBox(height: 28),
                 Text(
-                  'Tasks',
+                  'Tasks'.tr,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -414,7 +427,7 @@ class _TodoListScreenState extends State<ToDoListScreen> {
                   final tasks = _controller.selectedDateTasks;
                   if (tasks.isEmpty) {
                     return AppEmptyView(
-                      title: 'No tasks for this day',
+                      title: 'No tasks for this day'.tr,
                       message: 'Add a task to start planning your day.',
                       svgAsset: LifeSyncSvgAssets.group,
                       actionLabel: 'Add task',

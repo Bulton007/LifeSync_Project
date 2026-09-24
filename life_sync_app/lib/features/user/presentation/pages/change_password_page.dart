@@ -37,7 +37,7 @@ final class _ChangePasswordPageState extends State<ChangePasswordPage> {
     );
     if (changed && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password changed successfully.')),
+        SnackBar(content: Text('Password changed successfully.'.tr)),
       );
       Navigator.pop(context);
     }
@@ -46,7 +46,7 @@ final class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Change password')),
+      appBar: AppBar(title: Text('Change password'.tr)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Form(
@@ -58,7 +58,7 @@ final class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 obscureText: _obscureCurrent,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  labelText: 'Current password',
+                  labelText: 'Current password'.tr,
                   prefixIcon: const Icon(Icons.lock_outline_rounded),
                   suffixIcon: IconButton(
                     onPressed: () =>
@@ -80,7 +80,7 @@ final class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 obscureText: _obscureNew,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  labelText: 'New password',
+                  labelText: 'New password'.tr,
                   prefixIcon: const Icon(Icons.lock_reset_rounded),
                   suffixIcon: IconButton(
                     onPressed: () => setState(() => _obscureNew = !_obscureNew),
@@ -106,9 +106,9 @@ final class _ChangePasswordPageState extends State<ChangePasswordPage> {
               TextFormField(
                 controller: _confirmPasswordController,
                 obscureText: _obscureNew,
-                decoration: const InputDecoration(
-                  labelText: 'Confirm new password',
-                  prefixIcon: Icon(Icons.lock_reset_rounded),
+                decoration: InputDecoration(
+                  labelText: 'Confirm new password'.tr,
+                  prefixIcon: const Icon(Icons.lock_reset_rounded),
                 ),
                 validator: (value) => value != _newPasswordController.text
                     ? 'Passwords do not match.'
@@ -136,9 +136,11 @@ final class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     child: _controller.isSubmitting.value
                         ? const SizedBox.square(
                             dimension: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
                           )
-                        : const Text('Change password'),
+                        : Text('Change password'.tr),
                   ),
                 ),
               ),

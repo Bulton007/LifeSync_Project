@@ -46,7 +46,7 @@ class GoalTrackerScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Goals',
+                              'Goals'.tr,
                               style: TextStyle(
                                 fontSize: 26,
                                 fontWeight: FontWeight.bold,
@@ -55,7 +55,7 @@ class GoalTrackerScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Turn your intentions into progress.',
+                              'Turn your intentions into progress.'.tr,
                               style: TextStyle(
                                 fontSize: 13,
                                 color: colors.secondaryText,
@@ -67,7 +67,7 @@ class GoalTrackerScreen extends StatelessWidget {
                           onPressed: () =>
                               Get.toNamed<void>(AppRoutes.goalEditor),
                           icon: const Icon(Icons.add, size: 17),
-                          label: const Text('New'),
+                          label: Text('New'.tr),
                         ),
                       ],
                     ),
@@ -79,12 +79,12 @@ class GoalTrackerScreen extends StatelessWidget {
                     child: _Overview(controller: controller),
                   ),
                 ),
-                const SliverToBoxAdapter(
+                SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(20, 24, 20, 16),
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
                     child: Text(
-                      'Goals Progress',
-                      style: TextStyle(
+                      'Goals Progress'.tr,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -95,7 +95,7 @@ class GoalTrackerScreen extends StatelessWidget {
                   SliverFillRemaining(
                     hasScrollBody: false,
                     child: AppEmptyView(
-                      title: 'No goals yet',
+                      title: 'No goals yet'.tr,
                       message:
                           'Define a measurable goal and start tracking progress.',
                       svgAsset: LifeSyncSvgAssets.goalScreenMain,
@@ -148,9 +148,9 @@ class _Overview extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Overview',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          Text(
+            'Overview'.tr,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           Row(
@@ -183,7 +183,7 @@ class _Overview extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Overall Progress',
+                          'Overall Progress'.tr,
                           style: TextStyle(
                             fontSize: 9,
                             color: colors.secondaryText,
@@ -200,19 +200,19 @@ class _Overview extends StatelessWidget {
                 child: Column(
                   children: [
                     _StatRow(
-                      label: 'Active Goals',
+                      label: 'Active Goals'.tr,
                       value: '${controller.activeGoals.length}',
                       color: colors.primaryBlue,
                     ),
                     const SizedBox(height: 8),
                     _StatRow(
-                      label: 'Completed',
+                      label: 'Completed'.tr,
                       value: '${controller.completedCount}',
                       color: colors.positive,
                     ),
                     const SizedBox(height: 8),
                     _StatRow(
-                      label: 'Archived',
+                      label: 'Archived'.tr,
                       value: '${controller.archivedCount}',
                       color: colors.secondaryText,
                     ),
@@ -291,7 +291,7 @@ class _GoalCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.lifeSyncColors;
     final milestoneItems =
-        controller.milestones[goal.id] ?? const <GoalMilestoneModel>[];
+        controller.milestones[goal.id] ?? <GoalMilestoneModel>[];
     final completedMilestones = milestoneItems
         .where((item) => item.completed)
         .length;
@@ -359,18 +359,18 @@ class _GoalCard extends StatelessWidget {
                   icon: Icon(Icons.more_horiz, color: colors.secondaryText),
                   onSelected: (value) => _action(context, value),
                   itemBuilder: (_) => [
-                    const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                    PopupMenuItem(value: 'edit', child: Text('Edit'.tr)),
                     if (!goal.completed)
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'complete',
-                        child: Text('Complete'),
+                        child: Text('Complete'.tr),
                       ),
                     if (!goal.archived)
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'archive',
-                        child: Text('Archive'),
+                        child: Text('Archive'.tr),
                       ),
-                    const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                    PopupMenuItem(value: 'delete', child: Text('Delete'.tr)),
                   ],
                 ),
               ],
@@ -451,9 +451,12 @@ class _GoalCard extends StatelessWidget {
               child: TextButton(
                 onPressed: () =>
                     Get.toNamed<void>(AppRoutes.goalDetails, arguments: goal),
-                child: const Text(
-                  'View Detail',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                child: Text(
+                  'View Detail'.tr,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -479,18 +482,16 @@ class _GoalCard extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete goal?'),
-        content: const Text(
-          'Its milestones and schedules will also be deleted.',
-        ),
+        title: Text('Delete goal?'.tr),
+        content: Text('Its milestones and schedules will also be deleted.'.tr),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text('Cancel'.tr),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
+            child: Text('Delete'.tr),
           ),
         ],
       ),

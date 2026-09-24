@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/theme/app_icons.dart';
@@ -40,7 +39,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _showUnavailable() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Social sign-in is not available yet.')),
+      SnackBar(content: Text('Social sign-in is not available yet.'.tr)),
     );
   }
 
@@ -71,10 +70,10 @@ class _SignInScreenState extends State<SignInScreen> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
-                          'Hello',
-                          style: TextStyle(
+                          'Hello'.tr,
+                          style: const TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.w400,
                             color: Colors.black87,
@@ -82,8 +81,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                         Text(
-                          'there!',
-                          style: TextStyle(
+                          'there!'.tr,
+                          style: const TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF1E88E5),
@@ -93,8 +92,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       ],
                     ),
                     // Abstract Plant Logo from Life-Sync SVG File (Group 11.svg)
-                    SvgPicture.asset(
-                      LifeSyncSvgAssets.group11,
+                    Image.asset(
+                      AppImages.appLogo,
                       width: 175,
                       height: 180,
                       fit: BoxFit.contain,
@@ -104,9 +103,9 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(height: 40),
 
                 // Email Field Label
-                const Text(
-                  'Email',
-                  style: TextStyle(
+                Text(
+                  'Email'.tr,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
@@ -119,7 +118,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   textInputAction: TextInputAction.next,
                   validator: AuthValidators.email,
                   decoration: InputDecoration(
-                    hintText: 'Email',
+                    hintText: 'Email'.tr,
                     hintStyle: TextStyle(
                       color: Colors.grey.shade400,
                       fontSize: 14,
@@ -145,16 +144,18 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF1E88E5),
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
 
                 // Password Field Label
-                const Text(
-                  'Password',
-                  style: TextStyle(
+                Text(
+                  'Password'.tr,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
@@ -169,7 +170,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ? 'Password is required.'
                       : null,
                   decoration: InputDecoration(
-                    hintText: 'Password',
+                    hintText: 'Password'.tr,
                     hintStyle: TextStyle(
                       color: Colors.grey.shade400,
                       fontSize: 14,
@@ -209,7 +210,9 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF1E88E5),
+                      ),
                     ),
                   ),
                 ),
@@ -225,9 +228,9 @@ class _SignInScreenState extends State<SignInScreen> {
                       padding: EdgeInsets.zero,
                       minimumSize: const Size(50, 30),
                     ),
-                    child: const Text(
-                      'Forgot password?',
-                      style: TextStyle(
+                    child: Text(
+                      'Forgot password?'.tr,
+                      style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                         color: Colors.redAccent,
@@ -272,9 +275,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                 color: Colors.white,
                               ),
                             )
-                          : const Text(
-                              'Sign In',
-                              style: TextStyle(
+                          : Text(
+                              'Sign In'.tr,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -294,7 +297,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
-                        'Or',
+                        'Or'.tr,
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey.shade500,
@@ -336,7 +339,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Don't have an account? ",
+                      "Don't have an account? ".tr,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.grey.shade600,
@@ -344,9 +347,9 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     GestureDetector(
                       onTap: () => Get.toNamed<void>(AppRoutes.signUp),
-                      child: const Text(
-                        'Sign up',
-                        style: TextStyle(
+                      child: Text(
+                        'Sign up'.tr,
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF1E88E5),

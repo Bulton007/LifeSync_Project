@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -68,7 +69,7 @@ class SavingGoalScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Total Saved',
+                          'Total Saved'.tr,
                           style: TextStyle(
                             fontSize: 13,
                             color: colors.secondaryText,
@@ -109,10 +110,10 @@ class SavingGoalScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           '50.7% Achieved',
                           style: TextStyle(
                             fontSize: 12,
@@ -141,7 +142,7 @@ class SavingGoalScreen extends StatelessWidget {
 
               // Saving Goals Header
               Text(
-                'Saving Goals',
+                'Saving Goals'.tr,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -250,7 +251,9 @@ class SavingGoalScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: isDark ? progressColor.withValues(alpha: 0.15) : iconBg,
+                      color: isDark
+                          ? progressColor.withValues(alpha: 0.15)
+                          : iconBg,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(icon, color: iconColor, size: 22),

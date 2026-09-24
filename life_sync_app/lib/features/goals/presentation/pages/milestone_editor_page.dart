@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -29,9 +30,9 @@ class MilestoneEditorPage extends StatelessWidget {
           ),
         ),
         title: Text(editMode ? 'Edit Milestone' : 'Add Milestone'),
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: AppSpacing.md),
+            padding: const EdgeInsets.only(right: AppSpacing.md),
             child: _SaveButton(),
           ),
         ],
@@ -44,9 +45,9 @@ class MilestoneEditorPage extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             _DescriptionField(editMode: editMode),
             const SizedBox(height: AppSpacing.xl),
-            const _TasksHeader(),
+            _TasksHeader(),
             const SizedBox(height: AppSpacing.md),
-            if (editMode) const _FilledTaskList() else const _AddTaskButton(),
+            if (editMode) _FilledTaskList() else _AddTaskButton(),
           ],
         ),
       ),
@@ -80,7 +81,7 @@ class _SaveButton extends StatelessWidget {
             const Icon(Icons.check, size: 15, color: AppColors.textSecondary),
             const SizedBox(width: AppSpacing.xs),
             Text(
-              'Save',
+              'Save'.tr,
               style: AppTextStyles.caption.copyWith(
                 color: AppColors.textSecondary,
                 fontWeight: FontWeight.w600,
@@ -105,7 +106,7 @@ class _MilestoneNameField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _FieldSection(
-      label: 'Milestone Name',
+      label: 'Milestone Name'.tr,
       counter: editMode ? '26/60' : '0/60',
       child: TextField(
         controller: TextEditingController(
@@ -121,8 +122,8 @@ class _MilestoneNameField extends StatelessWidget {
             }) {
               return null;
             },
-        decoration: const InputDecoration(
-          hintText: 'Set a Major Step for Your Goal',
+        decoration: InputDecoration(
+          hintText: 'Set a Major Step for Your Goal'.tr,
         ),
       ),
     );
@@ -137,7 +138,7 @@ class _DescriptionField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _FieldSection(
-      label: 'Description (Optional)',
+      label: 'Description (Optional)'.tr,
       counter: editMode ? '52/250' : '0/250',
       child: TextField(
         controller: TextEditingController(
@@ -156,8 +157,8 @@ class _DescriptionField extends StatelessWidget {
             }) {
               return null;
             },
-        decoration: const InputDecoration(
-          hintText: 'Add Context',
+        decoration: InputDecoration(
+          hintText: 'Add Context'.tr,
           alignLabelWithHint: true,
         ),
       ),
@@ -216,16 +217,16 @@ class _TasksHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Tasks', style: AppTextStyles.titleM),
+              Text('Tasks'.tr, style: AppTextStyles.titleM),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'Assign at least one task to this milestone',
+                'Assign at least one task to this milestone'.tr,
                 style: AppTextStyles.micro,
               ),
             ],
           ),
         ),
-        const _AiAssistantBadge(),
+        _AiAssistantBadge(),
       ],
     );
   }
@@ -251,7 +252,7 @@ class _AiAssistantBadge extends StatelessWidget {
           const Icon(Icons.auto_awesome, size: 15, color: AppColors.primary),
           const SizedBox(width: AppSpacing.xs),
           Text(
-            'AI Assistant',
+            'AI Assistant'.tr,
             style: AppTextStyles.micro.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.w600,
@@ -278,7 +279,7 @@ class _AddTaskButton extends StatelessWidget {
         // Static UI only.
         onPressed: () {},
         icon: const Icon(Icons.add_circle_outline, size: 19),
-        label: const Text('Add Task'),
+        label: Text('Add Task'.tr),
       ),
     );
   }
@@ -293,16 +294,16 @@ class _FilledTaskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
         _TaskField(number: 1, title: 'Create a weekly study schedule'),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         _TaskField(number: 2, title: 'Review lesson notes every evening'),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         _TaskField(number: 3, title: 'Study for one focused hour'),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         _TaskField(number: 4, title: 'Prepare tomorrow’s materials'),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         Align(alignment: Alignment.centerLeft, child: _AddTaskButton()),
       ],
     );

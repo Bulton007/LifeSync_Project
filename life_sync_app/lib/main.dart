@@ -1,3 +1,6 @@
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:life_sync_app/core/localization/app_translations.dart';
+import 'package:life_sync_app/core/localization/language_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,10 +39,10 @@ void configureAppErrorHandling() {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Something unexpected happened',
+              Text(
+                'Something unexpected happened'.tr,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
@@ -63,7 +66,7 @@ void configureAppErrorHandling() {
                   } catch (_) {}
                 },
                 icon: const Icon(Icons.home_outlined, size: 18),
-                label: const Text('Return to Home'),
+                label: Text('Return to Home'.tr),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2979FF),
                   foregroundColor: Colors.white,
@@ -88,7 +91,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initLifeSyncDatabaseFactory();
   configureAppErrorHandling();
-  runApp(const LifeSyncApp());
+  runApp(LifeSyncApp());
 }
 
 class LifeSyncApp extends StatefulWidget {
@@ -104,13 +107,19 @@ class _LifeSyncAppState extends State<LifeSyncApp> with WidgetsBindingObserver {
     super.initState();
     if (!Get.isRegistered<SecureKeyValueStore>()) {
       Get.put<SecureKeyValueStore>(
-        FlutterSecureKeyValueStore(const FlutterSecureStorage()),
+        const FlutterSecureKeyValueStore(FlutterSecureStorage()),
         permanent: true,
       );
     }
     if (!Get.isRegistered<ThemeController>()) {
       Get.put(
         ThemeController(Get.find<SecureKeyValueStore>()),
+        permanent: true,
+      );
+    }
+    if (!Get.isRegistered<LanguageController>()) {
+      Get.put(
+        LanguageController(Get.find<SecureKeyValueStore>()),
         permanent: true,
       );
     }
@@ -136,6 +145,11 @@ class _LifeSyncAppState extends State<LifeSyncApp> with WidgetsBindingObserver {
     return Obx(
       () => GetMaterialApp(
         debugShowCheckedModeBanner: false,
+        translations: AppTranslations(),
+        locale: Get.find<LanguageController>().locale,
+        fallbackLocale: const Locale('en'),
+        supportedLocales: LanguageController.supportedLocales,
+        localizationsDelegates: GlobalMaterialLocalizations.delegates,
         scrollBehavior: const AppScrollBehavior(),
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,

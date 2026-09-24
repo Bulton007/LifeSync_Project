@@ -81,9 +81,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(height: 24),
 
                 // Header Title & Subtitle
-                const Text(
-                  'Enter your Email',
-                  style: TextStyle(
+                Text(
+                  'Enter your Email'.tr,
+                  style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF2979FF),
@@ -91,15 +91,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Password must contain at least 8 characters',
+                  'Password must contain at least 8 characters'.tr,
                   style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                 ),
                 const SizedBox(height: 32),
 
                 // Email Field Label
-                const Text(
-                  'Email',
-                  style: TextStyle(
+                Text(
+                  'Email'.tr,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
@@ -112,7 +112,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   onFieldSubmitted: (_) => _submit(),
                   validator: AuthValidators.email,
                   decoration: InputDecoration(
-                    hintText: 'Email',
+                    hintText: 'Email'.tr,
                     hintStyle: TextStyle(
                       color: Colors.grey.shade400,
                       fontSize: 14,
@@ -181,9 +181,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 color: Colors.white,
                               ),
                             )
-                          : const Text(
-                              'Continue',
-                              style: TextStyle(
+                          : Text(
+                              'Continue'.tr,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,

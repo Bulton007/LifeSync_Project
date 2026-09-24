@@ -19,10 +19,7 @@ final class FocusSession {
   final int durationSeconds;
   final bool completed;
 
-  FocusSession copyWith({
-    int? id,
-    String? soundName,
-  }) => FocusSession(
+  FocusSession copyWith({int? id, String? soundName}) => FocusSession(
     id: id ?? this.id,
     mode: mode,
     taskName: taskName,

@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -51,7 +52,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         const SizedBox(width: 12),
                         Flexible(
                           child: Text(
-                            'Transactions',
+                            'Transactions'.tr,
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -131,7 +132,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
                             vertical: 10,
                           ),
                           decoration: BoxDecoration(
-                            color: isSelected ? AppColors.primary : colors.cardSurface,
+                            color: isSelected
+                                ? AppColors.primary
+                                : colors.cardSurface,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: isSelected
@@ -399,7 +402,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         time,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 11, color: colors.secondaryText),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: colors.secondaryText,
+                        ),
                       ),
                     ],
                   ),

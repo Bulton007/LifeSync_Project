@@ -16,6 +16,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+
   cupertino_icons: ^1.0.8
   dio: ^5.11.0
   flutter_secure_storage: ^10.3.1
@@ -49,6 +52,11 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: NotoSansKhmer
+      fonts:
+        - asset: assets/fonts/NotoSansKhmer.ttf
 
   assets:
     - assets/images/

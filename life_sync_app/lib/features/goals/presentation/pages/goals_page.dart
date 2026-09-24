@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -12,7 +13,7 @@ class GoalsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Goals'),
+        title: Text('Goals'.tr),
         actions: [
           IconButton(
             onPressed: () => _openCreateGoal(context),
@@ -23,16 +24,16 @@ class GoalsPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
-          const _GoalOverview(),
+          _GoalOverview(),
           const SizedBox(height: AppSpacing.xl),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Goals Progress', style: AppTextStyles.titleM),
+              Text('Goals Progress'.tr, style: AppTextStyles.titleM),
               TextButton.icon(
                 onPressed: () => _openCreateGoal(context),
                 icon: const Icon(Icons.add, size: 18),
-                label: const Text('New goal'),
+                label: Text('New goal'.tr),
               ),
             ],
           ),
@@ -84,14 +85,14 @@ class GoalsPage extends StatelessWidget {
   void _openCreateGoal(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const CreateGoalPage()),
+      MaterialPageRoute(builder: (_) => CreateGoalPage()),
     );
   }
 
   void _openDetails(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const GoalDetailsPage()),
+      MaterialPageRoute(builder: (_) => GoalDetailsPage()),
     );
   }
 }
@@ -111,7 +112,7 @@ class _GoalOverview extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Overview', style: AppTextStyles.button),
+            Text('Overview'.tr, style: AppTextStyles.button),
             const SizedBox(height: AppSpacing.lg),
             Row(
               children: [
@@ -121,7 +122,7 @@ class _GoalOverview extends StatelessWidget {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      SizedBox.expand(
+                      const SizedBox.expand(
                         child: CircularProgressIndicator(
                           value: 0.63,
                           strokeWidth: 7,
@@ -133,30 +134,30 @@ class _GoalOverview extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text('63%', style: AppTextStyles.titleM),
-                          Text('Overall', style: AppTextStyles.micro),
+                          Text('Overall'.tr, style: AppTextStyles.micro),
                         ],
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(width: AppSpacing.xl),
-                const Expanded(
+                Expanded(
                   child: Column(
                     children: [
                       _OverviewRow(
-                        label: 'Active Goals',
+                        label: 'Active Goals'.tr,
                         value: '5',
                         color: AppColors.info,
                       ),
-                      SizedBox(height: AppSpacing.sm),
+                      const SizedBox(height: AppSpacing.sm),
                       _OverviewRow(
-                        label: 'Completed',
+                        label: 'Completed'.tr,
                         value: '3',
                         color: AppColors.success,
                       ),
-                      SizedBox(height: AppSpacing.sm),
+                      const SizedBox(height: AppSpacing.sm),
                       _OverviewRow(
-                        label: 'Inactive Goals',
+                        label: 'Inactive Goals'.tr,
                         value: '1',
                         color: AppColors.error,
                       ),
@@ -278,7 +279,7 @@ class _GoalCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Current Progress', style: AppTextStyles.micro),
+                  Text('Current Progress'.tr, style: AppTextStyles.micro),
                   _StatusBadge(text: status, color: color),
                 ],
               ),
@@ -299,7 +300,7 @@ class _GoalCard extends StatelessWidget {
                   Text(milestoneText, style: AppTextStyles.micro),
                   const SizedBox(width: AppSpacing.md),
                   Text(
-                    'View Detail',
+                    'View Detail'.tr,
                     style: AppTextStyles.caption.copyWith(
                       color: AppColors.primary,
                       fontWeight: FontWeight.w600,
@@ -332,7 +333,7 @@ class GoalDetailsPage extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Goal Details')),
+      appBar: AppBar(title: Text('Goal Details'.tr)),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
@@ -389,7 +390,7 @@ class GoalDetailsPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  Text('Goal Progress', style: AppTextStyles.button),
+                  Text('Goal Progress'.tr, style: AppTextStyles.button),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     '38%',
@@ -405,17 +406,23 @@ class GoalDetailsPage extends StatelessWidget {
                     backgroundColor: AppColors.primary100,
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Expanded(
-                        child: _GoalMetric(label: 'Milestones', value: '1/4'),
+                        child: _GoalMetric(
+                          label: 'Milestones'.tr,
+                          value: '1/4',
+                        ),
                       ),
                       Expanded(
-                        child: _GoalMetric(label: 'Tasks', value: '8/24'),
+                        child: _GoalMetric(label: 'Tasks'.tr, value: '8/24'),
                       ),
                       Expanded(
-                        child: _GoalMetric(label: 'Health', value: 'On Track'),
+                        child: _GoalMetric(
+                          label: 'Health'.tr,
+                          value: 'On Track',
+                        ),
                       ),
                     ],
                   ),
@@ -426,11 +433,13 @@ class GoalDetailsPage extends StatelessWidget {
           const SizedBox(height: AppSpacing.xl),
           Row(
             children: [
-              Expanded(child: Text('Milestones', style: AppTextStyles.titleM)),
+              Expanded(
+                child: Text('Milestones'.tr, style: AppTextStyles.titleM),
+              ),
               TextButton.icon(
                 onPressed: () => showMilestoneEditor(context),
                 icon: const Icon(Icons.edit_outlined, size: 18),
-                label: const Text('Edit Milestone'),
+                label: Text('Edit Milestone'.tr),
               ),
             ],
           ),
@@ -522,7 +531,7 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Goal')),
+      appBar: AppBar(title: Text('Create Goal'.tr)),
       body: SafeArea(
         child: Column(
           children: [
@@ -548,19 +557,19 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        Text('Define your goal', style: AppTextStyles.titleL),
+        Text('Define your goal'.tr, style: AppTextStyles.titleL),
         const SizedBox(height: AppSpacing.xs),
         Text(
-          'Start with a clear goal and desired outcome.',
+          'Start with a clear goal and desired outcome.'.tr,
           style: AppTextStyles.caption,
         ),
         const SizedBox(height: AppSpacing.xl),
         TextFormField(
           controller: goalController,
           style: TextStyle(color: context.lifeSyncColors.primaryText),
-          decoration: const InputDecoration(
-            labelText: 'Goal',
-            prefixIcon: Icon(Icons.flag_outlined),
+          decoration: InputDecoration(
+            labelText: 'Goal'.tr,
+            prefixIcon: const Icon(Icons.flag_outlined),
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -568,9 +577,9 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
           controller: outcomeController,
           style: TextStyle(color: context.lifeSyncColors.primaryText),
           maxLines: 2,
-          decoration: const InputDecoration(
-            labelText: 'What does success look like?',
-            hintText: 'Enter your expected outcome',
+          decoration: InputDecoration(
+            labelText: 'What does success look like?'.tr,
+            hintText: 'Enter your expected outcome'.tr,
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -580,9 +589,9 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
               child: TextFormField(
                 readOnly: true,
                 initialValue: '08 Aug 2026',
-                decoration: const InputDecoration(
-                  labelText: 'Start Date',
-                  prefixIcon: Icon(Icons.calendar_today_outlined),
+                decoration: InputDecoration(
+                  labelText: 'Start Date'.tr,
+                  prefixIcon: const Icon(Icons.calendar_today_outlined),
                 ),
               ),
             ),
@@ -591,9 +600,9 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
               child: TextFormField(
                 readOnly: true,
                 initialValue: '10 Oct 2026',
-                decoration: const InputDecoration(
-                  labelText: 'Due Date',
-                  prefixIcon: Icon(Icons.event_outlined),
+                decoration: InputDecoration(
+                  labelText: 'Due Date'.tr,
+                  prefixIcon: const Icon(Icons.event_outlined),
                 ),
               ),
             ),
@@ -613,9 +622,9 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Milestones', style: AppTextStyles.titleM),
+                  Text('Milestones'.tr, style: AppTextStyles.titleM),
                   Text(
-                    'Set milestones for goal progression',
+                    'Set milestones for goal progression'.tr,
                     style: AppTextStyles.caption,
                   ),
                 ],
@@ -645,7 +654,7 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
                   TextButton.icon(
                     onPressed: _addMilestone,
                     icon: const Icon(Icons.add_circle_outline),
-                    label: const Text('Add Milestone'),
+                    label: Text('Add Milestone'.tr),
                   ),
                 ],
               ),
@@ -693,7 +702,7 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
           ),
         ),
         const SizedBox(height: AppSpacing.xl),
-        Text('Milestones', style: AppTextStyles.titleM),
+        Text('Milestones'.tr, style: AppTextStyles.titleM),
         const SizedBox(height: AppSpacing.sm),
         Card(
           child: Padding(
@@ -728,7 +737,7 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
             Expanded(
               child: OutlinedButton(
                 onPressed: () => setState(() => currentStep--),
-                child: const Text('Back & Edit'),
+                child: Text('Back & Edit'.tr),
               ),
             ),
             const SizedBox(width: AppSpacing.md),
@@ -928,7 +937,7 @@ class _MilestoneEditorPageState extends State<MilestoneEditorPage> {
                   : nameController.text,
             ),
             icon: const Icon(Icons.check, size: 17),
-            label: const Text('Save'),
+            label: Text('Save'.tr),
           ),
         ],
       ),
@@ -938,9 +947,9 @@ class _MilestoneEditorPageState extends State<MilestoneEditorPage> {
           TextFormField(
             controller: nameController,
             maxLength: 60,
-            decoration: const InputDecoration(
-              labelText: 'Milestone Name',
-              hintText: 'Set a major step for your goal',
+            decoration: InputDecoration(
+              labelText: 'Milestone Name'.tr,
+              hintText: 'Set a major step for your goal'.tr,
             ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -948,9 +957,9 @@ class _MilestoneEditorPageState extends State<MilestoneEditorPage> {
             controller: descriptionController,
             maxLength: 250,
             maxLines: 3,
-            decoration: const InputDecoration(
-              labelText: 'Description (Optional)',
-              hintText: 'Add context',
+            decoration: InputDecoration(
+              labelText: 'Description (Optional)'.tr,
+              hintText: 'Add context'.tr,
               alignLabelWithHint: true,
             ),
           ),
@@ -961,9 +970,9 @@ class _MilestoneEditorPageState extends State<MilestoneEditorPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Tasks', style: AppTextStyles.titleM),
+                    Text('Tasks'.tr, style: AppTextStyles.titleM),
                     Text(
-                      'Assign at least one task',
+                      'Assign at least one task'.tr,
                       style: AppTextStyles.caption,
                     ),
                   ],
@@ -1001,7 +1010,7 @@ class _MilestoneEditorPageState extends State<MilestoneEditorPage> {
                 setState(() => tasks.add(''));
               },
               icon: const Icon(Icons.add_circle_outline),
-              label: const Text('Add Task'),
+              label: Text('Add Task'.tr),
             ),
           ),
         ],
@@ -1048,7 +1057,7 @@ class GoalSuccessPage extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xxl),
               Text(
-                'The journey starts now!',
+                'The journey starts now!'.tr,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.titleXL.copyWith(color: AppColors.primary),
               ),
@@ -1065,23 +1074,23 @@ class GoalSuccessPage extends StatelessWidget {
                   Expanded(
                     child: _SuccessMetric(
                       icon: Icons.flag_outlined,
-                      label: 'Milestones',
+                      label: 'Milestones'.tr,
                       value: '$milestoneCount',
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  const Expanded(
+                  Expanded(
                     child: _SuccessMetric(
                       icon: Icons.task_alt_outlined,
-                      label: 'Tasks',
+                      label: 'Tasks'.tr,
                       value: '24',
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  const Expanded(
+                  Expanded(
                     child: _SuccessMetric(
                       icon: Icons.calendar_today_outlined,
-                      label: 'Due Date',
+                      label: 'Due Date'.tr,
                       value: '10 Oct',
                     ),
                   ),
@@ -1095,12 +1104,10 @@ class GoalSuccessPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => const GoalDetailsPage(),
-                          ),
+                          MaterialPageRoute(builder: (_) => GoalDetailsPage()),
                         );
                       },
-                      child: const Text('View Goal'),
+                      child: Text('View Goal'.tr),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
@@ -1110,11 +1117,11 @@ class GoalSuccessPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (_) => const GoalsPage()),
+                          MaterialPageRoute(builder: (_) => GoalsPage()),
                           (route) => route.isFirst,
                         );
                       },
-                      child: const Text('Done'),
+                      child: Text('Done'.tr),
                     ),
                   ),
                 ],
@@ -1247,10 +1254,10 @@ class _EmptyMilestones extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            'You do not have any milestones yet.',
+            'You do not have any milestones yet.'.tr,
             style: AppTextStyles.bodyPrimary,
           ),
-          TextButton(onPressed: onCreate, child: const Text('Create one')),
+          TextButton(onPressed: onCreate, child: Text('Create one'.tr)),
         ],
       ),
     );
@@ -1271,7 +1278,7 @@ class _AiAssistantButton extends StatelessWidget {
         foregroundColor: AppColors.primary,
       ),
       icon: const Icon(Icons.auto_awesome, size: 16),
-      label: const Text('AI Assistant'),
+      label: Text('AI Assistant'.tr),
     );
   }
 }

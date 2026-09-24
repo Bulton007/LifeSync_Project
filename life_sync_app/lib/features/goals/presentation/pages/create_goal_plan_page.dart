@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -18,16 +19,16 @@ class CreateGoalPlanPage extends StatelessWidget {
       appBar: AppBar(
         // Static UI only.
         leading: const Icon(Icons.arrow_back_ios_new, size: 20),
-        title: const Text('Create Goal'),
+        title: Text('Create Goal'.tr),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            const _GoalCreationSteps(),
+            _GoalCreationSteps(),
             Expanded(
               child: showEmptyState
-                  ? const _EmptyPlanContent()
-                  : const _FilledPlanContent(),
+                  ? _EmptyPlanContent()
+                  : _FilledPlanContent(),
             ),
             _BottomActions(nextButtonEnabled: !showEmptyState),
           ],
@@ -46,8 +47,8 @@ class _GoalCreationSteps extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.fromLTRB(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,
         AppSpacing.md,
         AppSpacing.lg,
@@ -55,11 +56,11 @@ class _GoalCreationSteps extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _StepItem(number: '1', label: 'Define', completed: true),
+          _StepItem(number: '1', label: 'Define'.tr, completed: true),
           _StepLine(active: true),
-          _StepItem(number: '2', label: 'Plan', active: true),
+          _StepItem(number: '2', label: 'Plan'.tr, active: true),
           _StepLine(active: false),
-          _StepItem(number: '3', label: 'Review'),
+          _StepItem(number: '3', label: 'Review'.tr),
         ],
       ),
     );
@@ -162,16 +163,16 @@ class _PlanHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Milestones', style: AppTextStyles.titleM),
+              Text('Milestones'.tr, style: AppTextStyles.titleM),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'Set milestones for goal progression',
+                'Set milestones for goal progression'.tr,
                 style: AppTextStyles.caption,
               ),
             ],
           ),
         ),
-        const _AiAssistantBadge(),
+        _AiAssistantBadge(),
       ],
     );
   }
@@ -197,7 +198,7 @@ class _AiAssistantBadge extends StatelessWidget {
           const Icon(Icons.auto_awesome, size: 15, color: AppColors.primary),
           const SizedBox(width: AppSpacing.xs),
           Text(
-            'AI Assistant',
+            'AI Assistant'.tr,
             style: AppTextStyles.micro.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.w600,
@@ -222,8 +223,8 @@ class _EmptyPlanContent extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
-          const _PlanHeader(),
-          const Expanded(child: _EmptyMilestoneIllustration()),
+          _PlanHeader(),
+          Expanded(child: _EmptyMilestoneIllustration()),
         ],
       ),
     );
@@ -274,7 +275,7 @@ class _EmptyMilestoneIllustration extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.xl),
-        Text('No milestones yet', style: AppTextStyles.titleM),
+        Text('No milestones yet'.tr, style: AppTextStyles.titleM),
         const SizedBox(height: AppSpacing.sm),
         Text(
           'Break your goal into smaller and achievable steps.',
@@ -283,7 +284,7 @@ class _EmptyMilestoneIllustration extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
-          'Create your first milestone',
+          'Create your first milestone'.tr,
           style: AppTextStyles.button.copyWith(color: AppColors.primary),
         ),
       ],
@@ -302,39 +303,39 @@ class _FilledPlanContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      children: const [
+      children: [
         _PlanHeader(),
-        SizedBox(height: AppSpacing.xl),
+        const SizedBox(height: AppSpacing.xl),
         _MilestoneCard(
           number: 1,
           title: 'Build Strong Study Routine',
           taskCount: '4 Tasks',
-          tasks: [
+          tasks: const [
             'Create a weekly study schedule',
             'Review lesson notes every evening',
             'Study for one focused hour',
             'Prepare tomorrow’s materials',
           ],
         ),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         _MilestoneCard(
           number: 2,
           title: 'Improve Academic Performance',
           taskCount: '4 Tasks',
         ),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         _MilestoneCard(
           number: 3,
           title: 'Prepare for Mid-Term',
           taskCount: '4 Tasks',
         ),
-        SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.md),
         _MilestoneCard(
           number: 4,
           title: 'Prepare for Final',
           taskCount: '4 Tasks',
         ),
-        SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.sm),
         _AddMilestoneButton(),
       ],
     );
@@ -465,7 +466,7 @@ class _AddMilestoneButton extends StatelessWidget {
         // Static UI only.
         onPressed: () {},
         icon: const Icon(Icons.add_circle_outline, size: 19),
-        label: const Text('Add Milestone'),
+        label: Text('Add Milestone'.tr),
       ),
     );
   }
@@ -494,7 +495,7 @@ class _BottomActions extends StatelessWidget {
             child: OutlinedButton(
               // Static UI only.
               onPressed: () {},
-              child: const Text('Back & Edit'),
+              child: Text('Back & Edit'.tr),
             ),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -503,7 +504,7 @@ class _BottomActions extends StatelessWidget {
             child: ElevatedButton(
               // Static UI only.
               onPressed: nextButtonEnabled ? () {} : null,
-              child: const Text('Next: Review Goal'),
+              child: Text('Next: Review Goal'.tr),
             ),
           ),
         ],

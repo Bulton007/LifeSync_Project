@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:life_sync_app/core/theme/app_icons.dart';
@@ -27,7 +28,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
   final ScrollController _scrollController = ScrollController();
 
   final List<_ChatMessage> _messages = [
-    const _ChatMessage(
+    _ChatMessage(
       text:
           "Hello! I'm your LifeSync AI Assistant 🤖. How can I help you organize your day, track your habits, or review your goals today?",
       isUser: false,
@@ -155,7 +156,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'LifeSync AI',
+                  'LifeSync AI'.tr,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -174,7 +175,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      'Active Assistant',
+                      'Active Assistant'.tr,
                       style: TextStyle(
                         fontSize: 11,
                         color: colors.secondaryText,
@@ -246,9 +247,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: colors.cardSurface,
-                border: Border(
-                  top: BorderSide(color: colors.border),
-                ),
+                border: Border(top: BorderSide(color: colors.border)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -268,12 +267,15 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                       ),
                       child: TextField(
                         controller: _messageController,
-                        style: TextStyle(color: colors.primaryText, fontSize: 14),
+                        style: TextStyle(
+                          color: colors.primaryText,
+                          fontSize: 14,
+                        ),
                         cursorColor: colors.primaryBlue,
                         textInputAction: TextInputAction.send,
                         onSubmitted: (_) => _sendMessage(),
                         decoration: InputDecoration(
-                          hintText: 'Ask LifeSync AI anything...',
+                          hintText: 'Ask LifeSync AI anything...'.tr,
                           hintStyle: TextStyle(
                             color: colors.secondaryText,
                             fontSize: 14,

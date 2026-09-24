@@ -17,7 +17,7 @@ final class NotificationHistoryScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: colors.pageBackground,
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text('Notifications'.tr),
         actions: [
           Obx(
             () => TextButton(
@@ -25,7 +25,7 @@ final class NotificationHistoryScreen extends StatelessWidget {
                   controller.unreadCount == 0 || controller.isSubmitting.value
                   ? null
                   : () => _markAll(context, controller),
-              child: const Text('Read all'),
+              child: Text('Read all'.tr),
             ),
           ),
         ],
@@ -131,7 +131,9 @@ final class _NotificationCard extends StatelessWidget {
                     : (isDark ? colors.inputSurface : Colors.white),
                 child: Icon(
                   _typeIcon(notification.type),
-                  color: notification.isRead ? colors.secondaryText : AppColors.primary,
+                  color: notification.isRead
+                      ? colors.secondaryText
+                      : AppColors.primary,
                 ),
               ),
               const SizedBox(width: 12),
@@ -166,12 +168,18 @@ final class _NotificationCard extends StatelessWidget {
                     const SizedBox(height: 5),
                     Text(
                       notification.message,
-                      style: TextStyle(color: colors.secondaryText, height: 1.35),
+                      style: TextStyle(
+                        color: colors.secondaryText,
+                        height: 1.35,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       _dateTime(notification.createdAt),
-                      style: TextStyle(fontSize: 11, color: colors.disabledText),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: colors.disabledText,
+                      ),
                     ),
                   ],
                 ),
@@ -190,11 +198,11 @@ final class _NotificationCard extends StatelessWidget {
                 },
                 itemBuilder: (_) => [
                   if (!notification.isRead)
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'read',
-                      child: Text('Mark as read'),
+                      child: Text('Mark as read'.tr),
                     ),
-                  const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                  PopupMenuItem(value: 'delete', child: Text('Delete'.tr)),
                 ],
               ),
             ],
@@ -231,7 +239,9 @@ final class _NotificationEmpty extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            unreadOnly ? 'You are all caught up' : 'No notification history yet',
+            unreadOnly
+                ? 'You are all caught up'
+                : 'No notification history yet',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -285,16 +295,16 @@ Future<void> _delete(
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      title: const Text('Delete notification?'),
-      content: const Text('This removes it from your notification history.'),
+      title: Text('Delete notification?'.tr),
+      content: Text('This removes it from your notification history.'.tr),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(dialogContext, false),
-          child: const Text('Cancel'),
+          child: Text('Cancel'.tr),
         ),
         FilledButton(
           onPressed: () => Navigator.pop(dialogContext, true),
-          child: const Text('Delete'),
+          child: Text('Delete'.tr),
         ),
       ],
     ),

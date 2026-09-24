@@ -16,7 +16,7 @@ final class PersonalProgressScreen extends StatelessWidget {
     final controller = Get.find<PersonalProgressController>();
     return Scaffold(
       backgroundColor: context.lifeSyncColors.pageBackground,
-      appBar: AppBar(title: const Text('Personal Progress')),
+      appBar: AppBar(title: Text('Personal Progress'.tr)),
       body: Obx(() {
         final state = controller.state.value;
         if (state.status == ViewStatus.initial ||
@@ -48,7 +48,7 @@ final class PersonalProgressScreen extends StatelessWidget {
                 onPressed: () => _checkingDialog(context, controller),
               ),
               if (controller.data.checkings.isEmpty)
-                const _EmptyCard(
+                _EmptyCard(
                   message: 'No check-ins yet. Record how this morning feels.',
                 )
               else
@@ -63,7 +63,7 @@ final class PersonalProgressScreen extends StatelessWidget {
                 onPressed: () => _reviewDialog(context, controller),
               ),
               if (controller.data.reviews.isEmpty)
-                const _EmptyCard(
+                _EmptyCard(
                   message: 'No reviews yet. Reflect on a completed week.',
                 )
               else
@@ -72,12 +72,12 @@ final class PersonalProgressScreen extends StatelessWidget {
                 ),
               const SizedBox(height: 22),
               _SectionHeader(
-                title: 'Wins',
+                title: 'Wins'.tr,
                 actionLabel: 'Record win',
                 onPressed: () => _winDialog(context, controller),
               ),
               if (controller.data.wins.isEmpty)
-                const _EmptyCard(
+                _EmptyCard(
                   message: 'No wins recorded yet. Small wins count too.',
                 )
               else
@@ -118,7 +118,10 @@ final class _RewardCard extends StatelessWidget {
             children: [
               const CircleAvatar(
                 backgroundColor: Colors.white24,
-                child: Icon(Icons.auto_awesome_rounded, color: Colors.white),
+                child: Icon(
+                  Icons.auto_awesome_rounded,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -142,7 +145,7 @@ final class _RewardCard extends StatelessWidget {
               ),
               if (reward != null || points > 0)
                 IconButton(
-                  tooltip: 'Reset reward progress',
+                  tooltip: 'Reset reward progress'.tr,
                   onPressed: controller.isSubmitting.value
                       ? null
                       : () => _resetReward(context, controller),
@@ -184,7 +187,7 @@ final class _RewardCard extends StatelessWidget {
                     side: const BorderSide(color: Colors.white54),
                   ),
                   icon: const Icon(Icons.add_rounded),
-                  label: const Text('Add points'),
+                  label: Text('Add points'.tr),
                 ),
               ),
               const SizedBox(width: 10),
@@ -204,7 +207,7 @@ final class _RewardCard extends StatelessWidget {
                     side: const BorderSide(color: Colors.white54),
                   ),
                   icon: const Icon(Icons.remove_rounded),
-                  label: const Text('Remove'),
+                  label: Text('Remove'.tr),
                 ),
               ),
             ],
@@ -227,7 +230,7 @@ final class _SummaryRow extends StatelessWidget {
         child: _MetricCard(
           icon: Icons.wb_sunny_outlined,
           value: data.averageMood?.toStringAsFixed(1) ?? '—',
-          label: 'Avg. mood',
+          label: 'Avg. mood'.tr,
         ),
       ),
       const SizedBox(width: 10),
@@ -235,7 +238,7 @@ final class _SummaryRow extends StatelessWidget {
         child: _MetricCard(
           icon: Icons.emoji_events_outlined,
           value: data.wins.length.toString(),
-          label: 'Wins',
+          label: 'Wins'.tr,
         ),
       ),
       const SizedBox(width: 10),
@@ -243,7 +246,7 @@ final class _SummaryRow extends StatelessWidget {
         child: _MetricCard(
           icon: Icons.history_edu_outlined,
           value: data.reviews.length.toString(),
-          label: 'Reviews',
+          label: 'Reviews'.tr,
         ),
       ),
     ],
@@ -362,7 +365,10 @@ final class _ReviewTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _HistoryCard(
-    leading: const Icon(Icons.history_edu_outlined, color: Color(0xFF7E57C2)),
+    leading: const Icon(
+      Icons.history_edu_outlined,
+      color: Color(0xFF7E57C2),
+    ),
     title: review.reviewSummary,
     subtitle: '${_date(review.startDate)} – ${_date(review.endDate)}',
     onEdit: () => _reviewDialog(context, controller, existing: review),
@@ -383,7 +389,10 @@ final class _WinTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _HistoryCard(
-    leading: const Icon(Icons.emoji_events_outlined, color: Color(0xFFFFA000)),
+    leading: const Icon(
+      Icons.emoji_events_outlined,
+      color: Color(0xFFFFA000),
+    ),
     title: win.title,
     subtitle: [
       if (win.description?.isNotEmpty == true) win.description!,
@@ -445,9 +454,9 @@ final class _HistoryCard extends StatelessWidget {
               onDelete();
             }
           },
-          itemBuilder: (_) => const [
-            PopupMenuItem(value: 'edit', child: Text('Edit')),
-            PopupMenuItem(value: 'delete', child: Text('Delete')),
+          itemBuilder: (_) => [
+            PopupMenuItem(value: 'edit', child: Text('Edit'.tr)),
+            PopupMenuItem(value: 'delete', child: Text('Delete'.tr)),
           ],
         ),
       ),
@@ -539,7 +548,7 @@ final class _CheckingDialogState extends State<_CheckingDialog> {
           children: [
             DropdownButtonFormField<int>(
               initialValue: _mood,
-              decoration: const InputDecoration(labelText: 'Mood (1–10)'),
+              decoration: InputDecoration(labelText: 'Mood (1–10)'.tr),
               items: [
                 for (var value = 1; value <= 10; value++)
                   DropdownMenuItem(value: value, child: Text('$value / 10')),
@@ -553,8 +562,8 @@ final class _CheckingDialogState extends State<_CheckingDialog> {
               controller: _notesController,
               maxLength: 2000,
               maxLines: 4,
-              decoration: const InputDecoration(
-                labelText: 'Notes (optional)',
+              decoration: InputDecoration(
+                labelText: 'Notes (optional)'.tr,
                 alignLabelWithHint: true,
               ),
             ),
@@ -564,7 +573,7 @@ final class _CheckingDialogState extends State<_CheckingDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text('Cancel'.tr),
         ),
         FilledButton(
           onPressed: () {
@@ -575,7 +584,7 @@ final class _CheckingDialogState extends State<_CheckingDialog> {
               ));
             }
           },
-          child: const Text('Save'),
+          child: Text('Save'.tr),
         ),
       ],
     );
@@ -656,8 +665,8 @@ final class _ReviewDialogState extends State<_ReviewDialog> {
                 controller: _summaryController,
                 maxLength: 5000,
                 maxLines: 5,
-                decoration: const InputDecoration(
-                  labelText: 'Review summary',
+                decoration: InputDecoration(
+                  labelText: 'Review summary'.tr,
                   alignLabelWithHint: true,
                 ),
                 validator: (value) => value == null || value.trim().isEmpty
@@ -666,7 +675,7 @@ final class _ReviewDialogState extends State<_ReviewDialog> {
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Start date'),
+                title: Text('Start date'.tr),
                 subtitle: Text(_date(_start)),
                 trailing: const Icon(Icons.calendar_today_outlined),
                 onTap: () async {
@@ -688,7 +697,7 @@ final class _ReviewDialogState extends State<_ReviewDialog> {
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('End date'),
+                title: Text('End date'.tr),
                 subtitle: Text(_date(_end)),
                 trailing: const Icon(Icons.calendar_today_outlined),
                 onTap: () async {
@@ -713,15 +722,15 @@ final class _ReviewDialogState extends State<_ReviewDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text('Cancel'.tr),
         ),
         FilledButton(
           onPressed: () {
             if (!_formKey.currentState!.validate()) return;
             if (_end.isBefore(_start)) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('End date cannot be before start date.'),
+                SnackBar(
+                  content: Text('End date cannot be before start date.'.tr),
                 ),
               );
               return;
@@ -732,7 +741,7 @@ final class _ReviewDialogState extends State<_ReviewDialog> {
               end: _end,
             ));
           },
-          child: const Text('Save'),
+          child: Text('Save'.tr),
         ),
       ],
     );
@@ -823,7 +832,7 @@ final class _WinDialogState extends State<_WinDialog> {
             TextFormField(
               controller: _titleController,
               maxLength: 200,
-              decoration: const InputDecoration(labelText: 'Title'),
+              decoration: InputDecoration(labelText: 'Title'.tr),
               validator: (value) => value == null || value.trim().isEmpty
                   ? 'Title is required.'
                   : null,
@@ -832,8 +841,8 @@ final class _WinDialogState extends State<_WinDialog> {
               controller: _descriptionController,
               maxLength: 1000,
               maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: 'Description (optional)',
+              decoration: InputDecoration(
+                labelText: 'Description (optional)'.tr,
               ),
             ),
           ],
@@ -842,7 +851,7 @@ final class _WinDialogState extends State<_WinDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text('Cancel'.tr),
         ),
         FilledButton(
           onPressed: () {
@@ -853,7 +862,7 @@ final class _WinDialogState extends State<_WinDialog> {
               ));
             }
           },
-          child: const Text('Save'),
+          child: Text('Save'.tr),
         ),
       ],
     );
@@ -922,7 +931,7 @@ final class _PointsDialogState extends State<_PointsDialog> {
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           decoration: InputDecoration(
-            labelText: 'Points',
+            labelText: 'Points'.tr,
             helperText: widget.subtract
                 ? 'Current balance: ${widget.currentPoints} points'
                 : 'Adds to your total progress points',
@@ -942,7 +951,7 @@ final class _PointsDialogState extends State<_PointsDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text('Cancel'.tr),
         ),
         FilledButton(
           onPressed: () {
@@ -984,16 +993,16 @@ Future<void> _resetReward(
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      title: const Text('Reset reward progress?'),
-      content: const Text('This removes the current points and level record.'),
+      title: Text('Reset reward progress?'.tr),
+      content: Text('This removes the current points and level record.'.tr),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(dialogContext, false),
-          child: const Text('Cancel'),
+          child: Text('Cancel'.tr),
         ),
         FilledButton(
           onPressed: () => Navigator.pop(dialogContext, true),
-          child: const Text('Reset'),
+          child: Text('Reset'.tr),
         ),
       ],
     ),
@@ -1014,15 +1023,15 @@ Future<void> _delete(
     context: context,
     builder: (dialogContext) => AlertDialog(
       title: Text(title),
-      content: const Text('This action cannot be undone.'),
+      content: Text('This action cannot be undone.'.tr),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(dialogContext, false),
-          child: const Text('Cancel'),
+          child: Text('Cancel'.tr),
         ),
         FilledButton(
           onPressed: () => Navigator.pop(dialogContext, true),
-          child: const Text('Delete'),
+          child: Text('Delete'.tr),
         ),
       ],
     ),

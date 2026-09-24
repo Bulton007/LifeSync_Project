@@ -76,10 +76,10 @@ class _FillNameScreenState extends State<FillNameScreen> {
                 const SizedBox(height: 48),
 
                 // Question Heading
-                const Text(
-                  'Hello! What should we call you?',
+                Text(
+                  'Hello! What should we call you?'.tr,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF2979FF),
@@ -94,7 +94,7 @@ class _FillNameScreenState extends State<FillNameScreen> {
                   onFieldSubmitted: (_) => _submit(),
                   validator: AuthValidators.fullName,
                   decoration: InputDecoration(
-                    hintText: 'Your Name',
+                    hintText: 'Your Name'.tr,
                     hintStyle: TextStyle(
                       color: Colors.grey.shade400,
                       fontSize: 14,
@@ -158,9 +158,9 @@ class _FillNameScreenState extends State<FillNameScreen> {
                                 color: Colors.white,
                               ),
                             )
-                          : const Text(
-                              'Next',
-                              style: TextStyle(
+                          : Text(
+                              'Next'.tr,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,

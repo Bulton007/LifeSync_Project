@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
 
@@ -46,14 +47,14 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
 
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a milestone name')),
+        SnackBar(content: Text('Please enter a milestone name'.tr)),
       );
       return;
     }
 
     if (_tasks.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please add at least one task')),
+        SnackBar(content: Text('Please add at least one task'.tr)),
       );
       return;
     }
@@ -76,7 +77,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Add Task'),
+          title: Text('Add Task'.tr),
           content: TextField(
             controller: controller,
             autofocus: true,
@@ -84,7 +85,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
             style: TextStyle(color: colors.primaryText),
             cursorColor: colors.primaryBlue,
             decoration: InputDecoration(
-              hintText: 'Enter task name',
+              hintText: 'Enter task name'.tr,
               hintStyle: TextStyle(color: colors.secondaryText),
             ),
           ),
@@ -93,7 +94,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
               onPressed: () {
                 Navigator.pop(dialogContext);
               },
-              child: const Text('Cancel'),
+              child: Text('Cancel'.tr),
             ),
             ElevatedButton(
               onPressed: () {
@@ -109,7 +110,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
 
                 Navigator.pop(dialogContext);
               },
-              child: const Text('Add'),
+              child: Text('Add'.tr),
             ),
           ],
         );
@@ -128,7 +129,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Edit Task'),
+          title: Text('Edit Task'.tr),
           content: TextField(
             controller: controller,
             autofocus: true,
@@ -136,7 +137,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
             style: TextStyle(color: colors.primaryText),
             cursorColor: colors.primaryBlue,
             decoration: InputDecoration(
-              hintText: 'Enter task name',
+              hintText: 'Enter task name'.tr,
               hintStyle: TextStyle(color: colors.secondaryText),
             ),
           ),
@@ -145,7 +146,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
               onPressed: () {
                 Navigator.pop(dialogContext);
               },
-              child: const Text('Cancel'),
+              child: Text('Cancel'.tr),
             ),
             ElevatedButton(
               onPressed: () {
@@ -161,7 +162,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
 
                 Navigator.pop(dialogContext);
               },
-              child: const Text('Save'),
+              child: Text('Save'.tr),
             ),
           ],
         );
@@ -214,7 +215,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                   ),
 
                   Text(
-                    'New Milestone',
+                    'New Milestone'.tr,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -241,7 +242,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                       color: Color(0xFF2979FF),
                     ),
                     label: Text(
-                      'Save',
+                      'Save'.tr,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 13,
@@ -261,7 +262,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Milestone Name',
+                    'Milestone Name'.tr,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -286,7 +287,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                   setState(() {});
                 },
                 decoration: InputDecoration(
-                  hintText: 'Set a Major Step for Your Goal',
+                  hintText: 'Set a Major Step for Your Goal'.tr,
                   hintStyle: TextStyle(
                     color: colors.secondaryText,
                     fontSize: 14,
@@ -325,7 +326,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Description (Optional)',
+                    'Description (Optional)'.tr,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -351,7 +352,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                 },
                 maxLines: 3,
                 decoration: InputDecoration(
-                  hintText: 'Add Context',
+                  hintText: 'Add Context'.tr,
                   hintStyle: TextStyle(
                     color: colors.secondaryText,
                     fontSize: 14,
@@ -393,7 +394,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Tasks',
+                        'Tasks'.tr,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -433,9 +434,9 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                       size: 14,
                       color: Color(0xFF2979FF),
                     ),
-                    label: const Text(
-                      'A.I Assistant',
-                      style: TextStyle(
+                    label: Text(
+                      'A.I Assistant'.tr,
+                      style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF2979FF),
@@ -471,7 +472,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'No tasks added yet',
+                        'No tasks added yet'.tr,
                         style: TextStyle(
                           fontSize: 13,
                           color: colors.secondaryText,
@@ -479,7 +480,7 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Add at least one task to continue',
+                        'Add at least one task to continue'.tr,
                         style: TextStyle(
                           fontSize: 11,
                           color: colors.disabledText,
@@ -556,10 +557,14 @@ class _MilestoneFormScreenState extends State<AddMilestoneScreen> {
               // ==========================================
               TextButton.icon(
                 onPressed: _addTask,
-                icon: const Icon(Icons.add, size: 16, color: Color(0xFF2979FF)),
-                label: const Text(
-                  'Add Task',
-                  style: TextStyle(
+                icon: const Icon(
+                  Icons.add,
+                  size: 16,
+                  color: Color(0xFF2979FF),
+                ),
+                label: Text(
+                  'Add Task'.tr,
+                  style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF2979FF),

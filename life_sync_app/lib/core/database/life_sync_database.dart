@@ -78,7 +78,11 @@ final class LifeSyncDatabase {
     );
   }
 
-  Future<void> _onUpgrade(Database database, int oldVersion, int newVersion) async {
+  Future<void> _onUpgrade(
+    Database database,
+    int oldVersion,
+    int newVersion,
+  ) async {
     if (oldVersion < 2) {
       await database.execute(
         'ALTER TABLE journal_entries ADD COLUMN owner_id INTEGER NOT NULL DEFAULT 0',

@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -15,9 +16,9 @@ class CreateGoalDefinePage extends StatelessWidget {
       appBar: AppBar(
         // Static UI: navigation will be connected later.
         leading: const Icon(Icons.arrow_back_ios_new, size: 20),
-        title: const Text('Create Goal'),
+        title: Text('Create Goal'.tr),
       ),
-      body: const SafeArea(
+      body: SafeArea(
         child: Column(
           children: [
             _GoalCreationSteps(),
@@ -39,8 +40,8 @@ class _GoalCreationSteps extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.fromLTRB(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
         AppSpacing.lg,
         AppSpacing.md,
         AppSpacing.lg,
@@ -48,11 +49,11 @@ class _GoalCreationSteps extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _StepItem(number: '1', label: 'Define', active: true),
+          _StepItem(number: '1', label: 'Define'.tr, active: true),
           _StepLine(active: false),
-          _StepItem(number: '2', label: 'Plan'),
+          _StepItem(number: '2', label: 'Plan'.tr),
           _StepLine(active: false),
-          _StepItem(number: '3', label: 'Review'),
+          _StepItem(number: '3', label: 'Review'.tr),
         ],
       ),
     );
@@ -163,7 +164,7 @@ class _DefineGoalForm extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Define your goal', style: AppTextStyles.titleM),
+                  Text('Define your goal'.tr, style: AppTextStyles.titleM),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Start with a clear goal and describe what '
@@ -179,48 +180,48 @@ class _DefineGoalForm extends StatelessWidget {
 
         // Goal name
         Text(
-          'Goal',
+          'Goal'.tr,
           style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppSpacing.sm),
-        const TextField(
+        TextField(
           decoration: InputDecoration(
-            hintText: 'Enter your goal',
-            prefixIcon: Icon(Icons.flag_outlined),
+            hintText: 'Enter your goal'.tr,
+            prefixIcon: const Icon(Icons.flag_outlined),
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
 
         // Outcome
         Text(
-          'What Success Will Look Like?',
+          'What Success Will Look Like?'.tr,
           style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppSpacing.sm),
-        const TextField(
+        TextField(
           maxLines: 3,
           decoration: InputDecoration(
-            hintText: 'Describe your expected outcome',
+            hintText: 'Describe your expected outcome'.tr,
             alignLabelWithHint: true,
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
 
         // Dates
-        const Row(
+        Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: _StaticDateField(
-                label: 'Start Date',
+                label: 'Start Date'.tr,
                 value: 'Friday, 08 Aug 2026',
                 icon: Icons.calendar_today_outlined,
               ),
             ),
-            SizedBox(width: AppSpacing.md),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: _StaticDateField(
-                label: 'Due Date',
+                label: 'Due Date'.tr,
                 value: 'Not Set',
                 icon: Icons.event_outlined,
               ),
@@ -230,7 +231,7 @@ class _DefineGoalForm extends StatelessWidget {
         const SizedBox(height: AppSpacing.xxl),
 
         // Optional guidance card
-        const _GoalTipCard(),
+        _GoalTipCard(),
       ],
     );
   }
@@ -315,7 +316,7 @@ class _GoalTipCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Make it clear and measurable',
+                  'Make it clear and measurable'.tr,
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.info,
                     fontWeight: FontWeight.w600,
@@ -355,7 +356,7 @@ class _BottomAction extends StatelessWidget {
       child: ElevatedButton(
         // Static UI only.
         onPressed: () {},
-        child: const Text('Next: Build Your Plan'),
+        child: Text('Next: Build Your Plan'.tr),
       ),
     );
   }

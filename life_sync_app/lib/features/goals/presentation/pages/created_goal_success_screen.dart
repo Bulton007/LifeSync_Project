@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
@@ -28,10 +29,10 @@ class CreatedGoalSuccessScreen extends StatelessWidget {
               const SizedBox(height: 32),
 
               // Title Heading
-              const Text(
-                'The journey starts now!',
+              Text(
+                'The journey starts now!'.tr,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF2979FF),
@@ -41,7 +42,8 @@ class CreatedGoalSuccessScreen extends StatelessWidget {
 
               // Subtitle Text
               Text(
-                'Your goal is set — every step from here brings\nyou closer to your finish line.',
+                'Your goal is set — every step from here brings\nyou closer to your finish line.'
+                    .tr,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
@@ -58,7 +60,7 @@ class CreatedGoalSuccessScreen extends StatelessWidget {
                     child: _buildSummaryCard(
                       context,
                       icon: Icons.flag_outlined,
-                      label: 'Milestones',
+                      label: 'Milestones'.tr,
                       value: '4',
                     ),
                   ),
@@ -67,7 +69,7 @@ class CreatedGoalSuccessScreen extends StatelessWidget {
                     child: _buildSummaryCard(
                       context,
                       icon: Icons.assignment_outlined,
-                      label: 'Tasks',
+                      label: 'Tasks'.tr,
                       value: '24',
                     ),
                   ),
@@ -76,7 +78,7 @@ class CreatedGoalSuccessScreen extends StatelessWidget {
                     child: _buildSummaryCard(
                       context,
                       icon: Icons.calendar_today_outlined,
-                      label: 'Due Date',
+                      label: 'Due Date'.tr,
                       value: '10th Oct\n2026',
                       isSmallValue: true,
                     ),
@@ -101,9 +103,9 @@ class CreatedGoalSuccessScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: const Text(
-                        'View Goal',
-                        style: TextStyle(
+                      child: Text(
+                        'View Goal'.tr,
+                        style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF2979FF),
@@ -126,9 +128,9 @@ class CreatedGoalSuccessScreen extends StatelessWidget {
                         ),
                         elevation: 2,
                       ),
-                      child: const Text(
-                        'Done',
-                        style: TextStyle(
+                      child: Text(
+                        'Done'.tr,
+                        style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,

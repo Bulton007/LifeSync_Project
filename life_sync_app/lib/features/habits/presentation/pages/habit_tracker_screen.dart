@@ -46,7 +46,7 @@ class HabitTrackerScreen extends StatelessWidget {
                   SliverFillRemaining(
                     hasScrollBody: false,
                     child: AppEmptyView(
-                      title: 'No habits yet',
+                      title: 'No habits yet'.tr,
                       message: 'Create a habit to start tracking your routine.',
                       svgAsset: LifeSyncSvgAssets.activityTracker,
                       actionLabel: 'Add habit',
@@ -54,10 +54,10 @@ class HabitTrackerScreen extends StatelessWidget {
                     ),
                   )
                 else if (controller.scheduledHabits.isEmpty)
-                  const SliverFillRemaining(
+                  SliverFillRemaining(
                     hasScrollBody: false,
                     child: AppEmptyView(
-                      title: 'Nothing scheduled',
+                      title: 'Nothing scheduled'.tr,
                       message: 'There are no habits scheduled for this day.',
                       icon: Icons.event_available_outlined,
                     ),
@@ -152,7 +152,7 @@ class _Header extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      const ['S', 'M', 'T', 'W', 'T', 'F', 'S'][index],
+                      ['S', 'M', 'T', 'W', 'T', 'F', 'S'][index],
                       style: TextStyle(
                         fontSize: 12,
                         color: selectedDay
@@ -192,7 +192,7 @@ class _Header extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Habit Tracker',
+              'Habit Tracker'.tr,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -332,12 +332,12 @@ class _HabitCard extends StatelessWidget {
               icon: Icon(Icons.more_horiz, color: colors.secondaryText),
               onSelected: (value) => _handleAction(context, value),
               itemBuilder: (_) => [
-                const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                PopupMenuItem(value: 'edit', child: Text('Edit'.tr)),
                 PopupMenuItem(
                   value: 'active',
                   child: Text(habit.active ? 'Pause' : 'Resume'),
                 ),
-                const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                PopupMenuItem(value: 'delete', child: Text('Delete'.tr)),
               ],
             ),
           ],
@@ -367,16 +367,16 @@ class _HabitCard extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete habit?'),
-        content: const Text('Its completion history will also be deleted.'),
+        title: Text('Delete habit?'.tr),
+        content: Text('Its completion history will also be deleted.'.tr),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text('Cancel'.tr),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
+            child: Text('Delete'.tr),
           ),
         ],
       ),
@@ -418,7 +418,7 @@ class _CircleButton extends StatelessWidget {
   }
 }
 
-String _monthName(int month) => const [
+String _monthName(int month) => [
   'January',
   'February',
   'March',

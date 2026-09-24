@@ -33,7 +33,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
           GoalModel(
             id: 0,
             userId: 0,
-            title: 'Goal',
+            title: 'Goal'.tr,
             description: '',
             targetAmount: MoneyAmount.zero(),
             currentAmount: MoneyAmount.zero(),
@@ -59,9 +59,9 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
               ) ??
               _initial;
           final milestones =
-              _controller.milestones[goal.id] ?? const <GoalMilestoneModel>[];
+              _controller.milestones[goal.id] ?? <GoalMilestoneModel>[];
           final schedules =
-              _controller.schedules[goal.id] ?? const <GoalScheduleModel>[];
+              _controller.schedules[goal.id] ?? <GoalScheduleModel>[];
           final completeMilestones = milestones
               .where((item) => item.completed)
               .length;
@@ -106,14 +106,14 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                             onSelected: (value) => _goalAction(goal, value),
                             itemBuilder: (_) => [
                               if (!goal.completed)
-                                const PopupMenuItem(
+                                PopupMenuItem(
                                   value: 'complete',
-                                  child: Text('Complete goal'),
+                                  child: Text('Complete goal'.tr),
                                 ),
                               if (!goal.archived)
-                                const PopupMenuItem(
+                                PopupMenuItem(
                                   value: 'archive',
-                                  child: Text('Archive goal'),
+                                  child: Text('Archive goal'.tr),
                                 ),
                             ],
                           ),
@@ -199,7 +199,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Goal Progress',
+                          'Goal Progress'.tr,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -240,21 +240,21 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                           children: [
                             Expanded(
                               child: _Metric(
-                                label: 'Milestones',
+                                label: 'Milestones'.tr,
                                 value:
                                     '$completeMilestones/${milestones.length}',
                               ),
                             ),
                             Expanded(
                               child: _Metric(
-                                label: 'Schedules',
+                                label: 'Schedules'.tr,
                                 value:
                                     '${schedules.where((item) => item.completed).length}/${schedules.length}',
                               ),
                             ),
                             Expanded(
                               child: _Metric(
-                                label: 'Status',
+                                label: 'Status'.tr,
                                 value: goal.completed
                                     ? 'Complete'
                                     : goal.archived
@@ -269,7 +269,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                   ),
                   const SizedBox(height: 24),
                   _SectionHeader(
-                    title: 'Milestones',
+                    title: 'Milestones'.tr,
                     action: 'Add Milestone',
                     onTap: () => _milestoneDialog(goal.id),
                   ),
@@ -283,7 +283,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                       ),
                     )
                   else if (milestones.isEmpty)
-                    const _InlineEmpty(
+                    _InlineEmpty(
                       message: 'No milestones yet.',
                       svgAsset: LifeSyncSvgAssets.goalChecklist,
                     )
@@ -299,15 +299,13 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                     ],
                   const SizedBox(height: 20),
                   _SectionHeader(
-                    title: 'Contribution Schedule',
+                    title: 'Contribution Schedule'.tr,
                     action: 'Add Schedule',
                     onTap: () => _scheduleDialog(goal.id),
                   ),
                   const SizedBox(height: 12),
                   if (schedules.isEmpty)
-                    const _InlineEmpty(
-                      message: 'No scheduled contributions yet.',
-                    )
+                    _InlineEmpty(message: 'No scheduled contributions yet.')
                   else
                     for (final schedule in schedules) ...[
                       _ScheduleCard(item: schedule, controller: _controller),
@@ -348,7 +346,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
               TextField(
                 controller: title,
                 maxLength: 100,
-                decoration: const InputDecoration(labelText: 'Milestone title'),
+                decoration: InputDecoration(labelText: 'Milestone title'.tr),
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -371,12 +369,12 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext, false),
-              child: const Text('Cancel'),
+              child: Text('Cancel'.tr),
             ),
             FilledButton(
               onPressed: () =>
                   Navigator.pop(dialogContext, title.text.trim().isNotEmpty),
-              child: const Text('Save'),
+              child: Text('Save'.tr),
             ),
           ],
         ),
@@ -399,7 +397,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: const Text('Add contribution'),
+          title: Text('Add contribution'.tr),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -413,8 +411,8 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                     RegExp(r'^\d{0,10}(?:\.\d{0,2})?'),
                   ),
                 ],
-                decoration: const InputDecoration(
-                  labelText: 'Amount',
+                decoration: InputDecoration(
+                  labelText: 'Amount'.tr,
                   prefixText: r'$ ',
                 ),
               ),
@@ -439,7 +437,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext, false),
-              child: const Text('Cancel'),
+              child: Text('Cancel'.tr),
             ),
             FilledButton(
               onPressed: () {
@@ -450,11 +448,11 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                   );
                 } on FormatException {
                   ScaffoldMessenger.of(dialogContext).showSnackBar(
-                    const SnackBar(content: Text('Enter a valid amount.')),
+                    SnackBar(content: Text('Enter a valid amount.'.tr)),
                   );
                 }
               },
-              child: const Text('Save'),
+              child: Text('Save'.tr),
             ),
           ],
         ),
