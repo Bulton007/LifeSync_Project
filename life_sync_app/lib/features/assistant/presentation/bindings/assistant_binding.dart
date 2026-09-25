@@ -12,9 +12,7 @@ final class AssistantBinding extends Bindings {
       final env = Get.isRegistered<AppEnvironment>()
           ? Get.find<AppEnvironment>()
           : null;
-      final apiClient = Get.isRegistered<ApiClient>()
-          ? Get.find<ApiClient>()
-          : null;
+      final apiClient = Get.find<ApiClient>();
       return GeminiAssistantService(
         Get.find<SecureKeyValueStore>(),
         apiClient: apiClient,

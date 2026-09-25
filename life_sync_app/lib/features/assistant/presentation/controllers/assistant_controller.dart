@@ -8,6 +8,8 @@ final class AssistantController extends GetxController {
 
   final GeminiAssistantService _geminiService;
 
+  bool get isBackendManaged => _geminiService.isBackendManaged;
+
   final messages = <ChatMessage>[].obs;
   final isLoading = false.obs;
   final hasApiKey = false.obs;
@@ -47,6 +49,8 @@ final class AssistantController extends GetxController {
     final text = (suggestion ?? inputController.text).trim();
     if (text.isEmpty || isLoading.value) return;
 
+    isLoading.value = true;
+
     inputController.clear();
 
     final userMessage = ChatMessage(
@@ -61,13 +65,13 @@ final class AssistantController extends GetxController {
       messages.add(
         ChatMessage(
           text:
-              'Gemini API key is not configured yet.\n\n'
-              'Please ensure the backend server is running and configured with GEMINI_API_KEY in .env.',
+              'AI is not configured yet. Please connect to the LifeSync backend.',
           sender: MessageSender.assistant,
           timestamp: DateTime.now(),
           isError: true,
         ),
       );
+      isLoading.value = false;
       return;
     }
 
@@ -76,7 +80,7 @@ final class AssistantController extends GetxController {
     try {
       final reply = await _geminiService.sendMessage(
         prompt: text,
-        conversationHistory: messages.toList(),
+        conversationHistory: messages.take(messages.length - 1).toList(),
       );
 
       messages.add(
@@ -102,6 +106,7 @@ final class AssistantController extends GetxController {
   }
 
   void clearConversation() {
+    if (isLoading.value) return;
     messages.clear();
   }
 }

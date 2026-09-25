@@ -3,6 +3,121 @@ import 'package:get/get.dart';
 /// UI copy only. User content and API identifiers are never translated.
 final class AppTranslations extends Translations {
   static const khmer = <String, String>{
+    'Plan a monthly budget': 'រៀបចំថវិកាប្រចាំខែ',
+    'Messages are sent to the configured AI provider. Never share passwords or OTPs. AI suggestions do not change your app data.':
+        'សារត្រូវបានផ្ញើទៅអ្នកផ្តល់សេវា AI។ កុំចែករំលែកពាក្យសម្ងាត់ ឬលេខកូដ OTP។ ការណែនាំរបស់ AI មិនផ្លាស់ប្តូរទិន្នន័យក្នុងកម្មវិធីទេ។',
+    'AI credentials are managed securely by the server.':
+        'ព័ត៌មានសម្ងាត់ AI ត្រូវបានគ្រប់គ្រងដោយសុវត្ថិភាពនៅលើម៉ាស៊ីនមេ។',
+    'Month': 'ខែ',
+    'Year': 'ឆ្នាំ',
+    'All': 'ទាំងអស់',
+    'Deadline must be in the future': 'កាលបរិច្ឆេទផុតកំណត់ត្រូវនៅអនាគត។',
+    "Work on": "ធ្វើការលើ",
+    "Choose Task": "ជ្រើសរើសកិច្ចការ",
+    "Minutes (1–180)": "នាទី (១–១៨០)",
+    "Enter 1 to 180 minutes.": "សូមបញ្ចូលពី ១ ដល់ ១៨០ នាទី។",
+    "Unable to save duration.": "មិនអាចរក្សាទុករយៈពេលបានទេ។",
+    "Focus timer": "កម្មវិធីកំណត់ពេលផ្តោតអារម្មណ៍",
+    "Unable to save or load focus sessions. Please try again.":
+        "មិនអាចរក្សាទុក ឬផ្ទុកវគ្គផ្តោតអារម្មណ៍បានទេ។ សូមព្យាយាមម្តងទៀត។",
+    "@hours h @minutes min": "@hours ម៉ោង @minutes នាទី",
+    "min": "នាទី",
+    "Unable to load focus history. Tap to retry.":
+        "មិនអាចផ្ទុកប្រវត្តិផ្តោតអារម្មណ៍បានទេ។ ចុចដើម្បីព្យាយាមម្តងទៀត។",
+    "No previous data": "គ្មានទិន្នន័យមុន",
+    "@percent% vs previous": "@percent% ធៀបនឹងរយៈពេលមុន",
+    "Unable to refresh. Showing saved data.":
+        "មិនអាចធ្វើបច្ចុប្បន្នភាពបានទេ។ កំពុងបង្ហាញទិន្នន័យដែលបានរក្សាទុក។",
+    "Show less": "បង្ហាញតិច",
+    "Balance is income minus expenses, not a separate savings account.":
+        "សមតុល្យគឺជាចំណូលដកចំណាយ មិនមែនជាគណនីសន្សំដាច់ដោយឡែកទេ។",
+    "Quarter": "ត្រីមាស",
+    "Milestone dates must be within the goal dates.":
+        "កាលបរិច្ឆេទដំណាក់កាលត្រូវស្ថិតក្នុងរយៈពេលគោលដៅ។",
+    "Goal saved. Retry to save the remaining milestones.":
+        "បានរក្សាទុកគោលដៅ។ សូមព្យាយាមរក្សាទុកដំណាក់កាលដែលនៅសល់។",
+    "Add checkpoints to your goal, or continue without milestones.":
+        "បន្ថែមដំណាក់កាលដល់គោលដៅ ឬបន្តដោយគ្មានដំណាក់កាល។",
+    "Target: @amount": "គោលដៅ៖ @amount",
+    "Due @date": "កំណត់ត្រឹម @date",
+    "Your goal is set — every step brings you closer.":
+        "គោលដៅត្រូវបានកំណត់ — រាល់ជំហាននាំអ្នកកាន់តែជិតគោលដៅ។",
+    "@done/@total milestones": "ដំណាក់កាល @done/@total",
+    "Next: Plan Goal": "បន្ទាប់៖ រៀបចំផែនការ",
+    "Milestone title is required.": "ត្រូវបញ្ចូលចំណងជើងដំណាក់កាល។",
+    "Unable to save milestone.": "មិនអាចរក្សាទុកដំណាក់កាលបានទេ។",
+    "Delete milestone?": "លុបដំណាក់កាលឬ?",
+    "No Goal": "គ្មានគោលដៅ",
+    "Upcoming": "នាពេលខាងមុខ",
+    'Phone PIN / biometrics': 'លេខសម្ងាត់ទូរស័ព្ទ / ជីវមាត្រ',
+    'On': 'បើក',
+    'Off': 'បិទ',
+    'Unlock': 'ដោះសោ',
+    'LifeSync is locked': 'LifeSync ត្រូវបានចាក់សោ',
+    'Unlock LifeSync with your phone PIN or biometrics.':
+        'ដោះសោ LifeSync ដោយប្រើលេខសម្ងាត់ទូរស័ព្ទ ឬជីវមាត្រ។',
+    'Unable to read app lock settings. Please try again.':
+        'មិនអាចអានការកំណត់ចាក់សោកម្មវិធីបានទេ។ សូមព្យាយាមម្តងទៀត។',
+    'Authentication cancelled. Set up a phone screen lock and try again.':
+        'ការផ្ទៀងផ្ទាត់ត្រូវបានបោះបង់។ សូមកំណត់សោអេក្រង់ទូរស័ព្ទ ហើយព្យាយាមម្តងទៀត។',
+    'Could not change app lock. Check your phone screen lock and try again.':
+        'មិនអាចប្តូរសោកម្មវិធីបានទេ។ សូមពិនិត្យសោអេក្រង់ទូរស័ព្ទ ហើយព្យាយាមម្តងទៀត។',
+    'Unable to unlock. Please try again using your phone PIN.':
+        'មិនអាចដោះសោបានទេ។ សូមព្យាយាមដោយប្រើលេខសម្ងាត់ទូរស័ព្ទ។',
+    'All time': 'គ្រប់ពេលវេលា',
+    'Date range': 'ចន្លោះកាលបរិច្ឆេទ',
+    'Expense by category': 'ការចំណាយតាមប្រភេទ',
+    'No transactions for this period.': 'មិនមានប្រតិបត្តិការក្នុងរយៈពេលនេះទេ។',
+    'No expenses for this period.': 'មិនមានការចំណាយក្នុងរយៈពេលនេះទេ។',
+    'Uncategorized': 'មិនបានចាត់ប្រភេទ',
+    'Balance': 'សមតុល្យ',
+    'Spending exceeds income for the selected period.':
+        'ការចំណាយលើសចំណូលសម្រាប់រយៈពេលដែលបានជ្រើសរើស។',
+    'A budget has been exceeded. Review your expenses.':
+        'ការចំណាយលើសថវិកា។ សូមពិនិត្យការចំណាយរបស់អ្នក។',
+    'Edit contribution': 'កែប្រែការរួមចំណែក',
+    'Delete contribution?': 'លុបការរួមចំណែកឬ?',
+    'Unable to update goal.': 'មិនអាចកែប្រែគោលដៅបានទេ។',
+    'Unable to update contribution.': 'មិនអាចកែប្រែការរួមចំណែកបានទេ។',
+    'Unable to delete contribution.': 'មិនអាចលុបការរួមចំណែកបានទេ។',
+    'Focus duration': 'រយៈពេលផ្តោតអារម្មណ៍',
+    '@minutes minutes': '@minutes នាទី',
+    'Journal dates cannot be in the future.':
+        'កាលបរិច្ឆេទកំណត់ហេតុមិនអាចនៅអនាគតបានទេ។',
+    'Transaction dates cannot be in the future.':
+        'កាលបរិច្ឆេទប្រតិបត្តិការមិនអាចនៅអនាគតបានទេ។',
+    'Habit completions cannot be in the future.':
+        'មិនអាចកត់ត្រាការបញ្ចប់ទម្លាប់នៅអនាគតបានទេ។',
+    'This habit is not scheduled for this date.':
+        'ទម្លាប់នេះមិនបានកំណត់សម្រាប់កាលបរិច្ឆេទនេះទេ។',
+    'Morning check-ins': 'ការកត់ត្រាអារម្មណ៍ពេលព្រឹក',
+    'Check in': 'កត់ត្រាអារម្មណ៍',
+    'Weekly reviews': 'ការពិនិត្យប្រចាំសប្តាហ៍',
+    'Add review': 'បន្ថែមការពិនិត្យ',
+    'Record win': 'កត់ត្រាសមិទ្ធផល',
+    'No check-ins yet. Record how this morning feels.':
+        'មិនទាន់មានកំណត់ត្រាទេ។ កត់ត្រាអារម្មណ៍របស់អ្នកនៅព្រឹកនេះ។',
+    'No reviews yet. Reflect on a completed week.':
+        'មិនទាន់មានការពិនិត្យទេ។ ពិចារណាអំពីសប្តាហ៍ដែលបានបញ្ចប់។',
+    'No wins recorded yet. Small wins count too.':
+        'មិនទាន់មានសមិទ្ធផលដែលបានកត់ត្រាទេ។ សមិទ្ធផលតូចៗក៏សំខាន់ដែរ។',
+    'All (@count)': 'ទាំងអស់ (@count)',
+    'Unread (@count)': 'មិនទាន់អាន (@count)',
+    'Edit @field': 'កែប្រែ @field',
+    'Delete “@title” and its subtasks?': 'លុប «@title» និងកិច្ចការរងរបស់វាឬ?',
+    'Loading': 'កំពុងផ្ទុក',
+    'Loading your profile…': 'កំពុងផ្ទុកប្រវត្តិរូបរបស់អ្នក…',
+    'Loading your progress…': 'កំពុងផ្ទុកវឌ្ឍនភាពរបស់អ្នក…',
+    'Loading notifications…': 'កំពុងផ្ទុកការជូនដំណឹង…',
+    'Loading calendar…': 'កំពុងផ្ទុកប្រតិទិន…',
+    'Loading tasks…': 'កំពុងផ្ទុកកិច្ចការ…',
+    'Loading finances…': 'កំពុងផ្ទុកហិរញ្ញវត្ថុ…',
+    'LifeSync brings the important parts of your life\ninto one connected space.':
+        'LifeSync ប្រមូលផ្តុំផ្នែកសំខាន់ៗនៃជីវិតរបស់អ្នក\nក្នុងកន្លែងតែមួយដែលភ្ជាប់គ្នា។',
+    'Tasks in one place. Goals in another. Notes, habits,\nmoney… everywhere.':
+        'កិច្ចការនៅកន្លែងមួយ គោលដៅនៅកន្លែងមួយទៀត។\nកំណត់ត្រា ទម្លាប់ និងប្រាក់កាសនៅរាយប៉ាយ។',
+    'One wellbeing space connecting habits, focus,\nplanning and progress.':
+        'កន្លែងតែមួយសម្រាប់សុខុមាលភាព ដែលភ្ជាប់ទម្លាប់\nការផ្តោតអារម្មណ៍ ការរៀបចំផែនការ និងវឌ្ឍនភាព។',
     "Home": "ទំព័រដើម",
     "Goal": "គោលដៅ",
     "Goals": "គោលដៅ",

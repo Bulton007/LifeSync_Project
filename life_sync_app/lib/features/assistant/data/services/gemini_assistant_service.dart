@@ -62,16 +62,17 @@ final class GeminiAssistantService {
   String? _inMemoryApiKey;
   bool _explicitlyCleared = false;
 
+  bool get isBackendManaged => apiClient != null;
+
   static String _normalizeBaseUrl(String url) {
     return url.trim().replaceAll(RegExp(r'/+$'), '');
   }
 
   Future<String?> getApiKey() async {
-    if (_explicitlyCleared) return null;
-
     if (apiClient != null) {
       return '__BACKEND_MANAGED__';
     }
+    if (_explicitlyCleared) return null;
 
     if (_inMemoryApiKey != null && _inMemoryApiKey!.isNotEmpty) {
       return _inMemoryApiKey;
@@ -186,8 +187,11 @@ final class GeminiAssistantService {
 
     final client = apiClient;
     if (client != null && apiKey == '__BACKEND_MANAGED__') {
-      final historyPayload = conversationHistory
+      final recentHistory = conversationHistory
           .where((m) => !m.isError && m.sender != MessageSender.system)
+          .toList(growable: false);
+      final historyPayload = recentHistory
+          .skip(recentHistory.length > 8 ? recentHistory.length - 8 : 0)
           .map(
             (m) => {
               'role': m.sender == MessageSender.user ? 'user' : 'model',

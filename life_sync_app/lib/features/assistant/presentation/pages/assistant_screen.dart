@@ -43,6 +43,24 @@ final class _AssistantScreenState extends State<AssistantScreen> {
   }
 
   Future<void> _showApiKeyDialog(BuildContext context) async {
+    if (_controller.isBackendManaged) {
+      await showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('LifeSync AI'),
+          content: Text(
+            'AI credentials are managed securely by the server.'.tr,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'.tr),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
     final currentKey = await _controller.getApiKey() ?? '';
     final textController = TextEditingController(text: currentKey);
 
@@ -182,7 +200,7 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                             ),
                           ),
                           Text(
-                            'Google Gemini',
+                            'AI Assistant'.tr,
                             style: TextStyle(
                               fontSize: 11,
                               color: colors.secondaryText,
@@ -427,6 +445,14 @@ final class _AssistantEmpty extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
+          Text(
+            'Messages are sent to the configured AI provider. Never share passwords or OTPs. AI suggestions do not change your app data.'
+                .tr,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12, color: colors.secondaryText),
+          ),
+          const SizedBox(height: 16),
+
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -463,6 +489,13 @@ final class _AssistantEmpty extends StatelessWidget {
                 label: 'Build a consistent habit'.tr,
                 onTap: () => onSuggestion(
                   'What are effective science-backed strategies to stick to a new habit every day?',
+                ),
+              ),
+              _PromptChip(
+                icon: Icons.account_balance_wallet_outlined,
+                label: 'Plan a monthly budget'.tr,
+                onTap: () => onSuggestion(
+                  'Help me plan a monthly budget. Ask about my income, expenses and savings goals first.',
                 ),
               ),
               _PromptChip(

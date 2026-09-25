@@ -66,10 +66,7 @@ void main() {
 
       expect(controller.messages[1].sender, MessageSender.assistant);
       expect(controller.messages[1].isError, isTrue);
-      expect(
-        controller.messages[1].text,
-        contains('Gemini API key is not configured yet'),
-      );
+      expect(controller.messages[1].text, contains('AI is not configured yet'));
     },
   );
 

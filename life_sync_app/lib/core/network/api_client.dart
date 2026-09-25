@@ -245,6 +245,9 @@ final class ApiClient {
           responseType ?? (T == String ? ResponseType.plain : null);
       final options = Options(
         method: method,
+        receiveTimeout: path == '/api/assistant/chat'
+            ? const Duration(seconds: 75)
+            : null,
         contentType: contentType,
         extra: {AuthInterceptor.skipAuthenticationKey: skipAuthentication},
       );
