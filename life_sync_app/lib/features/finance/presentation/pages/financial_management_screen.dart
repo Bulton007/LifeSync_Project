@@ -1,4 +1,5 @@
 import 'package:life_sync_app/core/theme/app_colors.dart';
+import 'package:life_sync_app/features/finance/presentation/pages/financial_dashboard_screen.dart';
 import 'package:life_sync_app/core/theme/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -99,7 +100,41 @@ class FinancialManagementScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   RepaintBoundary(child: _BalanceCard(finance: finance)),
+                  if (finance.balance.minorUnits < BigInt.zero)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Text(
+                        'Spending exceeds income for the selected period.'.tr,
+                        style: TextStyle(color: colors.negative),
+                      ),
+                    ),
+                  for (final budget in finance.data.budgets)
+                    if (budget.remainingAmount.minorUnits < BigInt.zero)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          'A budget has been exceeded. Review your expenses.'
+                              .tr,
+                          style: TextStyle(color: colors.negative),
+                        ),
+                      ),
                   const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                      ),
+                      icon: const Icon(Icons.bar_chart_rounded),
+                      label: Text('Financial Analysis'.tr),
+                      onPressed: () =>
+                          Get.to<void>(() => const FinancialDashboardScreen()),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   Row(
                     children: [
                       Expanded(
@@ -624,6 +659,7 @@ Future<void> _entryDialog(
       ) ??
       finance.data.categories.first;
   var date = existing?.date ?? DateTime.now();
+  String? validationError;
   final saved = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => StatefulBuilder(
@@ -696,9 +732,11 @@ Future<void> _entryDialog(
                 onTap: () async {
                   final picked = await showDatePicker(
                     context: context,
-                    initialDate: date,
+                    initialDate: date.isAfter(DateTime.now())
+                        ? DateTime.now()
+                        : date,
                     firstDate: DateTime(2000),
-                    lastDate: DateTime(2200),
+                    lastDate: DateTime.now(),
                   );
                   if (picked != null) setState(() => date = picked);
                 },
@@ -738,12 +776,39 @@ Future<void> _entryDialog(
           FilledButton(
             onPressed: () {
               try {
+                final now = DateTime.now();
+                if (DateTime(
+                  date.year,
+                  date.month,
+                  date.day,
+                ).isAfter(DateTime(now.year, now.month, now.day))) {
+                  validationError =
+                      'Transaction dates cannot be in the future.'.tr;
+                } else if (title.text.trim().isEmpty) {
+                  validationError = 'Title is required.'.tr;
+                } else if (MoneyAmount.parse(amount.text).minorUnits <=
+                    BigInt.zero) {
+                  validationError = 'Enter a valid amount.'.tr;
+                } else {
+                  validationError = null;
+                }
+                if (validationError != null) {
+                  showDialog<void>(
+                    context: dialogContext,
+                    builder: (alertContext) => AlertDialog(
+                      content: Text(validationError!),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(alertContext),
+                          child: Text('OK'.tr),
+                        ),
+                      ],
+                    ),
+                  );
+                  return;
+                }
                 FocusScope.of(dialogContext).unfocus();
-                Navigator.pop(
-                  dialogContext,
-                  title.text.trim().isNotEmpty &&
-                      MoneyAmount.parse(amount.text).minorUnits > BigInt.zero,
-                );
+                Navigator.pop(dialogContext, true);
               } on FormatException {
                 ScaffoldMessenger.of(dialogContext).showSnackBar(
                   SnackBar(content: Text('Enter a valid amount.'.tr)),
@@ -758,8 +823,9 @@ Future<void> _entryDialog(
   );
   if (saved == true) {
     final money = MoneyAmount.parse(amount.text);
+    bool success;
     if (existing == null) {
-      await finance.createEntry(
+      success = await finance.createEntry(
         type: type,
         categoryId: category.id,
         title: title.text,
@@ -768,13 +834,23 @@ Future<void> _entryDialog(
         date: date,
       );
     } else {
-      await finance.updateEntry(
+      success = await finance.updateEntry(
         existing,
         categoryId: category.id,
         title: title.text,
         description: description.text,
         amount: money,
         date: date,
+      );
+    }
+    if (!success && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            finance.errorMessage.value ??
+                'Unable to save. Please try again.'.tr,
+          ),
+        ),
       );
     }
   }

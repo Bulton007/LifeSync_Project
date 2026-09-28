@@ -38,7 +38,7 @@ class Habit {
   const Habit({
     required this.id,
     required this.title,
-    this.streakText = '168 Days Streaks',
+    this.streakText = '0 Days Streaks',
     required this.icon,
     required this.iconBgColor,
     required this.iconColor,

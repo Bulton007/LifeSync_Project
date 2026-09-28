@@ -18,6 +18,7 @@ class GoalTrackerScreen extends StatelessWidget {
     final controller = Get.find<GoalController>();
     final colors = context.lifeSyncColors;
     return Scaffold(
+      backgroundColor: colors.cardSurface,
       body: SafeArea(
         child: Obx(() {
           final view = controller.state.value;
@@ -42,32 +43,35 @@ class GoalTrackerScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Goals'.tr,
-                              style: TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                                color: colors.primaryBlue,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Goals'.tr,
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: colors.primaryBlue,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Turn your intentions into progress.'.tr,
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: colors.secondaryText,
+                              const SizedBox(height: 4),
+                              Text(
+                                'Turn your intentions into progress.'.tr,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: colors.secondaryText,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        FilledButton.icon(
+                        const SizedBox(width: 8),
+                        IconButton.filled(
+                          tooltip: 'Create goal'.tr,
                           onPressed: () =>
                               Get.toNamed<void>(AppRoutes.goalEditor),
                           icon: const Icon(Icons.add, size: 17),
-                          label: Text('New'.tr),
                         ),
                       ],
                     ),
@@ -134,16 +138,8 @@ class _Overview extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: colors.cardSurface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colors.border),
-        boxShadow: [
-          BoxShadow(
-            color: colors.shadow,
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: colors.inputSurface,
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,14 +172,14 @@ class _Overview extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          '$percent%',
+                          controller.goals.isEmpty ? 'No Goal'.tr : '$percent%',
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          'Overall Progress'.tr,
+                          controller.goals.isEmpty ? '' : 'Overall Progress'.tr,
                           style: TextStyle(
                             fontSize: 9,
                             color: colors.secondaryText,
@@ -195,7 +191,7 @@ class _Overview extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 20),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   children: [
@@ -237,50 +233,34 @@ class _StatRow extends StatelessWidget {
   final String value;
   final Color color;
   @override
-  Widget build(BuildContext context) {
-    final colors = context.lifeSyncColors;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-      decoration: BoxDecoration(
-        color: colors.inputSurface,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 3,
-                height: 14,
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: colors.secondaryText,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-          Text(
-            value,
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+    decoration: BoxDecoration(
+      border: Border(left: BorderSide(color: color, width: 2)),
+    ),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
             style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: color,
+              fontSize: 11,
+              color: context.lifeSyncColors.secondaryText,
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+        const SizedBox(width: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _GoalCard extends StatelessWidget {
@@ -288,7 +268,9 @@ class _GoalCard extends StatelessWidget {
   final GoalModel goal;
   final GoalController controller;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => Obx(() => _buildCard(context));
+
+  Widget _buildCard(BuildContext context) {
     final colors = context.lifeSyncColors;
     final milestoneItems =
         controller.milestones[goal.id] ?? <GoalMilestoneModel>[];
@@ -398,7 +380,7 @@ class _GoalCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    status,
+                    status.tr,
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
@@ -417,20 +399,28 @@ class _GoalCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '${goal.currentAmount.format()} of ${goal.targetAmount.format()}',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: colors.secondaryText,
+                Flexible(
+                  child: Text(
+                    '${goal.currentAmount.format()} / ${goal.targetAmount.format()}',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: colors.secondaryText,
+                    ),
                   ),
                 ),
-                Text(
-                  '$completedMilestones/${milestoneItems.length} Milestones',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: colors.secondaryText,
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    '@done/@total milestones'.trParams({
+                      'done': '$completedMilestones',
+                      'total': '${milestoneItems.length}',
+                    }),
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: colors.secondaryText,
+                    ),
                   ),
                 ),
               ],
@@ -472,11 +462,29 @@ class _GoalCard extends StatelessWidget {
       return;
     }
     if (action == 'complete') {
-      await controller.completeGoal(goal);
+      final success = await controller.completeGoal(goal);
+      if (!success && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              (controller.errorMessage.value ?? 'Unable to update goal.').tr,
+            ),
+          ),
+        );
+      }
       return;
     }
     if (action == 'archive') {
-      await controller.archiveGoal(goal);
+      final success = await controller.archiveGoal(goal);
+      if (!success && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              (controller.errorMessage.value ?? 'Unable to update goal.').tr,
+            ),
+          ),
+        );
+      }
       return;
     }
     final confirmed = await showDialog<bool>(

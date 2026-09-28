@@ -57,6 +57,15 @@ final class JournalController extends GetxController {
 
   Future<bool> save(JournalEntry entry) async {
     if (isSubmitting.value) return false;
+    final now = DateTime.now();
+    if (DateTime(
+      entry.createdAt.year,
+      entry.createdAt.month,
+      entry.createdAt.day,
+    ).isAfter(DateTime(now.year, now.month, now.day))) {
+      errorMessage.value = 'Journal dates cannot be in the future.'.tr;
+      return false;
+    }
     if (entry.title.trim().isEmpty || entry.body.trim().isEmpty) return false;
     isSubmitting.value = true;
     errorMessage.value = null;

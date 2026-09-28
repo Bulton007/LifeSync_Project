@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 /// UI copy only. User content and API identifiers are never translated.
 final class AppTranslations extends Translations {
   static const khmer = <String, String>{
+    'Title is required.': 'សូមបញ្ចូលចំណងជើង។',
+    'Unable to save. Please try again.':
+        'មិនអាចរក្សាទុកបានទេ។ សូមព្យាយាមម្តងទៀត។',
     'Plan a monthly budget': 'រៀបចំថវិកាប្រចាំខែ',
     'Messages are sent to the configured AI provider. Never share passwords or OTPs. AI suggestions do not change your app data.':
         'សារត្រូវបានផ្ញើទៅអ្នកផ្តល់សេវា AI។ កុំចែករំលែកពាក្យសម្ងាត់ ឬលេខកូដ OTP។ ការណែនាំរបស់ AI មិនផ្លាស់ប្តូរទិន្នន័យក្នុងកម្មវិធីទេ។',

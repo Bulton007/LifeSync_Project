@@ -21,21 +21,24 @@ final class _OnboardingScreenState extends State<OnboardingScreen> {
     _OnboardingData(
       title: 'Introducing LifeSync!'.tr,
       description:
-          'LifeSync brings the important parts of your life\ninto one connected space.',
+          'LifeSync brings the important parts of your life\ninto one connected space.'
+              .tr,
       svgAsset: LifeSyncSvgAssets.rafiki,
       icon: Icons.auto_awesome_outlined,
     ),
     _OnboardingData(
       title: 'Life gets messy when everything\nlives in different places.'.tr,
       description:
-          'Tasks in one place. Goals in another. Notes, habits,\nmoney… everywhere.',
+          'Tasks in one place. Goals in another. Notes, habits,\nmoney… everywhere.'
+              .tr,
       svgAsset: LifeSyncSvgAssets.pana,
       icon: Icons.dashboard_customize_outlined,
     ),
     _OnboardingData(
       title: 'What if it all worked together?'.tr,
       description:
-          'One wellbeing space connecting habits, focus,\nplanning and progress.',
+          'One wellbeing space connecting habits, focus,\nplanning and progress.'
+              .tr,
       svgAsset: LifeSyncSvgAssets.mindMap,
       icon: Icons.hub_outlined,
     ),
@@ -67,7 +70,7 @@ final class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     final colors = context.lifeSyncColors;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colors.pageBackground,
       body: Stack(
         children: [
           Positioned(
@@ -145,7 +148,8 @@ final class _OnboardingScreenState extends State<OnboardingScreen> {
                       TextButton.icon(
                         onPressed: _next,
                         label: Text(
-                          (_index == _pages.length - 1 ? 'Get Started' : 'Next').tr,
+                          (_index == _pages.length - 1 ? 'Get Started' : 'Next')
+                              .tr,
                         ),
                         icon: const Icon(Icons.arrow_forward, size: 16),
                       ),

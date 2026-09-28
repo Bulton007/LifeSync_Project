@@ -1,7 +1,18 @@
 import 'package:flutter/services.dart';
+import 'dart:io';
 
-void playFocusSoundPlatform(String soundName) {
+Future<void> playFocusSoundPlatform(String soundName) async {
   try {
-    SystemSound.play(SystemSoundType.click);
-  } catch (_) {}
+    if (Platform.isAndroid) {
+      await const MethodChannel(
+        'lifesync/focus_audio',
+      ).invokeMethod<void>('play', soundName);
+    } else {
+      await SystemSound.play(SystemSoundType.alert);
+    }
+  } on PlatformException {
+    await SystemSound.play(SystemSoundType.alert);
+  } on MissingPluginException {
+    await SystemSound.play(SystemSoundType.alert);
+  }
 }

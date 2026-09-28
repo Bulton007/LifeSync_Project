@@ -47,3 +47,28 @@ mismatch, not proof that all other required columns exist. No migration was
 applied. The previous image was selected again. The OTP policy changes cannot
 be deployed safely without an explicitly approved, reviewed schema update or
 a separately designed schema-compatible implementation.
+
+## September 24, 2026 schema verification
+
+The application role could inspect schema metadata but could not alter `users`
+(`must be owner of table users`). Its attempted migration rolled back. The user
+then executed the reviewed additive migration through Neon's SQL Editor with
+an owner role. A subsequent metadata-only inspection through the deployment's
+database connection confirmed all nine nullable OTP/Telegram columns and their
+expected types. Existing record contents were not read or changed by the
+migration. Keep the runtime role restricted and schema auto-update disabled.
+
+Build 5 failed while receiving binary input, before image compilation. It was
+not deployed. A retry uses a longer upload timeout.
+
+Build 6 completed and was successfully deployed after schema verification.
+The deployment now mounts a single-attach persistent volume. The attempted
+surge rollout hit `FailedAttachVolume` on a different node, so its strategy was
+changed to `maxSurge: 0`, `maxUnavailable: 1`. This releases the old pod's volume
+before replacement and involves brief downtime; do not restore surge updates
+without reviewing the storage access mode and scheduling constraints.
+
+Post-rollout checks: `/api/health` and `/actuator/health/readiness` returned 200;
+unauthenticated `/api/auth/check-email` returned 200 with `exists: false` for a
+synthetic `.invalid` email; `/api/users/1` returned 401 without credentials.
+These checks do not establish Gmail delivery or a complete registration flow.

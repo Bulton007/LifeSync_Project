@@ -43,13 +43,14 @@ final class PersonalProgressScreen extends StatelessWidget {
               _SummaryRow(data: controller.data),
               const SizedBox(height: 24),
               _SectionHeader(
-                title: 'Morning check-ins',
-                actionLabel: 'Check in',
+                title: 'Morning check-ins'.tr,
+                actionLabel: 'Check in'.tr,
                 onPressed: () => _checkingDialog(context, controller),
               ),
               if (controller.data.checkings.isEmpty)
                 _EmptyCard(
-                  message: 'No check-ins yet. Record how this morning feels.',
+                  message:
+                      'No check-ins yet. Record how this morning feels.'.tr,
                 )
               else
                 ...controller.data.checkings.map(
@@ -58,13 +59,13 @@ final class PersonalProgressScreen extends StatelessWidget {
                 ),
               const SizedBox(height: 22),
               _SectionHeader(
-                title: 'Weekly reviews',
-                actionLabel: 'Add review',
+                title: 'Weekly reviews'.tr,
+                actionLabel: 'Add review'.tr,
                 onPressed: () => _reviewDialog(context, controller),
               ),
               if (controller.data.reviews.isEmpty)
                 _EmptyCard(
-                  message: 'No reviews yet. Reflect on a completed week.',
+                  message: 'No reviews yet. Reflect on a completed week.'.tr,
                 )
               else
                 ...controller.data.reviews.map(
@@ -73,12 +74,12 @@ final class PersonalProgressScreen extends StatelessWidget {
               const SizedBox(height: 22),
               _SectionHeader(
                 title: 'Wins'.tr,
-                actionLabel: 'Record win',
+                actionLabel: 'Record win'.tr,
                 onPressed: () => _winDialog(context, controller),
               ),
               if (controller.data.wins.isEmpty)
                 _EmptyCard(
-                  message: 'No wins recorded yet. Small wins count too.',
+                  message: 'No wins recorded yet. Small wins count too.'.tr,
                 )
               else
                 ...controller.data.wins.map(
@@ -118,10 +119,7 @@ final class _RewardCard extends StatelessWidget {
             children: [
               const CircleAvatar(
                 backgroundColor: Colors.white24,
-                child: Icon(
-                  Icons.auto_awesome_rounded,
-                  color: Colors.white,
-                ),
+                child: Icon(Icons.auto_awesome_rounded, color: Colors.white),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -365,10 +363,7 @@ final class _ReviewTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _HistoryCard(
-    leading: const Icon(
-      Icons.history_edu_outlined,
-      color: Color(0xFF7E57C2),
-    ),
+    leading: const Icon(Icons.history_edu_outlined, color: Color(0xFF7E57C2)),
     title: review.reviewSummary,
     subtitle: '${_date(review.startDate)} – ${_date(review.endDate)}',
     onEdit: () => _reviewDialog(context, controller, existing: review),
@@ -389,10 +384,7 @@ final class _WinTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _HistoryCard(
-    leading: const Icon(
-      Icons.emoji_events_outlined,
-      color: Color(0xFFFFA000),
-    ),
+    leading: const Icon(Icons.emoji_events_outlined, color: Color(0xFFFFA000)),
     title: win.title,
     subtitle: [
       if (win.description?.isNotEmpty == true) win.description!,

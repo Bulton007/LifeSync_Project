@@ -50,12 +50,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void _showUnavailable() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Social sign-up is not available yet.'.tr)),
-    );
-  }
-
   @override
   void dispose() {
     _emailController.removeListener(_onEmailChanged);
@@ -145,6 +139,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
+                    style: const TextStyle(color: Colors.black87),
+                    cursorColor: const Color(0xFF2979FF),
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     onFieldSubmitted: (_) => _continue(),
@@ -176,9 +172,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF2979FF),
-                        ),
+                        borderSide: const BorderSide(color: Color(0xFF2979FF)),
                       ),
                     ),
                   ),
@@ -278,24 +272,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                   // Social Login Buttons
                   _buildSocialButton(
-                    icon: Icons.facebook,
-                    iconColor: const Color(0xFF1877F2),
-                    text: 'Continue with Facebook',
-                    onPressed: _showUnavailable,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildSocialButton(
                     icon: Icons.g_mobiledata,
                     iconColor: Colors.red,
                     text: 'Continue with Google',
-                    onPressed: _showUnavailable,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildSocialButton(
-                    icon: Icons.apple,
-                    iconColor: Colors.black,
-                    text: 'Continue with Apple',
-                    onPressed: _showUnavailable,
+                    onPressed: () async {
+                      if (await _authController.signInWithGoogle()) {
+                        await Get.offAllNamed<void>(
+                          _authController.needsProfileCompletion
+                              ? AppRoutes.profile
+                              : AppRoutes.shell,
+                          arguments: {
+                            'completeRegistration':
+                                _authController.needsProfileCompletion,
+                          },
+                        );
+                      }
+                    },
                   ),
                   const SizedBox(height: 28),
 

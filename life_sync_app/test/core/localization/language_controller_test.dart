@@ -24,6 +24,12 @@ void main() {
     expect(store.values[LanguageController.storageKey], 'km');
     expect(controller.locale.languageCode, 'km');
     expect('Language'.tr, 'ភាសា');
+    expect('All (@count)'.trParams({'count': '12'}), 'ទាំងអស់ (12)');
+    expect(
+      'Delete “@title” and its subtasks?'.trParams({'title': 'My task'}),
+      'លុប «My task» និងកិច្ចការរងរបស់វាឬ?',
+    );
+    expect('Loading tasks…'.tr, 'កំពុងផ្ទុកកិច្ចការ…');
     await controller.select('en');
     expect('Language'.tr, 'Language');
     Get.reset();

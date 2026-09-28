@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:life_sync_app/features/home/presentation/widgets/daily_progress_indicator.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/theme/app_colors.dart';
@@ -117,7 +118,7 @@ final class _HomeScreenState extends State<HomeScreen> {
         return Habit(
           id: model.habitId.toString(),
           title: model.name,
-          streakText: '${model.streak > 0 ? model.streak : 168} Days Streaks',
+          streakText: '${model.streak} Days Streaks',
           icon: Icons.wb_sunny_rounded,
           iconBgColor: const Color(0xFFFFF1E8),
           iconColor: const Color(0xFFFF9500),
@@ -129,7 +130,7 @@ final class _HomeScreenState extends State<HomeScreen> {
         return Habit(
           id: model.habitId.toString(),
           title: model.name,
-          streakText: '${model.streak > 0 ? model.streak : 168} Days Streaks',
+          streakText: '${model.streak} Days Streaks',
           icon: Icons.menu_book_rounded,
           iconBgColor: const Color(0xFFEAF8EE),
           iconColor: const Color(0xFF22C55E),
@@ -140,7 +141,7 @@ final class _HomeScreenState extends State<HomeScreen> {
         return Habit(
           id: model.habitId.toString(),
           title: model.name,
-          streakText: '${model.streak > 0 ? model.streak : 168} Days Streaks',
+          streakText: '${model.streak} Days Streaks',
           icon: Icons.directions_run_rounded,
           iconBgColor: const Color(0xFFE6F8FA),
           iconColor: const Color(0xFF00B4D8),
@@ -185,57 +186,70 @@ final class _HomeScreenState extends State<HomeScreen> {
             children: [
               Row(
                 children: [
-                  Obx(() {
-                    final profile = _profile.state.value.data;
-                    final bytes = _profile.imageBytes.value;
-                    return InkWell(
-                      onTap: () => Get.toNamed<void>(AppRoutes.profile),
-                      borderRadius: BorderRadius.circular(28),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 23,
-                            backgroundColor: colors.elevatedSurface,
-                            backgroundImage: bytes == null
-                                ? null
-                                : MemoryImage(bytes),
-                            child: bytes == null
-                                ? const Icon(Icons.person_outline_rounded)
-                                : null,
-                          ),
-                          const SizedBox(width: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _greeting,
-                                style: TextStyle(
-                                  color: colors.secondaryText,
-                                  fontSize: 11,
-                                ),
+                  Expanded(
+                    flex: 2,
+                    child: Obx(() {
+                      final profile = _profile.state.value.data;
+                      final bytes = _profile.imageBytes.value;
+                      return InkWell(
+                        onTap: () => Get.toNamed<void>(AppRoutes.profile),
+                        borderRadius: BorderRadius.circular(28),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 23,
+                              backgroundColor: colors.elevatedSurface,
+                              backgroundImage: bytes == null
+                                  ? null
+                                  : MemoryImage(bytes),
+                              child: bytes == null
+                                  ? const Icon(Icons.person_outline_rounded)
+                                  : null,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _greeting,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: colors.secondaryText,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                  Text(
+                                    profile?.fullName ?? 'LifeSync user',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: colors.primaryBlue,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                profile?.fullName ?? 'LifeSync user',
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: colors.primaryBlue,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      '${_months[today.month - 1]} ${today.year}',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: colors.primaryText,
                       ),
-                    );
-                  }),
-                  const Spacer(),
-                  Text(
-                    '${_months[today.month - 1]} ${today.year}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: colors.primaryText,
                     ),
                   ),
                   const SizedBox(width: 4),
@@ -308,20 +322,18 @@ final class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Row(
                   children: [
-                    Container(
-                      width: 66,
-                      height: 66,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: colors.elevatedSurface,
-                        border: Border.all(color: colors.border, width: 7),
-                      ),
-                      child: const Text(
-                        '🤭',
-                        style: TextStyle(fontSize: 30),
-                      ),
-                    ),
+                    Obx(() {
+                      final todayTasks = _tasks.todayTasks;
+                      final completedTasks = todayTasks
+                          .where((task) => task.isCompleted)
+                          .length;
+                      return DailyProgressIndicator(
+                        completed: completedTasks + _habits.todayCompletedCount,
+                        total: todayTasks.length + _habits.todayHabits.length,
+                        color: colors.primaryBlue,
+                        backgroundColor: colors.border,
+                      );
+                    }),
                     const SizedBox(width: 14),
                     Expanded(
                       child: Column(

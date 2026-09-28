@@ -23,6 +23,7 @@ dependencies:
   dio: ^5.11.0
   flutter_secure_storage: ^10.3.1
   get: ^4.7.3
+  local_auth: ^3.0.2
   google_fonts: ^8.2.1
   image_picker: ^1.2.3
   sqflite: ^2.4.2
@@ -32,6 +33,9 @@ dependencies:
   sqflite_common_ffi_web: ^1.2.0
   path: ^1.9.1
   web: ^1.1.1
+  firebase_core: ^4.15.0
+  firebase_auth: ^6.7.0
+  google_sign_in: ^7.2.0
 
 
 # ============================================================
@@ -39,6 +43,8 @@ dependencies:
 # ============================================================
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
 

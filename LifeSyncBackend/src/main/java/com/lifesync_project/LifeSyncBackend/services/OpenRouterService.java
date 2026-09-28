@@ -1,6 +1,7 @@
 package com.lifesync_project.LifeSyncBackend.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.lifesync_project.LifeSyncBackend.exception.AiUnavailableException;
 import com.lifesync_project.LifeSyncBackend.dto.AiAssistant.AiChatRequest;
 import com.lifesync_project.LifeSyncBackend.dto.AiAssistant.AiChatResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,11 +56,18 @@ public class OpenRouterService {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(Map.of("model", model, "messages", messages, "max_tokens", 1024, "stream", false))
                     .retrieve().body(JsonNode.class);
-            String reply = response == null ? "" : response.path("choices").path(0).path("message").path("content").asText("");
-            if (reply.isBlank()) throw new IllegalStateException("The AI provider returned no text. Please retry.");
-            return new AiChatResponse(reply.trim(), model);
+            return new AiChatResponse(responseText(response), model);
         } catch (RestClientException error) {
             throw new IllegalStateException("OpenRouter is unavailable. Check server credentials, model access, and account credit.");
         }
+    }
+
+    static String responseText(JsonNode response) {
+        JsonNode choice = response == null ? null : response.path("choices").path(0);
+        String reply = choice == null ? "" : choice.path("message").path("content").asText("");
+        if (reply.isBlank()) {
+            throw new AiUnavailableException("The AI service returned no answer. Please try again shortly.");
+        }
+        return reply.trim();
     }
 }

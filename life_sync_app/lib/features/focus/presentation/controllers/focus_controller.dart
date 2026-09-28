@@ -26,16 +26,31 @@ final class FocusController extends GetxController with WidgetsBindingObserver {
     this._repository,
     this._store, {
     this._clock = const SystemFocusClock(),
-    this.pomodoroSeconds = 25 * 60,
+    int pomodoroSeconds = 25 * 60,
     this.ownerId = 0,
-  });
+  }) : _pomodoroSeconds = pomodoroSeconds.obs;
 
   static const activeStateKey = 'focus.active_timer';
 
   final FocusRepository _repository;
   final SecureKeyValueStore _store;
   final FocusClock _clock;
-  final int pomodoroSeconds;
+  final RxInt _pomodoroSeconds;
+  int get pomodoroSeconds => _pomodoroSeconds.value;
+
+  Future<bool> setDurationMinutes(int minutes) async {
+    if (hasActiveSession || minutes < 1 || minutes > 180) return false;
+    final previous = pomodoroSeconds;
+    _pomodoroSeconds.value = minutes * 60;
+    try {
+      await _persist();
+    } catch (_) {
+      _pomodoroSeconds.value = previous;
+      rethrow;
+    }
+    return true;
+  }
+
   final int ownerId;
 
   String get _activeStateKey => '$activeStateKey.$ownerId';
@@ -79,7 +94,8 @@ final class FocusController extends GetxController with WidgetsBindingObserver {
       ? (elapsedSeconds.value / pomodoroSeconds).clamp(0, 1)
       : (elapsedSeconds.value % 60) / 60;
 
-  bool get hasActiveSession => isRunning.value || elapsedSeconds.value > 0;
+  bool get hasActiveSession =>
+      isRunning.value || elapsedSeconds.value > 0 || _sessionStartedAt != null;
 
   List<FocusSession> get filteredSessions {
     final anchor = periodAnchor.value;
@@ -172,6 +188,10 @@ final class FocusController extends GetxController with WidgetsBindingObserver {
     if (raw == null || raw.isEmpty) return;
     try {
       final data = jsonDecode(raw) as Map<String, dynamic>;
+      final duration = data['pomodoroSeconds'];
+      if (duration is int && duration >= 60 && duration <= 10800) {
+        _pomodoroSeconds.value = duration;
+      }
       mode.value = FocusMode.values.byName(data['mode']! as String);
       isRunning.value = data['running'] as bool? ?? false;
       _accumulatedSeconds = data['accumulated'] as int? ?? 0;
@@ -246,7 +266,7 @@ final class FocusController extends GetxController with WidgetsBindingObserver {
     _accumulatedSeconds = 0;
     _segmentStartedAt = null;
     _sessionStartedAt = null;
-    _store.delete(_activeStateKey);
+    _persist();
   }
 
   void previousPeriod() => _shiftPeriod(-1);
@@ -318,12 +338,10 @@ final class FocusController extends GetxController with WidgetsBindingObserver {
   }
 
   Future<void> _persist() {
-    if (!hasActiveSession && taskName.value == null) {
-      return _store.delete(_activeStateKey);
-    }
     return _store.write(
       _activeStateKey,
       jsonEncode({
+        'pomodoroSeconds': pomodoroSeconds,
         'mode': mode.value.name,
         'running': isRunning.value,
         'accumulated': _accumulatedSeconds,

@@ -7,6 +7,21 @@ import 'package:life_sync_app/features/focus/presentation/controllers/focus_cont
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  test('custom duration persists and cannot change during a session', () async {
+    final store = _MemoryStore();
+    final controller = FocusController(_MemoryFocusRepository(), store);
+    expect(await controller.setDurationMinutes(45), isTrue);
+    expect(controller.displaySeconds, 2700);
+    final restored = FocusController(_MemoryFocusRepository(), store);
+    await restored.restore();
+    expect(restored.displaySeconds, 2700);
+    expect(await controller.setDurationMinutes(0), isFalse);
+    await controller.start();
+    expect(await controller.setDurationMinutes(15), isFalse);
+    controller.onClose();
+    restored.onClose();
+  });
+
   test('pomodoro start, pause, resume, reset use the injected clock', () async {
     final clock = _FakeClock(DateTime(2026, 9, 11, 10));
     final controller = FocusController(

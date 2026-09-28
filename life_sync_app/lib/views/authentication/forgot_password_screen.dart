@@ -108,6 +108,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _emailController,
+                  style: const TextStyle(color: Colors.black87),
+                  cursorColor: const Color(0xFF2979FF),
                   keyboardType: TextInputType.emailAddress,
                   onFieldSubmitted: (_) => _submit(),
                   validator: AuthValidators.email,

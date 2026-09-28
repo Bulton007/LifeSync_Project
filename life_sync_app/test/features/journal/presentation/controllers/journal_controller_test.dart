@@ -4,6 +4,22 @@ import 'package:life_sync_app/features/journal/domain/repositories/journal_repos
 import 'package:life_sync_app/features/journal/presentation/controllers/journal_controller.dart';
 
 void main() {
+  test('rejects a future journal date without saving', () async {
+    final controller = JournalController(_MemoryJournalRepository());
+    final future = DateTime.now().add(const Duration(days: 2));
+    final saved = await controller.save(
+      JournalEntry(
+        id: null,
+        title: 'Future',
+        body: 'Not yet happened',
+        createdAt: future,
+        updatedAt: future,
+      ),
+    );
+    expect(saved, isFalse);
+    expect(controller.entries, isEmpty);
+    expect(controller.errorMessage.value, isNotNull);
+  });
   test(
     'creates, updates, filters, deletes, and reloads persisted entries',
     () async {

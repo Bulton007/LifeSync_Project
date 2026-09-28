@@ -1,4 +1,5 @@
 import 'package:life_sync_app/core/localization/language_controller.dart';
+import 'package:life_sync_app/core/services/app_lock_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
@@ -23,35 +24,39 @@ final class SettingsScreen extends StatelessWidget {
       context: context,
       showDragHandle: true,
       builder: (context) => SafeArea(
-        child: Obx(
-          () => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Language'.tr, style: const TextStyle(fontSize: 18)),
-              for (final entry in const {
-                'en': 'English',
-                'km': 'ខ្មែរ',
-              }.entries)
-                ListTile(
-                  title: Text(entry.value),
-                  selected: controller.languageCode.value == entry.key,
-                  trailing: controller.languageCode.value == entry.key
-                      ? const Icon(Icons.check)
-                      : null,
-                  onTap: () async {
-                    try {
-                      await controller.select(entry.key);
-                      if (context.mounted) Navigator.pop(context);
-                    } catch (_) {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text('Try again'.tr)));
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          child: Obx(
+            () => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Language'.tr, style: const TextStyle(fontSize: 18)),
+                const SizedBox(height: 8),
+                for (final entry in const {
+                  'en': 'English',
+                  'km': 'ខ្មែរ',
+                }.entries)
+                  ListTile(
+                    title: Text(entry.value),
+                    selected: controller.languageCode.value == entry.key,
+                    trailing: controller.languageCode.value == entry.key
+                        ? const Icon(Icons.check)
+                        : null,
+                    onTap: () async {
+                      try {
+                        await controller.select(entry.key);
+                        if (context.mounted) Navigator.pop(context);
+                      } catch (_) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Try again'.tr)),
+                          );
+                        }
                       }
-                    }
-                  },
-                ),
-            ],
+                    },
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -162,10 +167,14 @@ final class SettingsScreen extends StatelessWidget {
     await Get.offAllNamed<void>(AppRoutes.signIn);
   }
 
-  void _unavailable(BuildContext context, String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+  Future<void> _toggleAppLock(BuildContext context) async {
+    final lock = Get.find<AppLockService>();
+    final success = await lock.setEnabled(!lock.enabled.value);
+    if (!success && context.mounted && lock.error.value != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(lock.error.value!.tr)));
+    }
   }
 
   @override
@@ -382,11 +391,13 @@ final class SettingsScreen extends StatelessWidget {
                     ),
                     _SettingRow(
                       icon: Icons.lock_outline_rounded,
-                      title: 'Add Passcode',
-                      onTap: () => _unavailable(
-                        context,
-                        'Device passcode protection is not available yet. Your account password is unchanged.',
-                      ),
+                      title: 'Phone PIN / biometrics'.tr,
+                      value:
+                          (Get.find<AppLockService>().enabled.value
+                                  ? 'On'
+                                  : 'Off')
+                              .tr,
+                      onTap: () => _toggleAppLock(context),
                     ),
                     _SettingRow(
                       icon: Icons.notifications_none_rounded,

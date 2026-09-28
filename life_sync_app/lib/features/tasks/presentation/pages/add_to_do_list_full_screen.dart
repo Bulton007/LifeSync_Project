@@ -240,8 +240,6 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                       fontSize: 16,
                       color: colors.secondaryText,
                     ),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
                   ),
                   validator: (value) {
                     final title = value?.trim() ?? '';
@@ -263,8 +261,6 @@ class _AddTodoFullScreenState extends State<AddTodoFullScreen> {
                       fontSize: 14,
                       color: colors.secondaryText,
                     ),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
                   ),
                   validator: (value) => (value?.length ?? 0) > 1000
                       ? 'Description must not exceed 1000 characters.'

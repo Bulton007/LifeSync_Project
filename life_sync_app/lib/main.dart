@@ -1,8 +1,10 @@
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:life_sync_app/core/localization/app_translations.dart';
+import 'package:life_sync_app/core/services/app_lock_service.dart';
+import 'package:life_sync_app/core/widgets/app_lock_gate.dart';
 import 'package:life_sync_app/core/localization/language_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
@@ -91,6 +93,19 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initLifeSyncDatabaseFactory();
   configureAppErrorHandling();
+  final store = Get.isRegistered<SecureKeyValueStore>()
+      ? Get.find<SecureKeyValueStore>()
+      : Get.put<SecureKeyValueStore>(
+          const FlutterSecureKeyValueStore(FlutterSecureStorage()),
+          permanent: true,
+        );
+  final theme = Get.isRegistered<ThemeController>()
+      ? Get.find<ThemeController>()
+      : Get.put(ThemeController(store), permanent: true);
+  final language = Get.isRegistered<LanguageController>()
+      ? Get.find<LanguageController>()
+      : Get.put(LanguageController(store), permanent: true);
+  await Future.wait([theme.restore(), language.restore()]);
   runApp(LifeSyncApp());
 }
 
@@ -124,6 +139,13 @@ class _LifeSyncAppState extends State<LifeSyncApp> with WidgetsBindingObserver {
       );
     }
     WidgetsBinding.instance.addObserver(this);
+    if (!Get.isRegistered<AppLockService>()) {
+      final lock = Get.put(
+        AppLockService(Get.find<SecureKeyValueStore>(), PhoneAuthenticator()),
+        permanent: true,
+      );
+      lock.restore();
+    }
   }
 
   @override
@@ -134,6 +156,7 @@ class _LifeSyncAppState extends State<LifeSyncApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    Get.find<AppLockService>().onLifecycle(state);
     if (state == AppLifecycleState.resumed) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     }
@@ -157,6 +180,10 @@ class _LifeSyncAppState extends State<LifeSyncApp> with WidgetsBindingObserver {
         initialBinding: InitialBinding(),
         initialRoute: AppRoutes.startup,
         getPages: AppPages.pages,
+        builder: (context, child) => AppLockGate(
+          lock: Get.find<AppLockService>(),
+          child: child ?? const SizedBox.shrink(),
+        ),
       ),
     );
   }

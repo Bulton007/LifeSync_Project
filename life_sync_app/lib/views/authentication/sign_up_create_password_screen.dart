@@ -130,6 +130,8 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
+                  style: const TextStyle(color: Colors.black87),
+                  cursorColor: const Color(0xFF2979FF),
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   textInputAction: TextInputAction.next,
@@ -175,9 +177,7 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF2979FF),
-                      ),
+                      borderSide: const BorderSide(color: Color(0xFF2979FF)),
                     ),
                   ),
                 ),
@@ -194,6 +194,8 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
+                  style: const TextStyle(color: Colors.black87),
+                  cursorColor: const Color(0xFF2979FF),
                   controller: _confirmPasswordController,
                   obscureText: _obscureConfirmPassword,
                   onFieldSubmitted: (_) => _submit(),
@@ -242,9 +244,7 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF2979FF),
-                      ),
+                      borderSide: const BorderSide(color: Color(0xFF2979FF)),
                     ),
                   ),
                 ),

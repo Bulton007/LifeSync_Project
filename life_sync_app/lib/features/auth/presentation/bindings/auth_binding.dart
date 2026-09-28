@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:life_sync_app/features/auth/data/services/google_auth_service.dart';
 import 'package:life_sync_app/core/network/api_client.dart';
 import 'package:life_sync_app/core/services/auth_session_service.dart';
 import 'package:life_sync_app/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -26,6 +27,7 @@ final class AuthBinding extends Bindings {
         () => AuthController(
           Get.find<AuthRepository>(),
           Get.find<AuthSessionService>(),
+          googleAuth: GoogleAuthService(Get.find<ApiClient>()),
         ),
         fenix: true,
       );

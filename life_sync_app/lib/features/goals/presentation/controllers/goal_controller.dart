@@ -15,6 +15,7 @@ final class GoalController extends GetxController {
   final detailsLoading = <int>{}.obs;
   final isSubmitting = false.obs;
   final errorMessage = RxnString();
+  GoalModel? lastCreatedGoal;
 
   List<GoalModel> get goals => state.value.data ?? const [];
   List<GoalModel> get activeGoals =>
@@ -88,7 +89,10 @@ final class GoalController extends GetxController {
       currentAmount: currentAmount,
       deadline: deadline,
     ),
-    (goal) => [goal, ...goals],
+    (goal) {
+      lastCreatedGoal = goal;
+      return [goal, ...goals];
+    },
   );
   Future<bool> updateGoal({
     required GoalModel goal,
@@ -194,6 +198,24 @@ final class GoalController extends GetxController {
         ),
         (item, items) => [...items, item],
       );
+  Future<bool> updateSchedule(
+    GoalScheduleModel schedule,
+    DateTime date,
+    MoneyAmount amount,
+  ) => _mutateSchedule(
+    schedule.goalId,
+    () => _repository.updateSchedule(
+      id: schedule.goalScheduleId,
+      goalId: schedule.goalId,
+      scheduleDate: date,
+      amount: amount,
+    ),
+    (item, items) => [
+      for (final old in items)
+        if (old.goalScheduleId == item.goalScheduleId) item else old,
+    ],
+  );
+
   Future<bool> completeSchedule(GoalScheduleModel schedule) => _mutateSchedule(
     schedule.goalId,
     () => _repository.completeSchedule(schedule.goalScheduleId),

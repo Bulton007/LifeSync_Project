@@ -66,6 +66,15 @@ class _AddNewHabitScreenState extends State<AddNewHabitScreen> {
 
   Future<void> _saveHabit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (_endDate != null &&
+        DateUtils.dateOnly(
+          _endDate!,
+        ).isBefore(DateUtils.dateOnly(_startDate))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('End date cannot be before start date.'.tr)),
+      );
+      return;
+    }
     if (_repeatFrequency == 'Weekly' && !_selectedDays.contains(true)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Select at least one scheduled day.'.tr)),

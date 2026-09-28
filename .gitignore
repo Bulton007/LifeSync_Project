@@ -4,6 +4,11 @@
 /merge-format-results.log
 /life_sync_app/*-preview.png
 /.private-backups/
+/.claude/
+/claude/
+/firebase-*.png
+**/google-services.json
+**/GoogleService-Info.plist
 
 # Environment files
 .env

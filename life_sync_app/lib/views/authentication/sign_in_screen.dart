@@ -37,12 +37,6 @@ class _SignInScreenState extends State<SignInScreen> {
     if (signedIn) await Get.offAllNamed<void>(AppRoutes.shell);
   }
 
-  void _showUnavailable() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Social sign-in is not available yet.'.tr)),
-    );
-  }
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -113,6 +107,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
+                  style: const TextStyle(color: Colors.black87),
+                  cursorColor: const Color(0xFF2979FF),
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
@@ -144,9 +140,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF1E88E5),
-                      ),
+                      borderSide: const BorderSide(color: Color(0xFF1E88E5)),
                     ),
                   ),
                 ),
@@ -163,6 +157,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
+                  style: const TextStyle(color: Colors.black87),
+                  cursorColor: const Color(0xFF2979FF),
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   onFieldSubmitted: (_) => _submit(),
@@ -210,9 +206,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF1E88E5),
-                      ),
+                      borderSide: const BorderSide(color: Color(0xFF1E88E5)),
                     ),
                   ),
                 ),
@@ -313,24 +307,22 @@ class _SignInScreenState extends State<SignInScreen> {
 
                 // Social Login Buttons
                 _buildSocialButton(
-                  icon: Icons.facebook,
-                  iconColor: const Color(0xFF1877F2),
-                  text: 'Continue with Facebook',
-                  onPressed: _showUnavailable,
-                ),
-                const SizedBox(height: 12),
-                _buildSocialButton(
                   icon: Icons.g_mobiledata,
                   iconColor: Colors.red,
                   text: 'Continue with Google',
-                  onPressed: _showUnavailable,
-                ),
-                const SizedBox(height: 12),
-                _buildSocialButton(
-                  icon: Icons.apple,
-                  iconColor: Colors.black,
-                  text: 'Continue with Apple',
-                  onPressed: _showUnavailable,
+                  onPressed: () async {
+                    if (await _authController.signInWithGoogle()) {
+                      await Get.offAllNamed<void>(
+                        _authController.needsProfileCompletion
+                            ? AppRoutes.profile
+                            : AppRoutes.shell,
+                        arguments: {
+                          'completeRegistration':
+                              _authController.needsProfileCompletion,
+                        },
+                      );
+                    }
+                  },
                 ),
                 const SizedBox(height: 40),
 

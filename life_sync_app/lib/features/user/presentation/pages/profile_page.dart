@@ -18,11 +18,15 @@ final class _ProfilePageState extends State<ProfilePage> {
   String? _name;
   String? _email;
   String? _phone;
+  late final bool _completeRegistration;
 
   @override
   void initState() {
     super.initState();
     _controller = Get.find<ProfileController>();
+    _completeRegistration =
+        Get.arguments is Map &&
+        (Get.arguments as Map)['completeRegistration'] == true;
   }
 
   void _notice(String message) {
@@ -37,7 +41,7 @@ final class _ProfilePageState extends State<ProfilePage> {
     final result = await showDialog<String>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text('Edit $field'),
+        title: Text('Edit @field'.trParams({'field': field.tr})),
         content: Form(
           key: form,
           child: TextFormField(
@@ -94,12 +98,20 @@ final class _ProfilePageState extends State<ProfilePage> {
   Future<void> _save() async {
     final profile = _controller.state.value.data;
     if (profile == null) return;
+    if ((_name ?? profile.fullName).trim().isEmpty) {
+      _notice('Please enter your name.'.tr);
+      return;
+    }
     final saved = await _controller.updateProfile(
       fullName: _name ?? profile.fullName,
       email: _email ?? profile.email,
       phoneNumber: _phone ?? profile.phoneNumber,
     );
     if (saved && mounted) {
+      if (_completeRegistration) {
+        Get.offAllNamed(AppRoutes.shell);
+        return;
+      }
       setState(() {
         _name = null;
         _email = null;
@@ -206,9 +218,7 @@ final class _ProfilePageState extends State<ProfilePage> {
                             child: SizedBox(
                               width: 18,
                               height: 18,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                              ),
+                              child: CircularProgressIndicator(strokeWidth: 2),
                             ),
                           )
                         : Icon(

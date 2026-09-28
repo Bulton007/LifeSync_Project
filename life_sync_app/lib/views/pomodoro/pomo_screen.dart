@@ -1,3 +1,5 @@
+import 'package:life_sync_app/views/pomodoro/focus_duration_sheet.dart';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
@@ -48,19 +50,6 @@ final class _PomoScreenState extends State<PomoScreen> {
     }
     return '${minutes.toString().padLeft(2, '0')}:'
         '${seconds.toString().padLeft(2, '0')}';
-  }
-
-  String _formatDateTime(DateTime dt) {
-    final now = DateTime.now();
-    final isToday =
-        dt.year == now.year && dt.month == now.month && dt.day == now.day;
-    final hour = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
-    final ampm = dt.hour >= 12 ? 'PM' : 'AM';
-    final minute = dt.minute.toString().padLeft(2, '0');
-    if (isToday) {
-      return 'Today, $hour:$minute $ampm';
-    }
-    return '${dt.month}/${dt.day}, $hour:$minute $ampm';
   }
 
   void _switchMode(FocusMode mode) {
@@ -195,367 +184,335 @@ final class _PomoScreenState extends State<PomoScreen> {
     }
   }
 
+  Future<void> _chooseDuration() async {
+    if (_controller.hasActiveSession) return;
+    final minutes = await showModalBottomSheet<int>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) =>
+          FocusDurationSheet(initialMinutes: _controller.pomodoroSeconds ~/ 60),
+    );
+    if (minutes != null) {
+      try {
+        await _controller.setDurationMinutes(minutes);
+      } catch (_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Unable to save duration.'.tr)),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _reset() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Reset without saving'.tr),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Cancel'.tr),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Reset'.tr),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) _controller.reset();
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.lifeSyncColors;
     return Scaffold(
+      backgroundColor: colors.cardSurface,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Material(
-                    color: colors.navigationSelected,
-                    shape: const CircleBorder(),
-                    child: IconButton(
-                      tooltip: 'Back'.tr,
-                      onPressed: Get.back<void>,
-                      icon: const Icon(Icons.chevron_left_rounded),
-                    ),
-                  ),
-                  const Spacer(),
-                  IconButton.outlined(
-                    tooltip: 'Focus statistics'.tr,
-                    onPressed: () =>
-                        Get.toNamed<void>(AppRoutes.focusStatistics),
-                    icon: Icon(
-                      Icons.pie_chart_outline_rounded,
-                      color: colors.primaryBlue,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Obx(
-                () => DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: colors.cardSurface,
-                    borderRadius: BorderRadius.circular(28),
-                    border: Border.all(color: colors.border),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _ModeTab(
-                          label: 'Pomodoro'.tr,
-                          selected:
-                              _controller.mode.value == FocusMode.pomodoro,
-                          onTap: () => _switchMode(FocusMode.pomodoro),
-                        ),
-                        _ModeTab(
-                          label: 'Stopwatch'.tr,
-                          selected:
-                              _controller.mode.value == FocusMode.stopwatch,
-                          onTap: () => _switchMode(FocusMode.stopwatch),
-                        ),
-                      ],
-                    ),
-                  ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final diameter = math.min(290.0, constraints.maxWidth - 64);
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: math.max(0, constraints.maxHeight - 36),
                 ),
-              ),
-              const SizedBox(height: 20),
-              // Task & Sound Controls Row
-              Wrap(
-                spacing: 12,
-                runSpacing: 8,
-                alignment: WrapAlignment.center,
-                children: [
-                  Obx(
-                    () => ActionChip(
-                      avatar: const Icon(Icons.task_alt_rounded, size: 16),
-                      label: Text(
-                        _controller.taskName.value ?? 'Choose Task',
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                      onPressed: _controller.hasActiveSession
-                          ? null
-                          : _chooseTask,
-                    ),
-                  ),
-                  Obx(
-                    () => ActionChip(
-                      avatar: const Icon(Icons.music_note_rounded, size: 16),
-                      label: Text(
-                        _controller.selectedSound.value,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                      onPressed: _chooseSound,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 28),
-              Obx(() {
-                final progress = _controller.progress;
-                return Container(
-                  width: 250,
-                  height: 250,
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: colors.glow,
-                        blurRadius: 36,
-                        spreadRadius: 8,
-                      ),
-                    ],
-                  ),
-                  child: Stack(
-                    fit: StackFit.expand,
+                child: Obx(() {
+                  final active = _controller.hasActiveSession;
+                  final running = _controller.isRunning.value;
+                  final stopwatch =
+                      _controller.mode.value == FocusMode.stopwatch;
+                  return Column(
                     children: [
-                      CircularProgressIndicator(
-                        value: progress,
-                        strokeWidth: 3,
-                        backgroundColor: colors.border,
-                        color: colors.primaryBlue,
-                      ),
-                      Center(
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 180),
-                          child: Text(
-                            _duration(_controller.displaySeconds),
-                            key: ValueKey(_controller.displaySeconds),
-                            style: const TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.w300,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
-              const SizedBox(height: 28),
-              Obx(() {
-                final running = _controller.isRunning.value;
-                final active = _controller.hasActiveSession;
-                if (!active) {
-                  return SizedBox(
-                    width: 140,
-                    height: 44,
-                    child: FilledButton.icon(
-                      onPressed: _controller.start,
-                      icon: const Icon(Icons.play_arrow_rounded),
-                      label: Text('Start'.tr),
-                    ),
-                  );
-                }
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton.outlined(
-                      tooltip: 'Reset without saving'.tr,
-                      onPressed: _controller.reset,
-                      icon: const Icon(Icons.restart_alt_rounded),
-                    ),
-                    const SizedBox(width: 18),
-                    IconButton.filled(
-                      tooltip: running ? 'Pause' : 'Resume',
-                      onPressed: running
-                          ? _controller.pause
-                          : _controller.start,
-                      icon: Icon(
-                        running
-                            ? Icons.pause_rounded
-                            : Icons.play_arrow_rounded,
-                      ),
-                    ),
-                    const SizedBox(width: 18),
-                    IconButton.outlined(
-                      tooltip: 'Stop and record'.tr,
-                      onPressed: _stop,
-                      icon: const Icon(Icons.stop_rounded),
-                    ),
-                  ],
-                );
-              }),
-              const SizedBox(height: 36),
-
-              // RECORDED SESSIONS SECTION
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Recorded Sessions'.tr,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () =>
-                        Get.toNamed<void>(AppRoutes.focusStatistics),
-                    icon: const Icon(Icons.bar_chart_rounded, size: 16),
-                    label: Text('View Stats'.tr),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Obx(() {
-                final sessions = _controller.sessions;
-                if (sessions.isEmpty) {
-                  return Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 24,
-                      horizontal: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colors.cardSurface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: colors.border),
-                    ),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.timer_outlined,
-                          size: 36,
-                          color: colors.disabledText,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'No recorded sessions yet.'.tr,
-                          style: TextStyle(
-                            color: colors.secondaryText,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Press Start, then Stop to record your session here.'
-                              .tr,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: colors.disabledText,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                return ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: sessions.take(6).length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 10),
-                  itemBuilder: (context, index) {
-                    final session = sessions[index];
-                    return Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: colors.cardSurface,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: colors.border),
-                      ),
-                      child: Row(
+                      Row(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: colors.navigationSelected,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              session.completed
-                                  ? Icons.check_circle_rounded
-                                  : Icons.timer_outlined,
+                          IconButton.filledTonal(
+                            tooltip: 'Back'.tr,
+                            onPressed: Get.back<void>,
+                            icon: const Icon(Icons.chevron_left),
+                          ),
+                          const Spacer(),
+                          IconButton.outlined(
+                            tooltip: 'Focus statistics'.tr,
+                            key: const ValueKey('focus-statistics'),
+                            onPressed: () =>
+                                Get.toNamed<void>(AppRoutes.focusStatistics),
+                            icon: Icon(
+                              Icons.pie_chart_rounded,
                               color: colors.primaryBlue,
-                              size: 20,
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      if (!active)
+                        Container(
+                          decoration: BoxDecoration(
+                            color: colors.inputSurface,
+                            borderRadius: BorderRadius.circular(28),
+                            border: Border.all(color: colors.border),
+                          ),
+                          padding: const EdgeInsets.all(3),
+                          child: Wrap(
+                            alignment: WrapAlignment.center,
+                            children: [
+                              _ModeTab(
+                                label: 'Pomodoro'.tr,
+                                selected: !stopwatch,
+                                onTap: () => _switchMode(FocusMode.pomodoro),
+                              ),
+                              _ModeTab(
+                                label: 'Stopwatch'.tr,
+                                selected: stopwatch,
+                                onTap: () => _switchMode(FocusMode.stopwatch),
+                              ),
+                            ],
+                          ),
+                        ),
+                      SizedBox(height: active ? 20 : 26),
+                      Text(
+                        (active ? 'Working on' : 'Work on').tr,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: colors.secondaryText,
+                        ),
+                      ),
+                      TextButton(
+                        key: const ValueKey('focus-task'),
+                        onPressed: active ? null : _chooseTask,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                _controller.taskName.value ?? 'Choose Task'.tr,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: colors.primaryText,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(
+                              Icons.unfold_more,
+                              size: 15,
+                              color: colors.secondaryText,
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (!stopwatch && !active)
+                        TextButton.icon(
+                          key: const ValueKey('edit-focus-duration'),
+                          onPressed: _chooseDuration,
+                          icon: const Icon(Icons.tune, size: 16),
+                          label: Text(
+                            'Focus duration'.tr,
+                            style: const TextStyle(fontSize: 11),
+                          ),
+                        ),
+                      SizedBox(
+                        height: math.max(20, constraints.maxHeight * .045),
+                      ),
+                      Semantics(
+                        label: 'Focus timer'.tr,
+                        value: _duration(_controller.displaySeconds),
+                        child: GestureDetector(
+                          onTap: !active && !stopwatch ? _chooseDuration : null,
+                          child: Container(
+                            width: diameter,
+                            height: diameter,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: colors.inputSurface,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: colors.primaryBlue.withValues(
+                                    alpha: .16,
+                                  ),
+                                  blurRadius: 55,
+                                  spreadRadius: 22,
+                                ),
+                              ],
+                            ),
+                            child: Stack(
+                              fit: StackFit.expand,
                               children: [
-                                Text(
-                                  session.taskName?.isNotEmpty == true
-                                      ? session.taskName!
-                                      : (session.mode == FocusMode.pomodoro
-                                            ? 'Pomodoro Focus'
-                                            : 'Stopwatch Session'),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
+                                if (stopwatch)
+                                  CustomPaint(
+                                    painter: _ClockTicks(
+                                      colors.border,
+                                      colors.primaryBlue,
+                                      _controller.progress,
+                                    ),
+                                  ),
+                                Padding(
+                                  padding: EdgeInsets.all(stopwatch ? 5 : 0),
+                                  child: CircularProgressIndicator(
+                                    value: _controller.progress,
+                                    strokeWidth: 3,
+                                    backgroundColor: Colors.transparent,
+                                    color: colors.primaryBlue,
+                                    strokeCap: StrokeCap.round,
                                   ),
                                 ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  '${_duration(session.durationSeconds)} • ${_formatDateTime(session.startedAt)}',
-                                  style: TextStyle(
-                                    color: colors.secondaryText,
-                                    fontSize: 12,
+                                Center(
+                                  child: Text(
+                                    _duration(_controller.displaySeconds),
+                                    key: const ValueKey('focus-time'),
+                                    style: TextStyle(
+                                      fontSize: diameter < 250 ? 32 : 38,
+                                      fontWeight: FontWeight.w300,
+                                      color: colors.primaryText,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              _controller.playSessionSound(session.soundName);
-                              ScaffoldMessenger.of(
-                                context,
-                              ).hideCurrentSnackBar();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  duration: const Duration(seconds: 1),
-                                  content: Text(
-                                    'Playing sound: ${session.soundName ?? 'Focus Bell'}',
-                                  ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: math.max(40, constraints.maxHeight * .085),
+                      ),
+                      if (!active)
+                        SizedBox(
+                          width: 140,
+                          height: 46,
+                          child: FilledButton(
+                            key: const ValueKey('focus-start'),
+                            onPressed: _controller.start,
+                            child: Text('Start'.tr),
+                          ),
+                        )
+                      else
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton.outlined(
+                              tooltip: 'Focus Sound & Ambience'.tr,
+                              onPressed: _chooseSound,
+                              icon: const Icon(Icons.music_note_outlined),
+                            ),
+                            const SizedBox(width: 18),
+                            SizedBox(
+                              width: 56,
+                              height: 56,
+                              child: IconButton.filled(
+                                key: const ValueKey('focus-pause'),
+                                tooltip: (running ? 'Pause' : 'Resume').tr,
+                                onPressed: running
+                                    ? _controller.pause
+                                    : _controller.start,
+                                icon: Icon(
+                                  running
+                                      ? Icons.pause_rounded
+                                      : Icons.play_arrow_rounded,
                                 ),
-                              );
-                            },
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: colors.navigationSelected,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.volume_up_rounded,
-                                    size: 16,
-                                    color: colors.primaryBlue,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    session.soundName ?? 'Focus Bell',
-                                    style: TextStyle(
-                                      color: colors.primaryBlue,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
+                            const SizedBox(width: 18),
+                            IconButton.outlined(
+                              key: const ValueKey('focus-stop'),
+                              tooltip: 'Stop and record'.tr,
+                              onPressed: _stop,
+                              icon: const Icon(Icons.stop_rounded),
+                            ),
+                          ],
+                        ),
+                      const SizedBox(height: 12),
+                      if (active)
+                        TextButton(
+                          onPressed: _reset,
+                          child: Text(
+                            'Reset without saving'.tr,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: colors.secondaryText,
+                            ),
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              }),
-            ],
-          ),
+                        )
+                      else
+                        TextButton.icon(
+                          onPressed: _chooseSound,
+                          icon: const Icon(Icons.music_note_outlined, size: 15),
+                          label: Text(
+                            _controller.selectedSound.value.tr,
+                            style: const TextStyle(fontSize: 11),
+                          ),
+                        ),
+                      if (_controller.errorMessage.value != null)
+                        Text(
+                          'Unable to save or load focus sessions. Please try again.'
+                              .tr,
+                          style: TextStyle(color: colors.negative),
+                        ),
+                    ],
+                  );
+                }),
+              ),
+            );
+          },
         ),
       ),
     );
   }
+}
+
+class _ClockTicks extends CustomPainter {
+  _ClockTicks(this.background, this.foreground, this.progress);
+  final Color background;
+  final Color foreground;
+  final double progress;
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = size.center(Offset.zero);
+    final radius = size.width / 2 - 10;
+    for (var tick = 0; tick < 60; tick++) {
+      final angle = tick / 60 * math.pi * 2 - math.pi / 2;
+      final length = tick % 5 == 0 ? 12.0 : 7.0;
+      final direction = Offset(math.cos(angle), math.sin(angle));
+      canvas.drawLine(
+        center + direction * (radius - length),
+        center + direction * radius,
+        Paint()
+          ..color = tick < progress * 60 ? foreground : background
+          ..strokeWidth = 1,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _ClockTicks oldDelegate) =>
+      oldDelegate.progress != progress ||
+      oldDelegate.background != background ||
+      oldDelegate.foreground != foreground;
 }
 
 final class _ModeTab extends StatelessWidget {

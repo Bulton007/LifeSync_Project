@@ -150,6 +150,19 @@ final class HabitController extends GetxController {
     DateTime date, {
     String? note,
   }) async {
+    final now = DateTime.now();
+    if (DateTime(
+      date.year,
+      date.month,
+      date.day,
+    ).isAfter(DateTime(now.year, now.month, now.day))) {
+      errorMessage.value = 'Habit completions cannot be in the future.'.tr;
+      return false;
+    }
+    if (!habit.isScheduledFor(date)) {
+      errorMessage.value = 'This habit is not scheduled for this date.'.tr;
+      return false;
+    }
     if (isCompletedOn(habit.habitId, date)) return true;
     if (isSubmitting.value) return false;
     isSubmitting.value = true;

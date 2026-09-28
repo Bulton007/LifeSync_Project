@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:life_sync_app/features/goals/presentation/widgets/milestone_editor_sheet.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -51,6 +52,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
   Widget build(BuildContext context) {
     final colors = context.lifeSyncColors;
     return Scaffold(
+      backgroundColor: colors.cardSurface,
       body: SafeArea(
         child: Obx(() {
           final goal =
@@ -184,7 +186,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: colors.cardSurface,
+                      color: colors.inputSurface,
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(color: colors.border),
                       boxShadow: [
@@ -256,10 +258,10 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                               child: _Metric(
                                 label: 'Status'.tr,
                                 value: goal.completed
-                                    ? 'Complete'
+                                    ? 'Complete'.tr
                                     : goal.archived
-                                    ? 'Archived'
-                                    : 'Active',
+                                    ? 'Archived'.tr
+                                    : 'Active'.tr,
                               ),
                             ),
                           ],
@@ -291,6 +293,7 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                     for (final milestone in milestones) ...[
                       _MilestoneCard(
                         item: milestone,
+                        index: milestones.indexOf(milestone) + 1,
                         controller: _controller,
                         onEdit: () =>
                             _milestoneDialog(goal.id, existing: milestone),
@@ -308,7 +311,12 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                     _InlineEmpty(message: 'No scheduled contributions yet.')
                   else
                     for (final schedule in schedules) ...[
-                      _ScheduleCard(item: schedule, controller: _controller),
+                      _ScheduleCard(
+                        item: schedule,
+                        controller: _controller,
+                        onEdit: () =>
+                            _scheduleDialog(goal.id, existing: schedule),
+                      ),
                       const SizedBox(height: 10),
                     ],
                 ],
@@ -321,10 +329,20 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
   }
 
   Future<void> _goalAction(GoalModel goal, String action) async {
+    bool success = false;
     if (action == 'complete') {
-      await _controller.completeGoal(goal);
+      success = await _controller.completeGoal(goal);
     } else if (action == 'archive') {
-      await _controller.archiveGoal(goal);
+      success = await _controller.archiveGoal(goal);
+    }
+    if (!success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            (_controller.errorMessage.value ?? 'Unable to update goal.').tr,
+          ),
+        ),
+      );
     }
   }
 
@@ -332,72 +350,60 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
     int goalId, {
     GoalMilestoneModel? existing,
   }) async {
-    final title = TextEditingController(text: existing?.title ?? '');
-    var date =
-        existing?.targetDate ?? DateTime.now().add(const Duration(days: 7));
-    final result = await showDialog<bool>(
+    final goal =
+        _controller.goals.firstWhereOrNull((item) => item.id == goalId) ??
+        _initial;
+    final start = goal.createdAt ?? DateTime.now();
+    final firstDate = DateTime(start.year, start.month, start.day);
+    final lastDate = DateTime(
+      goal.deadline.year,
+      goal.deadline.month,
+      goal.deadline.day,
+    );
+    if (lastDate.isBefore(firstDate)) return;
+    final input = await showModalBottomSheet<MilestoneDraft>(
       context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          title: Text(existing == null ? 'Add milestone' : 'Edit milestone'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: title,
-                maxLength: 100,
-                decoration: InputDecoration(labelText: 'Milestone title'.tr),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.calendar_today_outlined),
-                title: Text(_date(date)),
-                onTap: () async {
-                  final picked = await showDatePicker(
-                    context: context,
-                    initialDate: date,
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime(2200),
-                  );
-                  if (picked != null) {
-                    setDialogState(() => date = picked);
-                  }
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext, false),
-              child: Text('Cancel'.tr),
-            ),
-            FilledButton(
-              onPressed: () =>
-                  Navigator.pop(dialogContext, title.text.trim().isNotEmpty),
-              child: Text('Save'.tr),
-            ),
-          ],
-        ),
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => MilestoneEditorSheet(
+        original: existing == null
+            ? null
+            : MilestoneDraft(existing.title, existing.targetDate),
+        firstDate: firstDate,
+        lastDate: lastDate,
       ),
     );
-    if (result == true) {
-      if (existing == null) {
-        await _controller.createMilestone(goalId, title.text, date);
-      } else {
-        await _controller.updateMilestone(existing, title.text, date);
-      }
+    if (input == null) return;
+    final success = existing == null
+        ? await _controller.createMilestone(goalId, input.title, input.date)
+        : await _controller.updateMilestone(existing, input.title, input.date);
+    if (!success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            (_controller.errorMessage.value ?? 'Unable to save milestone.').tr,
+          ),
+        ),
+      );
     }
-    title.dispose();
   }
 
-  Future<void> _scheduleDialog(int goalId) async {
-    final amount = TextEditingController();
-    var date = DateTime.now().add(const Duration(days: 1));
+  Future<void> _scheduleDialog(
+    int goalId, {
+    GoalScheduleModel? existing,
+  }) async {
+    final amount = TextEditingController(
+      text: existing?.amount.toApiString() ?? '',
+    );
+    var date =
+        existing?.scheduleDate ?? DateTime.now().add(const Duration(days: 1));
     final result = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: Text('Add contribution'.tr),
+          title: Text(
+            (existing == null ? 'Add contribution' : 'Edit contribution').tr,
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -424,7 +430,9 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
                   final picked = await showDatePicker(
                     context: context,
                     initialDate: date,
-                    firstDate: DateTime.now(),
+                    firstDate: date.isBefore(DateTime.now())
+                        ? date
+                        : DateTime.now(),
                     lastDate: DateTime(2200),
                   );
                   if (picked != null) {
@@ -459,11 +467,28 @@ class _GoalDetailsScreenState extends State<GoalDetailsScreen> {
       ),
     );
     if (result == true) {
-      await _controller.createSchedule(
-        goalId,
-        date,
-        MoneyAmount.parse(amount.text),
-      );
+      final success = existing == null
+          ? await _controller.createSchedule(
+              goalId,
+              date,
+              MoneyAmount.parse(amount.text),
+            )
+          : await _controller.updateSchedule(
+              existing,
+              date,
+              MoneyAmount.parse(amount.text),
+            );
+      if (!success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              (_controller.errorMessage.value ??
+                      'Unable to update contribution.')
+                  .tr,
+            ),
+          ),
+        );
+      }
     }
     amount.dispose();
   }
@@ -601,74 +626,130 @@ class _MilestoneCard extends StatelessWidget {
     required this.item,
     required this.controller,
     required this.onEdit,
+    required this.index,
   });
   final GoalMilestoneModel item;
   final GoalController controller;
   final VoidCallback onEdit;
+  final int index;
+  Future<void> _action(BuildContext context, bool delete) async {
+    if (delete) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Delete milestone?'.tr),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text('Cancel'.tr),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text('Delete'.tr),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true) return;
+    }
+    final success = delete
+        ? await controller.deleteMilestone(item)
+        : await controller.completeMilestone(item);
+    if (!success && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            (controller.errorMessage.value ?? 'Unable to save milestone.').tr,
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.lifeSyncColors;
     return Container(
-      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: colors.cardSurface,
+        border: Border.all(color: colors.border),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: item.completed
-              ? colors.positive.withValues(alpha: .55)
-              : colors.border,
-        ),
       ),
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: item.completed
-                ? null
-                : () => controller.completeMilestone(item),
-            icon: Icon(
-              item.completed
-                  ? Icons.check_circle
-                  : Icons.radio_button_unchecked,
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.symmetric(horizontal: 12),
+          leading: Container(
+            width: 34,
+            height: 38,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: item.completed ? colors.primaryBlue : colors.cardSurface,
+              border: Border.all(color: colors.primaryBlue),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              '$index'.padLeft(2, '0'),
+              style: TextStyle(
+                color: item.completed ? Colors.white : colors.primaryBlue,
+              ),
+            ),
+          ),
+          title: Text(
+            item.title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 13),
+          ),
+          subtitle: Text(
+            '${(item.completed ? 'Completed' : 'Upcoming').tr} · ${MaterialLocalizations.of(context).formatMediumDate(item.targetDate)}',
+            style: TextStyle(
+              fontSize: 11,
               color: item.completed ? colors.positive : colors.secondaryText,
             ),
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.title,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    decoration: item.completed
-                        ? TextDecoration.lineThrough
-                        : null,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: Wrap(
+                spacing: 8,
+                children: [
+                  if (!item.completed)
+                    TextButton.icon(
+                      onPressed: () => _action(context, false),
+                      icon: const Icon(Icons.check_circle_outline, size: 16),
+                      label: Text('Complete'.tr),
+                    ),
+                  TextButton.icon(
+                    onPressed: onEdit,
+                    icon: const Icon(Icons.edit_outlined, size: 16),
+                    label: Text('Edit'.tr),
                   ),
-                ),
-                Text(
-                  'Target ${_date(item.targetDate)}',
-                  style: TextStyle(fontSize: 10, color: colors.secondaryText),
-                ),
-              ],
+                  TextButton.icon(
+                    onPressed: () => _action(context, true),
+                    icon: Icon(
+                      Icons.delete_outline,
+                      size: 16,
+                      color: colors.negative,
+                    ),
+                    label: Text('Delete'.tr),
+                  ),
+                ],
+              ),
             ),
-          ),
-          IconButton(
-            onPressed: onEdit,
-            icon: const Icon(Icons.edit_outlined, size: 18),
-          ),
-          IconButton(
-            onPressed: () => controller.deleteMilestone(item),
-            icon: Icon(Icons.delete_outline, size: 18, color: colors.negative),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
 class _ScheduleCard extends StatelessWidget {
-  const _ScheduleCard({required this.item, required this.controller});
+  const _ScheduleCard({
+    required this.item,
+    required this.controller,
+    required this.onEdit,
+  });
+  final VoidCallback onEdit;
   final GoalScheduleModel item;
   final GoalController controller;
   @override
@@ -718,7 +799,42 @@ class _ScheduleCard extends StatelessWidget {
           ),
           if (!item.completed)
             IconButton(
-              onPressed: () => controller.deleteSchedule(item),
+              onPressed: onEdit,
+              icon: const Icon(Icons.edit_outlined),
+            ),
+          if (!item.completed)
+            IconButton(
+              onPressed: () async {
+                final confirmed = await showDialog<bool>(
+                  context: context,
+                  builder: (dialogContext) => AlertDialog(
+                    title: Text('Delete contribution?'.tr),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogContext, false),
+                        child: Text('Cancel'.tr),
+                      ),
+                      FilledButton(
+                        onPressed: () => Navigator.pop(dialogContext, true),
+                        child: Text('Delete'.tr),
+                      ),
+                    ],
+                  ),
+                );
+                if (confirmed != true) return;
+                final success = await controller.deleteSchedule(item);
+                if (!success && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        (controller.errorMessage.value ??
+                                'Unable to delete contribution.')
+                            .tr,
+                      ),
+                    ),
+                  );
+                }
+              },
               icon: Icon(
                 Icons.delete_outline,
                 size: 18,

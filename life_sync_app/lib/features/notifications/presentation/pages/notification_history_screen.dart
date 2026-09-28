@@ -56,14 +56,22 @@ final class NotificationHistoryScreen extends StatelessWidget {
               Row(
                 children: [
                   ChoiceChip(
-                    label: Text('All (${controller.notifications.length})'),
+                    label: Text(
+                      'All (@count)'.trParams({
+                        'count': '${controller.notifications.length}',
+                      }),
+                    ),
                     selected: controller.filter.value == NotificationFilter.all,
                     onSelected: (_) =>
                         controller.filter.value = NotificationFilter.all,
                   ),
                   const SizedBox(width: 10),
                   ChoiceChip(
-                    label: Text('Unread (${controller.unreadCount})'),
+                    label: Text(
+                      'Unread (@count)'.trParams({
+                        'count': '${controller.unreadCount}',
+                      }),
+                    ),
                     selected:
                         controller.filter.value == NotificationFilter.unread,
                     onSelected: (_) =>

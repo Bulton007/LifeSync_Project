@@ -119,6 +119,16 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
     final now = DateTime.now();
+    if (DateTime(
+      _date.year,
+      _date.month,
+      _date.day,
+    ).isAfter(DateTime(now.year, now.month, now.day))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Journal dates cannot be in the future.'.tr)),
+      );
+      return;
+    }
     final saved = await _controller.save(
       JournalEntry(
         id: _original?.id,
@@ -130,7 +140,13 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
         updatedAt: now,
       ),
     );
-    if (!saved || !mounted) return;
+    if (!mounted) return;
+    if (!saved) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Unable to save. Please try again.'.tr)),
+      );
+      return;
+    }
     setState(() {
       _dirty = false;
       _forcePop = true;
@@ -172,9 +188,9 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
   Future<void> _chooseDate() async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: _date,
+      initialDate: _date.isAfter(DateTime.now()) ? DateTime.now() : _date,
       firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      lastDate: DateTime.now(),
     );
     if (picked == null) return;
     setState(() {
@@ -400,7 +416,6 @@ final class _WriteJournalScreenState extends State<WriteJournalScreen> {
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
-                          contentPadding: EdgeInsets.zero,
                         ),
                         validator: (value) => (value?.trim().isEmpty ?? true)
                             ? 'Write something before saving.'

@@ -70,6 +70,11 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, "Request body must be valid JSON.");
     }
 
+    @ExceptionHandler(AiUnavailableException.class)
+    public ResponseEntity<?> handleAiUnavailable(AiUnavailableException ex) {
+        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception ex) {
         log.error("Unhandled server exception: ", ex);

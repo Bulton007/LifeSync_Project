@@ -32,6 +32,7 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
 
   bool _isComplete = false;
   bool _hasError = false;
+  bool _registrationVerified = false;
   int _resendSecondsRemaining = 0;
   int _gmailAttempts = 0;
   bool _usingTelegram = false;
@@ -139,14 +140,33 @@ class _SignUpVerifyEmailScreenState extends State<SignUpVerifyEmailScreen> {
       return;
     }
 
-    final verified = await _authController.verifyOtp(
-      email: _arguments.email,
-      otpCode: otp,
-    );
+    final verified =
+        _registrationVerified ||
+        await _authController.verifyOtp(email: _arguments.email, otpCode: otp);
     if (!mounted) return;
     setState(() => _hasError = !verified);
     if (verified) {
-      await Get.offAllNamed<void>(AppRoutes.createdSuccess);
+      _registrationVerified = true;
+      final password = _arguments.password;
+      if (password == null || password.isEmpty) {
+        _authController.errorMessage.value =
+            'Account verified. Sign in to continue.'.tr;
+        return;
+      }
+      final signedIn = await _authController.login(
+        email: _arguments.email,
+        password: password,
+      );
+      if (mounted && signedIn) {
+        await Get.offAllNamed<void>(
+          _authController.needsProfileCompletion
+              ? AppRoutes.profile
+              : AppRoutes.shell,
+          arguments: {
+            'completeRegistration': _authController.needsProfileCompletion,
+          },
+        );
+      }
     }
   }
 

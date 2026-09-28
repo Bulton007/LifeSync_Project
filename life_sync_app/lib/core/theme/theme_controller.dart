@@ -11,6 +11,7 @@ final class ThemeController extends GetxController {
 
   final SecureKeyValueStore _store;
   final preference = ThemePreference.system.obs;
+  int _selectionVersion = 0;
 
   @override
   void onInit() {
@@ -32,8 +33,10 @@ final class ThemeController extends GetxController {
   }
 
   Future<void> restore() async {
+    final version = _selectionVersion;
     try {
       final saved = await _store.read(storageKey);
+      if (version != _selectionVersion) return;
       if (saved != null && saved.isNotEmpty) {
         preference.value = ThemePreference.values.firstWhere(
           (value) => value.name == saved,
@@ -45,6 +48,7 @@ final class ThemeController extends GetxController {
   }
 
   Future<void> select(ThemePreference value) async {
+    _selectionVersion++;
     if (preference.value == value) return;
     preference.value = value;
     await _store.write(storageKey, value.name);

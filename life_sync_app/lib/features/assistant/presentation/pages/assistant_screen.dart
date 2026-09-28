@@ -241,27 +241,33 @@ final class _AssistantScreenState extends State<AssistantScreen> {
                       );
                     }
 
-                    return ListView.builder(
+                    return Scrollbar(
                       controller: _scrollController,
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                      itemCount: messages.length + (isLoading ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index == messages.length) {
-                          // Thinking Indicator
-                          return _ThinkingBubble(colors: colors);
-                        }
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                        itemCount: messages.length + (isLoading ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == messages.length) {
+                            // Thinking Indicator
+                            return _ThinkingBubble(colors: colors);
+                          }
 
-                        final msg = messages[index];
-                        if (msg.sender == MessageSender.user) {
-                          return _UserBubble(message: msg, colors: colors);
-                        } else {
-                          return _AssistantBubble(
-                            message: msg,
-                            colors: colors,
-                            onConfigureKey: () => _showApiKeyDialog(context),
-                          );
-                        }
-                      },
+                          final msg = messages[index];
+                          if (msg.sender == MessageSender.user) {
+                            return _UserBubble(message: msg, colors: colors);
+                          } else {
+                            return _AssistantBubble(
+                              message: msg,
+                              colors: colors,
+                              onConfigureKey: () => _showApiKeyDialog(context),
+                            );
+                          }
+                        },
+                      ),
                     );
                   }),
                 ),
@@ -660,6 +666,7 @@ final class _AssistantBubble extends StatelessWidget {
                 children: [
                   SelectableText(
                     message.text,
+                    scrollPhysics: const NeverScrollableScrollPhysics(),
                     style: TextStyle(
                       color: message.isError
                           ? Colors.red.shade800

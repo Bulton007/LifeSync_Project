@@ -1,3 +1,6 @@
+BEGIN;
+SET LOCAL lock_timeout = '5s';
+SET LOCAL statement_timeout = '30s';
 ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_failures integer;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_email_attempts integer;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_send_attempts integer;
@@ -7,3 +10,4 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_last_sent_at timestamp;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_purpose varchar(255);
 ALTER TABLE users ADD COLUMN IF NOT EXISTS telegram_chat_id varchar(255);
 ALTER TABLE users ADD COLUMN IF NOT EXISTS pending_telegram_chat_id varchar(255);
+COMMIT;

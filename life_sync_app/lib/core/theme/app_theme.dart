@@ -34,17 +34,22 @@ abstract final class AppTheme {
       shadow: colors.shadow,
       scrim: colors.overlay,
     );
-    final textTheme = TextTheme(
-      displayLarge: AppTextStyles.hero,
-      headlineLarge: AppTextStyles.titleXL,
-      headlineMedium: AppTextStyles.titleL,
-      titleLarge: AppTextStyles.titleM,
-      bodyLarge: AppTextStyles.bodyL,
-      bodyMedium: AppTextStyles.bodyPrimary,
-      bodySmall: AppTextStyles.caption,
-      labelLarge: AppTextStyles.button,
-      labelSmall: AppTextStyles.micro,
-    ).apply(bodyColor: colors.primaryText, displayColor: colors.primaryText, fontFamilyFallback: const ['NotoSansKhmer']);
+    final textTheme =
+        TextTheme(
+          displayLarge: AppTextStyles.hero,
+          headlineLarge: AppTextStyles.titleXL,
+          headlineMedium: AppTextStyles.titleL,
+          titleLarge: AppTextStyles.titleM,
+          bodyLarge: AppTextStyles.bodyL,
+          bodyMedium: AppTextStyles.bodyPrimary,
+          bodySmall: AppTextStyles.caption,
+          labelLarge: AppTextStyles.button,
+          labelSmall: AppTextStyles.micro,
+        ).apply(
+          bodyColor: colors.primaryText,
+          displayColor: colors.primaryText,
+          fontFamilyFallback: const ['NotoSansKhmer'],
+        );
     final inputBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppRadius.md),
       borderSide: BorderSide(color: colors.border),
@@ -240,7 +245,7 @@ abstract final class AppTheme {
       listTileTheme: ListTileThemeData(
         iconColor: colors.secondaryText,
         textColor: colors.primaryText,
-        contentPadding: EdgeInsets.zero,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       ),
       dialogTheme: DialogThemeData(
         elevation: 0,

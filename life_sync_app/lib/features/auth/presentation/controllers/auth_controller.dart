@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:life_sync_app/features/auth/data/services/google_auth_service.dart';
 import 'package:life_sync_app/core/network/api_result.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/services/auth_session_service.dart';
@@ -7,7 +8,39 @@ import 'package:life_sync_app/features/auth/domain/repositories/auth_repository.
 import 'package:life_sync_app/features/auth/presentation/validators/auth_validators.dart';
 
 final class AuthController extends GetxController {
-  AuthController(this._repository, this._sessionService);
+  AuthController(this._repository, this._sessionService, {this.googleAuth});
+  final GoogleAuthService? googleAuth;
+  bool needsProfileCompletion = false;
+
+  Future<bool> signInWithGoogle() => _submit(() async {
+    final provider = googleAuth;
+    if (provider == null) {
+      errorMessage.value = 'Google sign-in is not configured yet.'.tr;
+      return false;
+    }
+    try {
+      final result = await provider.signIn();
+      if (result == null) return false;
+      return await result.when(
+        success: (response) async {
+          await _sessionService.saveSession(
+            StoredAuthSession(
+              accessToken: response.accessToken,
+              tokenType: response.tokenType,
+              userId: response.userId,
+            ),
+          );
+          needsProfileCompletion = response.fullName.trim().isEmpty;
+          return true;
+        },
+        failure: _recordFailure,
+      );
+    } catch (_) {
+      errorMessage.value =
+          'Google sign-in failed. Check your connection and try again.'.tr;
+      return false;
+    }
+  });
 
   final AuthRepository _repository;
   final AuthSessionService _sessionService;
@@ -31,6 +64,7 @@ final class AuthController extends GetxController {
               userId: response.userId,
             ),
           );
+          needsProfileCompletion = response.fullName.trim().isEmpty;
           return true;
         },
         failure: _recordFailure,

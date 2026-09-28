@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/network/api_result.dart';
+import 'package:life_sync_app/core/network/api_exception.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/services/auth_session_service.dart';
 import 'package:life_sync_app/core/storage/token_storage.dart';
@@ -9,6 +10,8 @@ import 'package:life_sync_app/features/auth/data/models/auth_models.dart';
 import 'package:life_sync_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:life_sync_app/views/authentication/sign_up_screen.dart';
+import 'package:life_sync_app/views/authentication/forgot_password_screen.dart';
+import 'package:life_sync_app/views/authentication/sign_up_verify_email_screen.dart';
 
 void main() {
   group('SignUpScreen', () {
@@ -28,6 +31,86 @@ void main() {
 
     tearDown(() {
       Get.reset();
+    });
+
+    for (final failFirstLogin in [false, true]) {
+      testWidgets('verified registration opens Home (retry: $failFirstLogin)', (
+        tester,
+      ) async {
+        mockRepo.failFirstLogin = failFirstLogin;
+        await tester.pumpWidget(
+          GetMaterialApp(
+            home: const Scaffold(),
+            getPages: [
+              GetPage(
+                name: '/verify-test',
+                page: () => const SignUpVerifyEmailScreen(),
+              ),
+              GetPage(
+                name: AppRoutes.shell,
+                page: () => const Scaffold(body: Text('Home ready')),
+              ),
+            ],
+          ),
+        );
+        Get.toNamed(
+          '/verify-test',
+          arguments: const AuthFlowArguments(
+            email: 'test@example.com',
+            password: 'Test-password-123',
+            purpose: AuthFlowPurpose.registration,
+          ),
+        );
+        await tester.pumpAndSettle();
+        final fields = find.byType(TextField);
+        for (var index = 0; index < fields.evaluate().length; index++) {
+          await tester.enterText(fields.at(index), '1');
+        }
+        await tester.pump();
+        await tester.ensureVisible(find.text('Verify'));
+        await tester.tap(find.text('Verify'));
+        await tester.pumpAndSettle();
+        if (failFirstLogin) {
+          expect(find.text('Home ready'), findsNothing);
+          await tester.tap(find.text('Verify'));
+          await tester.pumpAndSettle();
+        }
+        expect(mockRepo.authCalls, [
+          'verify',
+          'login',
+          if (failFirstLogin) 'login',
+        ]);
+        expect(find.text('Home ready'), findsOneWidget);
+      });
+    }
+
+    testWidgets('email remains readable on the white card in dark mode', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        GetMaterialApp(theme: ThemeData.dark(), home: const SignUpScreen()),
+      );
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextFormField), 'test@example.com');
+      final editable = tester.widget<EditableText>(find.byType(EditableText));
+      expect(editable.style.color, Colors.black87);
+    });
+
+    testWidgets('forgot-password email is readable with a dark app theme', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        GetMaterialApp(
+          theme: ThemeData.dark(),
+          home: const ForgotPasswordScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextFormField), 'test@example.com');
+      expect(
+        tester.widget<EditableText>(find.byType(EditableText)).style.color,
+        Colors.black87,
+      );
     });
 
     Widget createTestWidget() {
@@ -127,6 +210,8 @@ void main() {
 
 final class _MockAuthRepo implements AuthRepository {
   bool emailExists = false;
+  final authCalls = <String>[];
+  bool failFirstLogin = false;
 
   @override
   Future<ApiResult<bool>> checkEmailExists(String email) async {
@@ -144,21 +229,33 @@ final class _MockAuthRepo implements AuthRepository {
   Future<ApiResult<LoginResponseModel>> login({
     required String email,
     required String password,
-  }) async => const ApiSuccess(
-    LoginResponseModel(
-      accessToken: 'token',
-      tokenType: 'Bearer',
-      userId: 1,
-      fullName: 'Test',
-      email: 'test@example.com',
-    ),
-  );
+  }) async {
+    authCalls.add('login');
+    if (failFirstLogin) {
+      failFirstLogin = false;
+      return const ApiFailure(
+        ApiException(type: ApiFailureType.network, message: 'Try again'),
+      );
+    }
+    return const ApiSuccess(
+      LoginResponseModel(
+        accessToken: 'token',
+        tokenType: 'Bearer',
+        userId: 1,
+        fullName: 'Test',
+        email: 'test@example.com',
+      ),
+    );
+  }
 
   @override
   Future<ApiResult<String>> verifyOtp({
     required String email,
     required String otpCode,
-  }) async => const ApiSuccess('Verified');
+  }) async {
+    authCalls.add('verify');
+    return const ApiSuccess('Verified');
+  }
 
   @override
   Future<ApiResult<String>> resendOtp(

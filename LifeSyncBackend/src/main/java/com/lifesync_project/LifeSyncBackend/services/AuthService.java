@@ -34,6 +34,24 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
+    public LoginResponse googleLogin(FirebaseIdentityService.Identity identity) {
+        Users user = userRepository.findByEmailIgnoreCase(identity.email()).orElse(null);
+        if (user != null && !Boolean.TRUE.equals(user.getVerified())) {
+            throw new UnauthorizedException("Verify your existing account with its email OTP before using Google sign-in.");
+        }
+        if (user == null) {
+            String name = identity.name();
+            user = userRepository.save(Users.builder()
+                    .email(identity.email())
+                    .fullName(name.substring(0, Math.min(100, name.length())))
+                    .password(passwordEncoder.encode(java.util.UUID.randomUUID().toString()))
+                    .verified(true).build());
+        }
+        return LoginResponse.builder().accessToken(jwtService.generateToken(user))
+                .tokenType("Bearer").userId(user.getId()).fullName(user.getFullName())
+                .email(user.getEmail()).build();
+    }
+
     /*
      * Check if email already exists
      */

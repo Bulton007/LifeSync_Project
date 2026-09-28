@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/routes/app_routes.dart';
 import 'package:life_sync_app/core/theme/app_icons.dart';
+import 'package:life_sync_app/core/theme/app_colors.dart';
 
 class CreatedSuccessScreen extends StatelessWidget {
   const CreatedSuccessScreen({super.key});
@@ -10,7 +11,7 @@ class CreatedSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.lifeSyncColors.pageBackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
@@ -47,7 +48,7 @@ class CreatedSuccessScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   height: 1.4,
-                  color: Colors.grey.shade600,
+                  color: context.lifeSyncColors.secondaryText,
                 ),
               ),
 

@@ -488,7 +488,9 @@ Future<void> _deleteTask(
     context: context,
     builder: (dialogContext) => AlertDialog(
       title: Text('Delete task?'.tr),
-      content: Text('Delete “${task.title}” and its subtasks?'),
+      content: Text(
+        'Delete “@title” and its subtasks?'.trParams({'title': task.title}),
+      ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(dialogContext, false),

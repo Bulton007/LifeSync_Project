@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_sync_app/core/storage/secure_token_storage.dart';
@@ -7,6 +8,19 @@ import 'package:life_sync_app/core/theme/theme_controller.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  test(
+    'a delayed restore cannot overwrite an explicit light selection',
+    () async {
+      final store = _DelayedStore();
+      final controller = ThemeController(store);
+      final restoring = controller.restore();
+      await controller.select(ThemePreference.light);
+      store.pending.complete('dark');
+      await restoring;
+      expect(controller.themeMode, ThemeMode.light);
+    },
+  );
 
   test('restores light, dark, and system theme preferences', () async {
     final store = _MemoryStore();
@@ -54,4 +68,14 @@ final class _MemoryStore implements SecureKeyValueStore {
 
   @override
   Future<void> write(String key, String value) async => values[key] = value;
+}
+
+final class _DelayedStore implements SecureKeyValueStore {
+  final pending = Completer<String?>();
+  @override
+  Future<String?> read(String key) => pending.future;
+  @override
+  Future<void> write(String key, String value) async {}
+  @override
+  Future<void> delete(String key) async {}
 }

@@ -206,33 +206,35 @@ final class FinanceController extends GetxController {
     String? description,
     required MoneyAmount amount,
     required DateTime date,
-  }) => _mutate(
-    () => _repository.createEntry(
-      type: type,
-      categoryId: categoryId,
-      title: title,
-      description: description,
-      amount: amount,
-      date: date,
-    ),
-    (item) {
-      final incomes = type == FinanceEntryType.income
-          ? [item, ...data.incomes]
-          : data.incomes;
-      final expenses = type == FinanceEntryType.expense
-          ? [item, ...data.expenses]
-          : data.expenses;
-      _setData(
-        FinanceData(
-          categories: data.categories,
-          budgets: data.budgets,
-          incomes: incomes,
-          expenses: expenses,
-        ),
-      );
-      load(refresh: true);
-    },
-  );
+  }) => !_validEntryDate(date)
+      ? Future.value(false)
+      : _mutate(
+          () => _repository.createEntry(
+            type: type,
+            categoryId: categoryId,
+            title: title,
+            description: description,
+            amount: amount,
+            date: date,
+          ),
+          (item) {
+            final incomes = type == FinanceEntryType.income
+                ? [item, ...data.incomes]
+                : data.incomes;
+            final expenses = type == FinanceEntryType.expense
+                ? [item, ...data.expenses]
+                : data.expenses;
+            _setData(
+              FinanceData(
+                categories: data.categories,
+                budgets: data.budgets,
+                incomes: incomes,
+                expenses: expenses,
+              ),
+            );
+            load(refresh: true);
+          },
+        );
   Future<bool> updateEntry(
     FinanceEntryModel entry, {
     required int categoryId,
@@ -240,66 +242,80 @@ final class FinanceController extends GetxController {
     String? description,
     required MoneyAmount amount,
     required DateTime date,
-  }) => _mutate(
-    () => _repository.updateEntry(
-      entry: entry,
-      categoryId: categoryId,
-      title: title,
-      description: description,
-      amount: amount,
-      date: date,
-    ),
-    (item) {
-      final incomes = [
-        for (final old in data.incomes)
-          if (old.id == item.id && item.type == FinanceEntryType.income)
-            item
-          else
-            old,
-      ];
-      final expenses = [
-        for (final old in data.expenses)
-          if (old.id == item.id && item.type == FinanceEntryType.expense)
-            item
-          else
-            old,
-      ];
-      _setData(
-        FinanceData(
-          categories: data.categories,
-          budgets: data.budgets,
-          incomes: incomes,
-          expenses: expenses,
-        ),
-      );
-      load(refresh: true);
-    },
-  );
-  Future<bool> deleteEntry(
-    FinanceEntryModel entry,
-  ) => _delete(() => _repository.deleteEntry(entry), () {
-    _setData(
-      FinanceData(
-        categories: data.categories,
-        budgets: data.budgets,
-        incomes: data.incomes
-            .where(
-              (item) =>
-                  !(entry.type == FinanceEntryType.income &&
-                      item.id == entry.id),
-            )
-            .toList(),
-        expenses: data.expenses
-            .where(
-              (item) =>
-                  !(entry.type == FinanceEntryType.expense &&
-                      item.id == entry.id),
-            )
-            .toList(),
-      ),
-    );
-    load(refresh: true);
-  });
+  }) => !_validEntryDate(date)
+      ? Future.value(false)
+      : _mutate(
+          () => _repository.updateEntry(
+            entry: entry,
+            categoryId: categoryId,
+            title: title,
+            description: description,
+            amount: amount,
+            date: date,
+          ),
+          (item) {
+            final incomes = [
+              for (final old in data.incomes)
+                if (old.id == item.id && item.type == FinanceEntryType.income)
+                  item
+                else
+                  old,
+            ];
+            final expenses = [
+              for (final old in data.expenses)
+                if (old.id == item.id && item.type == FinanceEntryType.expense)
+                  item
+                else
+                  old,
+            ];
+            _setData(
+              FinanceData(
+                categories: data.categories,
+                budgets: data.budgets,
+                incomes: incomes,
+                expenses: expenses,
+              ),
+            );
+            load(refresh: true);
+          },
+        );
+  Future<bool> deleteEntry(FinanceEntryModel entry) =>
+      _delete(() => _repository.deleteEntry(entry), () {
+        _setData(
+          FinanceData(
+            categories: data.categories,
+            budgets: data.budgets,
+            incomes: data.incomes
+                .where(
+                  (item) =>
+                      !(entry.type == FinanceEntryType.income &&
+                          item.id == entry.id),
+                )
+                .toList(),
+            expenses: data.expenses
+                .where(
+                  (item) =>
+                      !(entry.type == FinanceEntryType.expense &&
+                          item.id == entry.id),
+                )
+                .toList(),
+          ),
+        );
+        load(refresh: true);
+      });
+
+  bool _validEntryDate(DateTime date) {
+    final now = DateTime.now();
+    if (DateTime(
+      date.year,
+      date.month,
+      date.day,
+    ).isAfter(DateTime(now.year, now.month, now.day))) {
+      errorMessage.value = 'Transaction dates cannot be in the future.'.tr;
+      return false;
+    }
+    return true;
+  }
 
   Future<bool> _mutate<T>(
     Future<ApiResult<T>> Function() operation,
