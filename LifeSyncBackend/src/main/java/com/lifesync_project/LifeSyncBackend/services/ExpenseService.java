@@ -22,11 +22,13 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
     private final AuthenticatedUserService authenticatedUserService;
+    private final BudgetAlertService budgetAlerts;
 
     public ExpenseResponse createExpense(ExpenseRequest request) {
 
         Long userId = authenticatedUserService.requireCurrentUser().getId();
         requireCategory(request.getCategoryId());
+        var before = budgetAlerts.total(userId, request.getCategoryId());
         Expense expense = Expense.builder()
                 .userId(userId)
                 .categoryId(request.getCategoryId())
@@ -36,7 +38,10 @@ public class ExpenseService {
                 .expenseDate(request.getExpenseDate())
                 .build();
 
-        return mapToResponse(expenseRepository.save(expense));
+        var saved = expenseRepository.saveAndFlush(expense);
+        budgetAlerts.recordCrossings(userId, request.getCategoryId(), before,
+                budgetAlerts.total(userId, request.getCategoryId()));
+        return mapToResponse(saved);
     }
 
     public ExpenseResponse updateExpense(
@@ -45,6 +50,7 @@ public class ExpenseService {
 
         Expense expense = requireOwned(id);
         requireCategory(request.getCategoryId());
+        var before = budgetAlerts.total(expense.getUserId(), request.getCategoryId());
 
         expense.setCategoryId(request.getCategoryId());
         expense.setTitle(request.getTitle());
@@ -52,7 +58,10 @@ public class ExpenseService {
         expense.setAmount(request.getAmount());
         expense.setExpenseDate(request.getExpenseDate());
 
-        return mapToResponse(expenseRepository.save(expense));
+        var saved = expenseRepository.saveAndFlush(expense);
+        budgetAlerts.recordCrossings(expense.getUserId(), request.getCategoryId(), before,
+                budgetAlerts.total(expense.getUserId(), request.getCategoryId()));
+        return mapToResponse(saved);
     }
 
     public void deleteExpense(Long id) {

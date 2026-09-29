@@ -1,4 +1,5 @@
 import 'package:life_sync_app/core/localization/language_controller.dart';
+import 'package:life_sync_app/features/notifications/presentation/pages/reminder_settings_screen.dart';
 import 'package:life_sync_app/core/services/app_lock_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -402,7 +403,8 @@ final class SettingsScreen extends StatelessWidget {
                     _SettingRow(
                       icon: Icons.notifications_none_rounded,
                       title: 'Reminder'.tr,
-                      onTap: () => Get.toNamed<void>(AppRoutes.notifications),
+                      onTap: () =>
+                          Get.to<void>(() => const ReminderSettingsScreen()),
                     ),
                   ],
                 ),

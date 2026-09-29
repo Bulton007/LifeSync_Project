@@ -27,22 +27,29 @@ void main() {
       expect(AuthValidators.password(''), 'Password is required.');
       expect(
         AuthValidators.password('short'),
-        'Password must contain at least 8 characters.',
+        'Password must contain at least 12 characters.',
       );
-      expect(AuthValidators.password('Test123456'), isNull);
+      expect(AuthValidators.password('Test1234567!'), isNull);
       expect(
         AuthValidators.password(List.filled(101, 'a').join()),
         'Password must not exceed 100 characters.',
       );
     });
 
+    test('requires a number and a symbol', () {
+      expect(AuthValidators.password('abcdefghijkl!'), isNotNull);
+      expect(AuthValidators.password('abcdefghijk12'), isNotNull);
+      expect(AuthValidators.password('abcdefghij1 '), isNotNull);
+      expect(AuthValidators.password('abcdefghij1!'), isNull);
+    });
+
     test('validates password confirmation', () {
       expect(
-        AuthValidators.confirmPassword('Test123456', 'Test123456'),
+        AuthValidators.confirmPassword('Test1234567!', 'Test1234567!'),
         isNull,
       );
       expect(
-        AuthValidators.confirmPassword('Test123457', 'Test123456'),
+        AuthValidators.confirmPassword('Test1234568!', 'Test1234567!'),
         'Passwords do not match.',
       );
     });

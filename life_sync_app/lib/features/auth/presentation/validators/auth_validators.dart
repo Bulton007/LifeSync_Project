@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 
 abstract final class AuthValidators {
   static const otpLength = 6;
-  static const passwordMinLength = 8;
+  static const passwordMinLength = 12;
   static const passwordMaxLength = 100;
   static const fullNameMaxLength = 100;
 
@@ -24,6 +24,10 @@ abstract final class AuthValidators {
     }
     if (password.length > passwordMaxLength) {
       return 'Password must not exceed $passwordMaxLength characters.';
+    }
+    if (!RegExp(r'[0-9]').hasMatch(password) ||
+        !RegExp(r'[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]').hasMatch(password)) {
+      return 'Password must contain a number and a symbol.';
     }
     return null;
   }

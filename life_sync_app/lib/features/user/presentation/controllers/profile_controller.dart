@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -42,16 +42,17 @@ final class ProfileController extends GetxController {
         : const AsyncViewState<UserProfileModel>.loading();
 
     final result = await _repository.getProfile(userId);
-    result.when(
-      success: (profile) {
+    if (_userId != userId) return;
+    await result.when<Future<void>>(
+      success: (profile) async {
         state.value = AsyncViewState<UserProfileModel>.success(profile);
         if (profile.profileImage != null) {
-          _loadImage(userId);
+          await _loadImage(userId);
         } else {
           imageBytes.value = null;
         }
       },
-      failure: (exception) {
+      failure: (exception) async {
         state.value = AsyncViewState<UserProfileModel>.error(
           exception,
           previousData: previous,
@@ -97,21 +98,30 @@ final class ProfileController extends GetxController {
   }
 
   Future<bool> pickAndUploadImage() async {
-    if (isSubmitting.value) return false;
-    final selected = await _imagePicker.pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 1600,
-      imageQuality: 88,
-      requestFullMetadata: false,
-    );
-    if (selected == null) return false;
-
     final userId = _userId;
-    if (userId == null) return false;
+    if (userId == null || isSubmitting.value) return false;
 
     isSubmitting.value = true;
     errorMessage.value = null;
     try {
+      final selected = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1600,
+        maxHeight: 1600,
+        imageQuality: 88,
+        requestFullMetadata: false,
+      );
+      if (selected == null || _userId != userId) return false;
+      final extension = selected.name.split('.').last.toLowerCase();
+      if (!{'jpg', 'jpeg', 'png', 'webp'}.contains(extension)) {
+        errorMessage.value = 'Profile image must be JPG, PNG, or WebP.';
+        return false;
+      }
+      final size = await selected.length();
+      if (size == 0 || size > 5 * 1024 * 1024) {
+        errorMessage.value = 'Choose a non-empty image smaller than 5 MB.';
+        return false;
+      }
       final result = await _repository.uploadProfileImage(
         userId: userId,
         filePath: selected.path,
@@ -124,6 +134,13 @@ final class ProfileController extends GetxController {
         },
         failure: (exception) async => _recordFailure(exception),
       );
+    } on PlatformException {
+      errorMessage.value =
+          'Unable to open photos. Check photo permissions in phone settings.';
+      return false;
+    } catch (_) {
+      errorMessage.value = 'Unable to upload your photo. Please try again.';
+      return false;
     } finally {
       isSubmitting.value = false;
     }
@@ -154,9 +171,10 @@ final class ProfileController extends GetxController {
 
   Future<void> _loadImage(int userId) async {
     final result = await _repository.getProfileImage(userId);
+    if (_userId != userId) return;
     result.when(
       success: (bytes) => imageBytes.value = bytes,
-      failure: (_) => imageBytes.value = null,
+      failure: (exception) => errorMessage.value = exception.message,
     );
   }
 

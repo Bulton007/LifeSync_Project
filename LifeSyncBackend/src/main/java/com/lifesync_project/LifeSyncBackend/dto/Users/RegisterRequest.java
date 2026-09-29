@@ -32,6 +32,7 @@ public class RegisterRequest {
     private String telegramId;
 
     @NotBlank(message = "Password is required")
-    @Size(min = 8, max = 100)
+    @Size(min = 12, max = 100, message = "Password must contain 12-100 characters")
+    @Pattern(regexp = "(?s)^(?=.*[0-9])(?=.*[\\x21-\\x2F\\x3A-\\x40\\x5B-\\x60\\x7B-\\x7E]).*$", message = "Password must contain a number and a symbol")
     private String password;
 }

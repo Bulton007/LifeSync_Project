@@ -1,5 +1,6 @@
 import 'package:life_sync_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:life_sync_app/features/notifications/presentation/pages/reminder_settings_screen.dart';
 import 'package:get/get.dart';
 import 'package:life_sync_app/core/state/async_view_state.dart';
 import 'package:life_sync_app/core/widgets/app_error_view.dart';
@@ -19,6 +20,11 @@ final class NotificationHistoryScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Notifications'.tr),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: 'Reminder'.tr,
+            onPressed: () => Get.to<void>(() => const ReminderSettingsScreen()),
+          ),
           Obx(
             () => TextButton(
               onPressed:

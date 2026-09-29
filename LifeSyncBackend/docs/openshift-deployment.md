@@ -1,5 +1,31 @@
 # OpenShift deployment
 
+## Persistent profile images
+
+The existing `lifesync-backend` deployment mounts PVC `lifesync-uploads` at
+`/data`. Set `UPLOAD_DIR=/data/profile-images` for this deployment. The default
+relative directory resolves under `/app`, which is not writable by the OpenShift
+runtime UID. Do not use `/tmp` for user images: it is ephemeral and images would
+be lost on pod replacement. Verify the PVC mount before applying this setting
+to a different deployment; the starter template does not provision this PVC.
+
+```powershell
+oc set env deployment/lifesync-backend -n bultoncr7-dev --containers=backend UPLOAD_DIR=/data/profile-images
+oc rollout status deployment/lifesync-backend -n bultoncr7-dev --timeout=180s
+```
+
+This changes file storage configuration only; no database migration is needed.
+
+## Flashcard feature removal
+
+Flashcard, deck and review controllers, services, repositories, DTOs and entity
+mappings have been removed. The backend no longer registers the
+`/api/flashcards`, `/api/flashcard-decks` or `/api/flashcard-reviews` endpoints.
+Existing database tables and records are retained; this deployment does not
+drop tables or run migrations. The Flutter application has no flashcard API
+references. Database design documentation should exclude this retired feature
+from the active application model, while noting any retained legacy tables.
+
 Build the backend JAR and stage only that JAR as `app.jar` together with
 `Dockerfile.openshift` renamed to `Dockerfile` for the binary build. Never upload
 the repository root, local environment files, or application logs.

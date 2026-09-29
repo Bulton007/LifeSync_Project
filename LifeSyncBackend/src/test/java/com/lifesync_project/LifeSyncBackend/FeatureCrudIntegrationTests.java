@@ -94,6 +94,36 @@ class FeatureCrudIntegrationTests {
     }
 
     @Test
+    void expenseCrossingBudgetCreatesPrivateNotification() throws Exception {
+        var owner = saveVerifiedUser("budget-alert-owner@lifesync.test");
+        var other = saveVerifiedUser("budget-alert-other@lifesync.test");
+        var authorization = bearer(owner);
+        long categoryId = idFrom(postJson("/api/categories", authorization,
+                "{\"name\":\"Alert category\"}"), "id");
+        postJson("/api/budgets", authorization,
+                "{\"category\":\"Alert category\",\"categoryId\":%d,\"limitAmount\":100}".formatted(categoryId));
+        postJson("/api/expenses", authorization,
+                "{\"categoryId\":%d,\"title\":\"Test expense\",\"amount\":105,\"expenseDate\":\"2026-09-01\"}".formatted(categoryId));
+        var content = mockMvc.perform(get("/api/notifications").header("Authorization", authorization))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].type").value("BUDGET_LIMIT"))
+                .andReturn().getResponse().getContentAsString();
+        long notificationId = objectMapper.readTree(content).get(0).get("notificationId").asLong();
+        mockMvc.perform(get("/api/notifications").header("Authorization", bearer(other)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$").isEmpty());
+        mockMvc.perform(patch("/api/notifications/{id}/read", notificationId)
+                        .header("Authorization", bearer(other)))
+                .andExpect(status().isNotFound());
+        mockMvc.perform(patch("/api/notifications/{id}/read", notificationId)
+                        .header("Authorization", authorization))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.isRead").value(true));
+        mockMvc.perform(delete("/api/notifications/{id}", notificationId)
+                        .header("Authorization", authorization))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
     void goalAndChildUpdateDeleteOperationsWork() throws Exception {
         Users owner = saveVerifiedUser("feature-goals@lifesync.test");
         String authorization = bearer(owner);

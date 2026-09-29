@@ -38,6 +38,12 @@ final class UserRemoteDataSource {
       '/api/users/$userId/profile-image',
       filePath: filePath,
       fileName: fileName,
+      fileContentType: switch (fileName.split('.').last.toLowerCase()) {
+        'jpg' || 'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+        'webp' => 'image/webp',
+        _ => 'application/octet-stream',
+      },
       fieldName: 'file',
       decoder: _decodeMessage,
     );

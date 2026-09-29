@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,6 +8,7 @@ import 'package:life_sync_app/core/network/api_client.dart';
 import 'package:life_sync_app/core/network/api_exception.dart';
 import 'package:life_sync_app/core/network/api_result.dart';
 import 'package:life_sync_app/core/storage/token_storage.dart';
+import 'package:life_sync_app/features/user/data/datasources/user_remote_data_source.dart';
 
 void main() {
   group('ApiClient', () {
@@ -36,6 +38,35 @@ void main() {
         dio: dio,
       );
     });
+
+    test(
+      'profile upload sends backend-compatible image MIME and file field',
+      () async {
+        final directory = await Directory.systemTemp.createTemp(
+          'lifesync-upload-test-',
+        );
+        try {
+          final file = File('${directory.path}/photo.JPG');
+          await file.writeAsBytes([255, 216, 255, 217]);
+          adapter
+            ..body = 'Profile image uploaded successfully.'
+            ..contentType = Headers.textPlainContentType;
+          final remote = UserRemoteDataSource(client);
+          final result = await remote.uploadProfileImage(
+            userId: 7,
+            filePath: file.path,
+            fileName: 'photo.JPG',
+          );
+          expect(result.dataOrNull, 'Profile image uploaded successfully.');
+          final upload = (adapter.lastRequest!.data as FormData).files.single;
+          expect(upload.key, 'file');
+          expect(upload.value.contentType.toString(), 'image/jpeg');
+          expect(adapter.lastRequest!.uri.path, '/api/users/7/profile-image');
+        } finally {
+          await directory.delete(recursive: true);
+        }
+      },
+    );
 
     test('attaches the persisted bearer token', () async {
       final result = await client.get<Map<String, Object?>>(
@@ -181,6 +212,7 @@ final class _RecordingAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     lastRequest = options;
+    await requestStream?.drain<void>();
     return ResponseBody.fromString(
       body,
       statusCode,

@@ -1,5 +1,6 @@
 import 'package:life_sync_app/core/localization/app_translations.dart';
 import 'package:life_sync_app/core/services/app_lock_service.dart';
+import 'package:life_sync_app/core/services/notification_delivery_service.dart';
 import 'package:life_sync_app/core/widgets/app_lock_gate.dart';
 import 'package:life_sync_app/core/localization/language_controller.dart';
 import 'package:flutter/foundation.dart';
@@ -178,6 +179,11 @@ class _LifeSyncAppState extends State<LifeSyncApp> with WidgetsBindingObserver {
         darkTheme: AppTheme.dark,
         themeMode: themeController.themeMode,
         initialBinding: InitialBinding(),
+        routingCallback: (_) {
+          if (Get.isRegistered<NotificationDeliveryService>()) {
+            Get.find<NotificationDeliveryService>().openPendingNotification();
+          }
+        },
         initialRoute: AppRoutes.startup,
         getPages: AppPages.pages,
         builder: (context, child) => AppLockGate(

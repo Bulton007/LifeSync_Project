@@ -201,12 +201,19 @@ final class ApiClient {
     required ApiDecoder<T> decoder,
     String fieldName = 'file',
     String? fileName,
+    String? fileContentType,
     Map<String, dynamic> fields = const {},
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
   }) async {
     try {
-      final file = await MultipartFile.fromFile(filePath, filename: fileName);
+      final file = await MultipartFile.fromFile(
+        filePath,
+        filename: fileName,
+        contentType: fileContentType == null
+            ? null
+            : DioMediaType.parse(fileContentType),
+      );
       final formData = FormData.fromMap({...fields, fieldName: file});
 
       return await request<T>(

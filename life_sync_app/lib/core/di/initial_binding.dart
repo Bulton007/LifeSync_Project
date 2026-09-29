@@ -1,5 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:life_sync_app/core/services/notification_delivery_service.dart';
 import 'package:life_sync_app/core/config/app_environment.dart';
 import 'package:life_sync_app/core/network/api_client.dart';
 import 'package:life_sync_app/core/services/auth_session_service.dart';
@@ -46,5 +47,16 @@ final class InitialBinding extends Bindings {
       ),
       fenix: true,
     );
+    if (!Get.isRegistered<NotificationDeliveryService>()) {
+      Get.put(
+        NotificationDeliveryService(
+          Get.find<SecureKeyValueStore>(),
+          Get.find<AuthSessionService>(),
+          Get.find<ApiClient>(),
+          AndroidNotificationDevice(),
+        ),
+        permanent: true,
+      );
+    }
   }
 }

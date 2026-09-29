@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:life_sync_app/core/services/notification_delivery_service.dart';
 import 'package:life_sync_app/core/network/api_exception.dart';
 import 'package:life_sync_app/core/network/api_result.dart';
 import 'package:life_sync_app/core/state/async_view_state.dart';
@@ -42,6 +43,7 @@ final class TaskController extends GetxController {
     final result = await _repository.getTasks();
     result.when(
       success: (items) {
+        _updateReminders(items);
         state.value = items.isEmpty
             ? const AsyncViewState<List<TaskModel>>.empty()
             : AsyncViewState<List<TaskModel>>.success(items);
@@ -245,6 +247,7 @@ final class TaskController extends GetxController {
   }
 
   void _setTasks(List<TaskModel> items) {
+    _updateReminders(items);
     items.sort((a, b) {
       final dateOrder = a.dueDate.compareTo(b.dueDate);
       if (dateOrder != 0) return dateOrder;
@@ -260,6 +263,12 @@ final class TaskController extends GetxController {
       for (final item in subTasks[updated.taskId] ?? const <SubTaskModel>[])
         if (item.id == updated.id) updated else item,
     ];
+  }
+
+  void _updateReminders(List<TaskModel> items) {
+    if (Get.isRegistered<NotificationDeliveryService>()) {
+      Get.find<NotificationDeliveryService>().updateTasks(items);
+    }
   }
 
   bool _recordFailure(ApiException exception) {

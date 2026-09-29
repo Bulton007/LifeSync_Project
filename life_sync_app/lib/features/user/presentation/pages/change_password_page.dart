@@ -5,6 +5,8 @@ import 'package:life_sync_app/core/theme/app_spacing.dart';
 import 'package:life_sync_app/core/theme/app_text_styles.dart';
 import 'package:life_sync_app/features/auth/presentation/controllers/auth_controller.dart';
 
+import 'package:life_sync_app/features/auth/presentation/validators/auth_validators.dart';
+
 final class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});
 
@@ -91,16 +93,7 @@ final class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     ),
                   ),
                 ),
-                validator: (value) {
-                  final password = value ?? '';
-                  if (password.length < 8) {
-                    return 'Password must contain at least 8 characters.';
-                  }
-                  if (password.length > 100) {
-                    return 'Password must not exceed 100 characters.';
-                  }
-                  return null;
-                },
+                validator: AuthValidators.password,
               ),
               const SizedBox(height: AppSpacing.md),
               TextFormField(
@@ -136,9 +129,7 @@ final class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     child: _controller.isSubmitting.value
                         ? const SizedBox.square(
                             dimension: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
+                            child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : Text('Change password'.tr),
                   ),

@@ -9,6 +9,7 @@ final class AuthSessionService extends GetxService {
   final TokenStorage _tokenStorage;
   StoredAuthSession? _currentSession;
   bool _initialized = false;
+  void Function()? onSessionChanged;
 
   StoredAuthSession? get currentSession => _currentSession;
 
@@ -19,6 +20,7 @@ final class AuthSessionService extends GetxService {
   Future<StoredAuthSession?> restoreSession() async {
     _currentSession = await _tokenStorage.readSession();
     _initialized = true;
+    onSessionChanged?.call();
     return _currentSession;
   }
 
@@ -26,6 +28,7 @@ final class AuthSessionService extends GetxService {
     await _tokenStorage.saveSession(session);
     _currentSession = session;
     _initialized = true;
+    onSessionChanged?.call();
   }
 
   Future<void> clearSession() async {
@@ -34,6 +37,7 @@ final class AuthSessionService extends GetxService {
     } finally {
       _currentSession = null;
       _initialized = true;
+      onSessionChanged?.call();
     }
   }
 

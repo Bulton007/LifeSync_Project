@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:life_sync_app/core/services/notification_delivery_service.dart';
 import 'package:life_sync_app/core/network/api_exception.dart';
 import 'package:life_sync_app/core/network/api_result.dart';
 import 'package:life_sync_app/core/state/async_view_state.dart';
@@ -60,6 +61,9 @@ final class HabitController extends GetxController {
       success: logs.assignAll,
       failure: (error) => errorMessage.value = error.message,
     );
+    if (habitsResult.dataOrNull != null && logsResult.dataOrNull != null) {
+      _updateReminders();
+    }
   }
 
   void selectDate(DateTime date) =>
@@ -176,6 +180,7 @@ final class HabitController extends GetxController {
       final bool success = result.when<bool>(
         success: (log) {
           logs.insert(0, log);
+          _updateReminders();
           if (_sameDate(date, DateTime.now())) loadHabits(refresh: true);
           return true;
         },
@@ -209,9 +214,21 @@ final class HabitController extends GetxController {
     }
   }
 
-  void _setHabits(List<HabitModel> items) => state.value = items.isEmpty
-      ? const AsyncViewState<List<HabitModel>>.empty()
-      : AsyncViewState<List<HabitModel>>.success(items);
+  void _setHabits(List<HabitModel> items) {
+    state.value = items.isEmpty
+        ? const AsyncViewState<List<HabitModel>>.empty()
+        : AsyncViewState<List<HabitModel>>.success(items);
+    _updateReminders();
+  }
+
+  void _updateReminders() {
+    if (Get.isRegistered<NotificationDeliveryService>()) {
+      Get.find<NotificationDeliveryService>().updateHabits(
+        [...habits],
+        [...logs],
+      );
+    }
+  }
 
   bool _recordFailure(ApiException error) {
     errorMessage.value = error.message;

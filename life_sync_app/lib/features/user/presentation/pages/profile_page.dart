@@ -231,6 +231,14 @@ final class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
             const SizedBox(height: 24),
+            if (_controller.errorMessage.value != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Text(
+                  _controller.errorMessage.value!.tr,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ),
 
             // Profile Fields Section
             Container(
@@ -297,61 +305,6 @@ final class _ProfilePageState extends State<ProfilePage> {
                     title: 'Change Password'.tr,
                     isLast: true,
                     onTap: () => Get.toNamed<void>(AppRoutes.changePassword),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Third Party Connection Header
-            Text(
-              'Third Party Connection'.tr,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                color: colors.primaryText,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            // Third Party Connection Section
-            Container(
-              decoration: BoxDecoration(
-                color: cardBgColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                children: [
-                  _ConnectedAccountRow(
-                    iconWidget: const Icon(
-                      Icons.facebook,
-                      color: Color(0xFF1877F2),
-                      size: 24,
-                    ),
-                    title: 'Facebook',
-                    status: 'Not Linked',
-                    onTap: () => _notice(
-                      'Facebook account linking is not available yet.',
-                    ),
-                  ),
-                  _ConnectedAccountRow(
-                    iconWidget: _GoogleIcon(),
-                    title: 'Google',
-                    status: 'Not Linked',
-                    onTap: () =>
-                        _notice('Google account linking is not available yet.'),
-                  ),
-                  _ConnectedAccountRow(
-                    iconWidget: Icon(
-                      Icons.apple,
-                      color: colors.primaryText,
-                      size: 24,
-                    ),
-                    title: 'Apple',
-                    status: 'Not Linked',
-                    isLast: true,
-                    onTap: () =>
-                        _notice('Apple account linking is not available yet.'),
                   ),
                 ],
               ),
@@ -498,87 +451,6 @@ class _ProfileOptionRow extends StatelessWidget {
               size: 20,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ConnectedAccountRow extends StatelessWidget {
-  final Widget iconWidget;
-  final String title;
-  final String status;
-  final VoidCallback onTap;
-  final bool isLast;
-
-  const _ConnectedAccountRow({
-    required this.iconWidget,
-    required this.title,
-    required this.status,
-    required this.onTap,
-    this.isLast = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.lifeSyncColors;
-    return InkWell(
-      borderRadius: isLast
-          ? const BorderRadius.vertical(bottom: Radius.circular(20))
-          : BorderRadius.zero,
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        child: Row(
-          children: [
-            SizedBox(width: 26, height: 26, child: Center(child: iconWidget)),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                  color: colors.primaryText,
-                ),
-              ),
-            ),
-            Text(
-              status,
-              style: TextStyle(fontSize: 14, color: colors.secondaryText),
-            ),
-            const SizedBox(width: 4),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: colors.secondaryText,
-              size: 20,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _GoogleIcon extends StatelessWidget {
-  const _GoogleIcon();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 22,
-      height: 22,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-      ),
-      alignment: Alignment.center,
-      child: const Text(
-        'G',
-        style: TextStyle(
-          color: Color(0xFF4285F4),
-          fontWeight: FontWeight.w900,
-          fontSize: 16,
         ),
       ),
     );

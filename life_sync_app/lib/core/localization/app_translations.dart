@@ -3,6 +3,48 @@ import 'package:get/get.dart';
 /// UI copy only. User content and API identifiers are never translated.
 final class AppTranslations extends Translations {
   static const khmer = <String, String>{
+    'Profile image must be JPG, PNG, or WebP.':
+        'រូបភាពប្រវត្តិរូបត្រូវតែជា JPG, PNG ឬ WebP។',
+    'Choose a non-empty image smaller than 5 MB.':
+        'សូមជ្រើសរូបភាពដែលមិនទទេ និងមានទំហំតូចជាង 5 MB។',
+    'Unable to open photos. Check photo permissions in phone settings.':
+        'មិនអាចបើករូបថតបានទេ។ សូមពិនិត្យសិទ្ធិរូបថតក្នុងការកំណត់ទូរស័ព្ទ។',
+    'Unable to upload your photo. Please try again.':
+        'មិនអាចផ្ទុករូបថតរបស់អ្នកបានទេ។ សូមព្យាយាមម្តងទៀត។',
+    'Task, habit reminders and account alerts':
+        'ការរំលឹកកិច្ចការ ទម្លាប់ និងការជូនដំណឹងគណនី',
+    'Daily reminder time': 'ម៉ោងរំលឹកប្រចាំថ្ងៃ',
+    'Habit reminder': 'ការរំលឹកទម្លាប់',
+    'Habit reminder days: @count': 'ចំនួនថ្ងៃរំលឹកទម្លាប់៖ @count',
+    'Open LifeSync to review your scheduled habits.':
+        'បើក LifeSync ដើម្បីពិនិត្យទម្លាប់ដែលបានកំណត់របស់អ្នក។',
+    'Incomplete tasks use the next reminder time if overdue. Habit reminders cover the next seven days; open LifeSync regularly to refresh them. Android may delay delivery to save battery.':
+        'កិច្ចការមិនទាន់រួចដែលហួសកំណត់នឹងរំលឹកនៅម៉ោងបន្ទាប់។ ការរំលឹកទម្លាប់គ្របដណ្តប់ប្រាំពីរថ្ងៃខាងមុខ។ សូមបើក LifeSync ជាប្រចាំដើម្បីធ្វើបច្ចុប្បន្នភាព។ Android អាចពន្យារការជូនដំណឹងដើម្បីសន្សំថ្ម។',
+    'Enable phone notifications': 'បើកការជូនដំណឹងលើទូរស័ព្ទ',
+    'Task reminders and account alerts': 'ការរំលឹកកិច្ចការ និងការជូនដំណឹងគណនី',
+    'Phone reminders are available on Android.':
+        'ការរំលឹកលើទូរស័ព្ទមាននៅលើ Android។',
+    'Task reminder time': 'ម៉ោងរំលឹកកិច្ចការ',
+    'Task reminder': 'ការរំលឹកកិច្ចការ',
+    'Open LifeSync to review your due task.':
+        'បើក LifeSync ដើម្បីពិនិត្យកិច្ចការដល់កំណត់របស់អ្នក។',
+    'You have a new account alert.': 'អ្នកមានការជូនដំណឹងគណនីថ្មី។',
+    'Scheduled tasks: @count': 'កិច្ចការដែលបានកំណត់ការរំលឹក៖ @count',
+    'Send test notification': 'សាកល្បងផ្ញើការជូនដំណឹង',
+    'Test background reminder': 'សាកល្បងការរំលឹកពេលបិទកម្មវិធី',
+    'Android notification settings': 'ការកំណត់ការជូនដំណឹង Android',
+    'Notification history': 'ប្រវត្តិការជូនដំណឹង',
+    'Enable notifications first.': 'សូមបើកការជូនដំណឹងជាមុនសិន។',
+    'Notifications could not be updated. Please try again.':
+        'មិនអាចធ្វើបច្ចុប្បន្នភាពការជូនដំណឹងបានទេ។ សូមព្យាយាមម្តងទៀត។',
+    'Allow notifications in Android settings, then enable reminders again.':
+        'អនុញ្ញាតការជូនដំណឹងក្នុងការកំណត់ Android រួចបើកការរំលឹកម្តងទៀត។',
+    'Reminders are scheduled on each task’s due date. Times already passed are not scheduled. Android may delay delivery to save battery.':
+        'ការរំលឹកត្រូវបានកំណត់តាមថ្ងៃដល់កំណត់នៃកិច្ចការ។ ម៉ោងដែលកន្លងផុតមិនត្រូវបានកំណត់ទេ។ Android អាចពន្យារការជូនដំណឹងដើម្បីសន្សំថ្ម។',
+    'Test scheduled for about one minute. Put the app in the background.':
+        'បានកំណត់ការសាកល្បងប្រហែលមួយនាទីទៀត។ សូមចេញពីកម្មវិធីទៅផ្ទៃខាងក្រោយ។',
+    'Account alerts refresh while LifeSync is open. Remote push delivery is not enabled yet.':
+        'ការជូនដំណឹងគណនីធ្វើបច្ចុប្បន្នភាពនៅពេលបើក LifeSync។ ការផ្ញើ Push ពីម៉ាស៊ីនមេមិនទាន់បានបើកទេ។',
     'Title is required.': 'សូមបញ្ចូលចំណងជើង។',
     'Unable to save. Please try again.':
         'មិនអាចរក្សាទុកបានទេ។ សូមព្យាយាមម្តងទៀត។',
@@ -199,8 +241,8 @@ final class AppTranslations extends Translations {
     "New password": "ពាក្យសម្ងាត់ថ្មី",
     "Confirm new password": "បញ្ជាក់ពាក្យសម្ងាត់ថ្មី",
     "Password changed successfully.": "បានប្តូរពាក្យសម្ងាត់ដោយជោគជ័យ។",
-    "Password must contain at least 8 characters":
-        "ពាក្យសម្ងាត់ត្រូវមានយ៉ាងតិច ៨ តួអក្សរ",
+    "Use at least 12 characters, including a number and symbol":
+        "ប្រើយ៉ាងតិច ១២ តួអក្សរ រួមមានលេខ និងនិមិត្តសញ្ញា",
     "Phone number": "លេខទូរស័ព្ទ",
     "Save profile": "រក្សាទុកប្រវត្តិរូប",
     "Choose photo": "ជ្រើសរើសរូបថត",

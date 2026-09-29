@@ -114,7 +114,8 @@ class _SignUpCreatePasswordScreen extends State<SignUpCreatePasswordScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Password must contain at least 8 characters'.tr,
+                  'Use at least 12 characters, including a number and symbol'
+                      .tr,
                   style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                 ),
                 const SizedBox(height: 32),
