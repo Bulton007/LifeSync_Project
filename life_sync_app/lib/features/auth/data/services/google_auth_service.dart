@@ -12,9 +12,11 @@ class GoogleAuthService {
   Future<void>? _initialization;
 
   Future<ApiResult<LoginResponseModel>?> signIn() async {
-    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
+    if (kIsWeb ||
+        (defaultTargetPlatform != TargetPlatform.android &&
+            defaultTargetPlatform != TargetPlatform.iOS)) {
       throw UnsupportedError(
-        'Google sign-in is currently configured for Android only.',
+        'Google sign-in is supported on Android and iOS only.',
       );
     }
     _initialization ??= _initialize();
