@@ -1,0 +1,7 @@
+**
+!pom.xml
+!src/
+!src/**
+!Dockerfile.local
+!Dockerfile.openshift
+!app.jar

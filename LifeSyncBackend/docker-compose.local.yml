@@ -1,0 +1,44 @@
+name: lifesync-local
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: lifesync
+      POSTGRES_USER: lifesync
+      POSTGRES_PASSWORD: local-testing-only
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lifesync -d lifesync"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+  backend:
+    image: lifesync-backend:local
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    ports: ["127.0.0.1:8085:8085"]
+    environment:
+      JWT_SECRET: local-testing-only-not-for-production-0123456789abcdef
+      GMAIL_USERNAME: ${GMAIL_USERNAME:-}
+      GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD:-}
+      LIFESYNC_TELEGRAM_BOT_TOKEN: ${LIFESYNC_TELEGRAM_BOT_TOKEN:-}
+      AI_PROVIDER: openrouter
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-openrouter/free}
+    volumes: ["uploads:/data"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+volumes:
+  pgdata:
+  uploads:
